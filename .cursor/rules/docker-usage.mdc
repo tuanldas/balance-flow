@@ -1,0 +1,15 @@
+---
+description: Quy tắc sử dụng Docker và Docker Compose (Compose V2)
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# Quy tắc Docker
+
+- Luôn chạy các lệnh bằng Docker.
+- Định dạng file Docker sử dụng là Compose V2 (`docker compose`).
+- Với các lệnh cần `up -d` thì luôn chạy `docker compose down` trước.
+- Đừng chỉnh sửa các file Docker khi không được yêu cầu.
+- Với môi trường dev/prod sử dụng `compose.override.yml` theo hướng dẫn trong README.
+

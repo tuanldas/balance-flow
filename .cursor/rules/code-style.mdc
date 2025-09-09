@@ -1,0 +1,64 @@
+---
+description: Quy tắc code style và chất lượng (ESLint, Prettier, TypeScript) cho dự án
+globs:
+  - "**/*.{ts,tsx,js,jsx,mjs}"
+  - "**/*.css"
+alwaysApply: true
+---
+
+# Quy tắc Code Style & Chất lượng
+
+- Sử dụng TypeScript cho file mới (`.ts`, `.tsx`).
+- Tuân theo cấu hình TypeScript của dự án:
+  - `strict: true`, `noEmit: true`.
+  - Module ESM (`module: esnext`).
+  - Dùng alias `@/` cho import tuyệt đối (thay vì relative dài dòng).
+- Tuân theo ESLint preset của Next.js:
+  - Kế thừa `next/core-web-vitals` và `next/typescript`.
+  - Không lint các đường dẫn: `node_modules/**`, `.next/**`, `out/**`, `build/**`, `next-env.d.ts`.
+- Tuân theo Prettier để định dạng mã:
+  - `semi: true` (có dấu chấm phẩy).
+  - `singleQuote: true` (dùng nháy đơn trong JS/TS).
+  - `trailingComma: es5`.
+  - `printWidth: 80`.
+  - `tabWidth: 2`, `useTabs: false`.
+  - `arrowParens: avoid`.
+  - `endOfLine: lf`.
+  - `bracketSpacing: true`, `bracketSameLine: false`.
+  - `jsxSingleQuote: false`, `singleAttributePerLine: false`.
+
+# Quy ước Import
+
+- Ưu tiên import tuyệt đối với alias `@/` (ví dụ: `import x from '@/lib/x'`).
+- Không tạo alias mới ngoài phần đã cấu hình trong `tsconfig.json`.
+
+# Kiểm tra trước khi commit/push
+
+- Trước khi commit: chạy `lint-staged` (tự động `eslint --fix` + `prettier --write` trên file staged).
+- Trước khi push: bắt buộc `npm run lint` và `npm run type-check` không lỗi.
+- Không commit/push khi còn lỗi lint hoặc lỗi type.
+
+# Quy tắc đặt tên
+
+- Mức độ: Warning
+- Mô tả: Tuân thủ quy tắc đặt tên biến, hàm và components
+
+## Quy ước đặt tên
+
+1. Biến — camelCase
+   - Mẫu: `^[a-z][a-zA-Z0-9]*$`
+   - Ví dụ: `userName`, `isLoading`
+
+2. Hàm — camelCase
+   - Mẫu: `^[a-z][a-zA-Z0-9]*$`
+   - Ví dụ: `getUserData()`, `calculateTotal()`
+
+3. Component — PascalCase
+   - Mẫu: `^[A-Z][a-zA-Z0-9]*$`
+   - Ví dụ: `UserProfile`, `LoginForm`
+
+## Tránh sử dụng `any`
+
+- Tránh dùng `any`. Nếu cần, cân nhắc `unknown` hoặc kiểu rõ ràng.
+- Strict mode TypeScript đã bật trong dự án và cần được giữ nguyên.
+

@@ -1,0 +1,130 @@
+---
+description: Tổng hợp quy tắc Git — thao tác Git, commit message, đặt tên nhánh (Git Flow)
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# 1) Quy tắc thao tác Git
+
+- Chỉ chạy lệnh Git khi được người dùng yêu cầu rõ ràng (không tự ý `git add/commit/push`).
+- Khi có nhiều file thay đổi, luôn commit theo từng phần/feature nhỏ, có phạm vi rõ ràng.
+- Tránh gộp các thay đổi không liên quan vào một commit.
+- Ưu tiên chọn lọc file khi stage: dùng `git add <đường-dẫn-cụ-thể>` thay vì `git add -A`.
+- Commit message tuân theo quy tắc Conventional Commits (tiếng Việt).
+- Không commit khi còn lỗi lint hoặc lỗi type (đã enforced qua Husky/lint-staged).
+
+## Quy trình khuyến nghị
+
+- Bước 1: Stage các file liên quan cùng một thay đổi.
+  - Ví dụ: `git add app/components/Button.tsx styles/components/button.css`
+- Bước 2: Commit với message rõ ràng.
+  - Ví dụ: `feat(ui/button): thêm trạng thái loading`
+- Bước 3: Lặp lại cho thay đổi tiếp theo (nếu có) — mỗi commit cho một phạm vi.
+
+## Ví dụ tốt
+
+- `feat(docker): thêm target dev vào Dockerfile`
+- `docs(readme): hướng dẫn chạy bằng compose.override.yml`
+- `build(eslint): cấu hình ESLint flat config`
+
+## Anti-pattern (tránh)
+
+- `git add -A` rồi commit một lần cho nhiều thay đổi không liên quan.
+- Commit chung chung: `update`, `wip`, `fix bug`.
+- Tự động chạy `git commit`/`git push` khi chưa được yêu cầu.
+
+# 2) Quy tắc Commit (tiếng Việt)
+
+- Viết theo chuẩn Conventional Commits, bằng tiếng Việt, ngắn gọn và rõ ràng.
+
+## Cú pháp
+
+```text
+<type>(<scope>): <subject>
+
+<body>
+
+<footer>
+```
+
+- type (bắt buộc):
+  - feat: thêm tính năng
+  - fix: sửa lỗi
+  - docs: tài liệu (README, docs, bình luận…)
+  - style: định dạng, style code (không ảnh hưởng logic)
+  - refactor: tái cấu trúc (không thêm tính năng, không sửa bug)
+  - perf: cải thiện hiệu năng
+  - test: thêm/cập nhật test
+  - build: thay đổi build, deps, tooling
+  - ci: thay đổi CI/CD
+  - chore: việc lặt vặt, dọn dẹp, không ảnh hưởng src/app
+  - revert: hoàn tác commit
+
+- scope (tùy chọn): phạm vi thay đổi, viết kebab-case ngắn gọn. Ví dụ: docker, readme, eslint, ui/button, config, deps.
+- subject (bắt buộc): câu mệnh lệnh, tiếng Việt, ≤ 72 ký tự, không chấm cuối câu.
+- body (tùy chọn): giải thích tại sao/cách làm khi cần.
+- footer (tùy chọn): BREAKING CHANGE, Closes/Refs issue…
+
+## Ví dụ tốt
+
+```text
+feat(ui/button): thêm trạng thái loading và disabled
+
+- Cập nhật style theo thiết kế
+- Thêm test cho cases cơ bản
+```
+
+```text
+fix(docker): sửa lỗi mount node_modules trong môi trường dev
+
+Closes #42
+```
+
+```text
+docs(readme): hướng dẫn chạy bằng compose.override.yml
+```
+
+# 3) Quy tắc đặt tên nhánh (Git Flow)
+
+- Nhánh mặc định: main (sản xuất), develop (phát triển).
+- Tiền tố bắt buộc:
+  - feature/<mô-tả> hoặc feature/<TICKET>-<mô-tả>
+  - bugfix/<mô-tả> hoặc bugfix/<TICKET>-<mô-tả>
+  - hotfix/<version> hoặc hotfix/<TICKET>-<mô-tả>
+  - release/<major.minor.patch>
+  - support/<major.minor.patch>
+
+## Quy định chung
+
+- Sử dụng kebab-case cho phần mô tả: chỉ a-z, 0-9, và -.
+- Không dùng khoảng trắng, _, ký tự có dấu, ký tự đặc biệt.
+- Có thể kèm mã ticket (ví dụ: BF-123) trước mô tả.
+- Không kết thúc bằng dấu - hoặc /.
+- Tránh tên nhánh quá dài; phần mô tả ≤ 50 ký tự.
+
+## Regex gợi ý (tham khảo)
+
+```regex
+^(feature|bugfix|hotfix|support)/[a-z0-9]+(?:-[a-z0-9]+)*$
+^(feature|bugfix|hotfix)/[A-Z]+-\d+-[a-z0-9]+(?:-[a-z0-9]+)*$
+^release/\d+\.\d+\.\d+$
+^hotfix/\d+\.\d+\.\d+$
+```
+
+## Ví dụ đúng
+
+- feature/BF-123-them-docker-dev
+- feature/cai-thien-hieu-nang-accordion
+- bugfix/BF-456-sua-loi-build-tren-node-22
+- hotfix/1.2.3
+- release/2.0.0
+- support/1.5.x
+
+## Ví dụ sai (tránh)
+
+- feature/them_docker (dùng _ thay vì -)
+- feature/ThemDocker (không dùng PascalCase/camelCase)
+- bugfix/ (thiếu mô tả)
+- release/v1.2.3 (không có v; dùng release/1.2.3)
+

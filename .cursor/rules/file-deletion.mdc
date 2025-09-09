@@ -1,0 +1,15 @@
+---
+description: Quy tắc xóa file — luôn yêu cầu xác nhận người dùng trước khi xóa
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# Quy tắc xóa file
+
+- Không tự ý xóa file. Chỉ xóa khi có yêu cầu rõ ràng từ người dùng.
+- Trước khi xóa, cần xác nhận lại danh sách file sẽ xóa với người dùng.
+- Nếu là xóa hàng loạt, nêu rõ số lượng và phạm vi để người dùng xác nhận.
+- Không xóa các file cấu hình quan trọng (Docker, ESLint, TS, Husky, v.v.) nếu người dùng không chỉ định cụ thể.
+- Sau khi xóa theo yêu cầu, không tự chạy lệnh git (add/commit/push) nếu không được yêu cầu.
+

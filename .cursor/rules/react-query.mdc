@@ -1,0 +1,15 @@
+---
+description: Ưu tiên sử dụng React Query cho API calls (mức độ Warning)
+globs:
+  - "**/*.{tsx,jsx}"
+alwaysApply: true
+---
+
+# Sử dụng React Query
+
+- Mức độ: Warning
+- Mô tả: Ưu tiên sử dụng React Query (@tanstack/react-query) cho các API calls.
+- Cảnh báo khi: `axios.get(`, `axios.post(`, `axios.put(`, `axios.delete(` xuất hiện trực tiếp trong components.
+- Áp dụng cho: `**/*.tsx`, `**/*.jsx`
+- Bỏ qua: `**/api/**`, `node_modules/**`, `dist/**`, `build/**`
+
