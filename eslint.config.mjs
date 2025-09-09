@@ -1,25 +1,29 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+// eslint.config.mjs
+import { FlatCompat } from '@eslint/eslintrc';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
+// Create a FlatCompat instance to support legacy "extends" syntax.
 const compat = new FlatCompat({
-  baseDirectory: __dirname,
+    baseDirectory: import.meta.dirname,
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
-  {
-    ignores: [
-      "node_modules/**",
-      ".next/**",
-      "out/**",
-      "build/**",
-      "next-env.d.ts",
-    ],
-  },
+    ...compat.config({
+        extends: ['next/core-web-vitals', 'next/typescript', 'prettier'],
+        // Plugins in legacy format must be an array of plugin names.
+        plugins: ['react-hooks'],
+        rules: {
+            // Disable react-in-jsx-scope (not needed in React 17+)
+            'react/react-in-jsx-scope': 'off',
+            'react/no-unescaped-entities': 'off',
+            // React Hooks rules
+            'react-hooks/rules-of-hooks': 'error',
+            'react-hooks/exhaustive-deps': 'warn',
+            '@next/next/no-img-element': 'off',
+        },
+    }),
+    {
+        ignores: ['.next/**', 'node_modules/**', 'prisma/**'],
+    },
 ];
 
 export default eslintConfig;
