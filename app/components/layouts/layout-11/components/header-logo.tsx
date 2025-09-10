@@ -47,14 +47,14 @@ export function HeaderLogo() {
       )}
       <Link href="/layout-11">
         <img
-          src={toAbsoluteUrl('/media/app/mini-logo-gray.svg')}
-          className="dark:hidden size-6"
-          alt="image"
+          src={toAbsoluteUrl('/media/app/default-logo.svg')}
+          className="dark:hidden h-6"
+          alt="logo"
         />
         <img
-          src={toAbsoluteUrl('/media/app/mini-logo-gray-dark.svg')}
-          className="hidden dark:inline-block size-6"
-          alt="image"
+          src={toAbsoluteUrl('/media/app/default-logo-dark.svg')}
+          className="hidden dark:inline-block h-6"
+          alt="logo"
         />
       </Link>
     </div>
