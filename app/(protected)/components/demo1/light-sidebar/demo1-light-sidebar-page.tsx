@@ -1,19 +1,19 @@
-import {Fragment, useState} from 'react';
-import {addDays, format} from 'date-fns';
-import {CalendarDays} from 'lucide-react';
-import {DateRange} from 'react-day-picker';
-import {Button} from '@/components/ui/button';
-import {Calendar} from '@/components/ui/calendar';
-import {Popover, PopoverContent, PopoverTrigger,} from '@/components/ui/popover';
-import {Container} from '@/components/common/container';
-import {Demo1LightSidebarContent} from './';
+import { Fragment, useState } from 'react';
+import { addDays, format } from 'date-fns';
+import { CalendarDays } from 'lucide-react';
+import { DateRange } from 'react-day-picker';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Container } from '@/components/common/container';
 import {
     Toolbar,
     ToolbarActions,
     ToolbarDescription,
     ToolbarHeading,
-    ToolbarPageTitle
+    ToolbarPageTitle,
 } from '@/app/components/layouts/layout-11/components/toolbar';
+import { Demo1LightSidebarContent } from './';
 
 export function Demo1LightSidebarPage() {
     const [isOpen, setIsOpen] = useState(false);
@@ -21,9 +21,7 @@ export function Demo1LightSidebarPage() {
         from: new Date(2025, 0, 20),
         to: addDays(new Date(2025, 0, 20), 20),
     });
-    const [tempDateRange, setTempDateRange] = useState<DateRange | undefined>(
-        date,
-    );
+    const [tempDateRange, setTempDateRange] = useState<DateRange | undefined>(date);
 
     const handleDateRangeApply = () => {
         setDate(tempDateRange); // Save the temporary date range to the main state
@@ -48,12 +46,11 @@ export function Demo1LightSidebarPage() {
                         <Popover open={isOpen} onOpenChange={setIsOpen}>
                             <PopoverTrigger asChild>
                                 <Button id="date" variant="outline">
-                                    <CalendarDays size={16} className="me-0.5"/>
+                                    <CalendarDays size={16} className="me-0.5" />
                                     {date?.from ? (
                                         date.to ? (
                                             <>
-                                                {format(date.from, 'LLL dd, y')} -{' '}
-                                                {format(date.to, 'LLL dd, y')}
+                                                {format(date.from, 'LLL dd, y')} - {format(date.to, 'LLL dd, y')}
                                             </>
                                         ) : (
                                             format(date.from, 'LLL dd, y')
@@ -84,7 +81,7 @@ export function Demo1LightSidebarPage() {
                 </Toolbar>
             </Container>
             <Container>
-                <Demo1LightSidebarContent/>
+                <Demo1LightSidebarContent />
             </Container>
         </Fragment>
     );

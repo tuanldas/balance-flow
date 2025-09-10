@@ -1,34 +1,28 @@
 import nodemailer from 'nodemailer';
 
 export interface SendEmailContent {
-  title?: string;
-  subtitle?: string;
-  description?: string;
-  buttonLabel?: string;
-  buttonUrl?: string;
+    title?: string;
+    subtitle?: string;
+    description?: string;
+    buttonLabel?: string;
+    buttonUrl?: string;
 }
 
 export interface SendEmailProps {
-  to: string;
-  subject: string;
-  text?: string;
-  html?: string;
-  content?: SendEmailContent;
+    to: string;
+    subject: string;
+    text?: string;
+    html?: string;
+    content?: SendEmailContent;
 }
 
-export async function sendEmail({
-  to,
-  subject,
-  text,
-  html,
-  content = {},
-}: SendEmailProps) {
-  const { title, subtitle, description, buttonLabel, buttonUrl } = content;
+export async function sendEmail({ to, subject, text, html, content = {} }: SendEmailProps) {
+    const { title, subtitle, description, buttonLabel, buttonUrl } = content;
 
-  // Build the email HTML template with inline conditions for each section.
-  const emailHtml =
-    html ??
-    `
+    // Build the email HTML template with inline conditions for each section.
+    const emailHtml =
+        html ??
+        `
       <!DOCTYPE html>
       <html>
         <head>
@@ -52,14 +46,14 @@ export async function sendEmail({
                       ${title ? `<h2 style="margin-top: 0; font-size: 20px;">${title}</h2>` : ''}
                       ${subtitle ? `<p style="margin: 10px 0; font-size: 16px;">${subtitle}</p>` : ''}
                       ${
-                        buttonLabel && buttonUrl
-                          ? `
+                          buttonLabel && buttonUrl
+                              ? `
                         <p style="text-align: center; margin: 30px 0;">
                           <a href="${buttonUrl}" style="display: inline-block; background-color: #000; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 9px;">
                             ${buttonLabel}
                           </a>
                         </p>`
-                          : ''
+                              : ''
                       }
                       ${description ? `<p style="margin: 20px 0; font-size: 16px;">${description}</p>` : ''}
                       <p style="margin: 10px 0; font-size: 16px;">
@@ -76,28 +70,28 @@ export async function sendEmail({
         </body>
       </html>`;
 
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT) || 465,
-    secure: true, // true for port 465, false for other ports
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
+    const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: Number(process.env.SMTP_PORT) || 465,
+        secure: true, // true for port 465, false for other ports
+        auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
+        },
+    });
 
-  const mailOptions = {
-    from: `${process.env.SMTP_SENDER} <${process.env.SMTP_FROM}>`,
-    to,
-    subject,
-    text,
-    html: emailHtml,
-  };
+    const mailOptions = {
+        from: `${process.env.SMTP_SENDER} <${process.env.SMTP_FROM}>`,
+        to,
+        subject,
+        text,
+        html: emailHtml,
+    };
 
-  try {
-    await transporter.sendMail(mailOptions);
-    console.log(`Email sent to ${to}`);
-  } catch (error) {
-    console.error(`Error sending email: ${error}`);
-  }
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log(`Email sent to ${to}`);
+    } catch (error) {
+        console.error(`Error sending email: ${error}`);
+    }
 }

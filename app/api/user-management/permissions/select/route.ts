@@ -4,32 +4,32 @@ import { prisma } from '@/lib/prisma';
 import authOptions from '@/app/api/auth/[...nextauth]/auth-options';
 
 export async function GET() {
-  try {
-    const session = await getServerSession(authOptions);
+    try {
+        const session = await getServerSession(authOptions);
 
-    if (!session) {
-      return NextResponse.json(
-        { message: 'Unauthorized request' },
-        { status: 401 }, // Unauthorized
-      );
+        if (!session) {
+            return NextResponse.json(
+                { message: 'Unauthorized request' },
+                { status: 401 }, // Unauthorized
+            );
+        }
+
+        const permissions = await prisma.userPermission.findMany({
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+            },
+            orderBy: {
+                name: 'asc',
+            },
+        });
+
+        return NextResponse.json(permissions);
+    } catch {
+        return NextResponse.json(
+            { message: 'Oops! Something went wrong. Please try again in a moment.' },
+            { status: 500 },
+        );
     }
-
-    const permissions = await prisma.userPermission.findMany({
-      select: {
-        id: true,
-        name: true,
-        slug: true,
-      },
-      orderBy: {
-        name: 'asc',
-      },
-    });
-
-    return NextResponse.json(permissions);
-  } catch {
-    return NextResponse.json(
-      { message: 'Oops! Something went wrong. Please try again in a moment.' },
-      { status: 500 },
-    );
-  }
 }

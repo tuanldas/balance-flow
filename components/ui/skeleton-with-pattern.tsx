@@ -2,17 +2,17 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 
 interface SkeletonWithPatternProps extends React.ComponentProps<'div'> {
-  patternColor?: string;
-  patternOpacity?: number;
+    patternColor?: string;
+    patternOpacity?: number;
 }
 
-function SkeletonWithPattern({ 
-  className, 
-  patternColor = "#e5e7eb", 
-  patternOpacity = 0.3,
-  ...props 
+function SkeletonWithPattern({
+    className,
+    patternColor = '#e5e7eb',
+    patternOpacity = 0.3,
+    ...props
 }: SkeletonWithPatternProps) {
-  const svgPattern = `
+    const svgPattern = `
     <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <pattern id="bend-lines" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
@@ -39,20 +39,20 @@ function SkeletonWithPattern({
     </svg>
   `;
 
-  const encodedSvg = encodeURIComponent(svgPattern);
+    const encodedSvg = encodeURIComponent(svgPattern);
 
-  return (
-    <div 
-      data-slot="skeleton-with-pattern" 
-      className={cn('animate-pulse rounded-md bg-accent', className)} 
-      style={{
-        backgroundImage: `url("data:image/svg+xml,${encodedSvg}")`,
-        backgroundSize: '60px 60px',
-        backgroundRepeat: 'repeat'
-      }}
-      {...props} 
-    />
-  );
+    return (
+        <div
+            data-slot="skeleton-with-pattern"
+            className={cn('animate-pulse rounded-md bg-accent', className)}
+            style={{
+                backgroundImage: `url("data:image/svg+xml,${encodedSvg}")`,
+                backgroundSize: '60px 60px',
+                backgroundRepeat: 'repeat',
+            }}
+            {...props}
+        />
+    );
 }
 
-export { SkeletonWithPattern }; 
+export { SkeletonWithPattern };

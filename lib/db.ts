@@ -11,40 +11,40 @@ import { SystemSetting } from '@/app/models/system';
  * @throws - Error if the table does not exist.
  */
 export async function isUnique<T extends keyof PrismaClient & string>(
-  table: T,
-  fields: Record<string, unknown>,
-  exclude?: Record<string, unknown>,
+    table: T,
+    fields: Record<string, unknown>,
+    exclude?: Record<string, unknown>,
 ): Promise<boolean> {
-  if (!(table in prisma)) {
-    throw new Error(`Table '${table}' does not exist in Prisma Client.`);
-  }
+    if (!(table in prisma)) {
+        throw new Error(`Table '${table}' does not exist in Prisma Client.`);
+    }
 
-  // Build the `where` clause
-  const whereClause: Record<string, unknown> = {
-    OR: Object.entries(fields).map(([key, value]) => ({ [key]: value })),
-  };
+    // Build the `where` clause
+    const whereClause: Record<string, unknown> = {
+        OR: Object.entries(fields).map(([key, value]) => ({ [key]: value })),
+    };
 
-  // Add the exclude clause if provided
-  if (exclude) {
-    whereClause['NOT'] = Object.entries(exclude).map(([key, value]) => ({
-      [key]: value,
-    }));
-  }
+    // Add the exclude clause if provided
+    if (exclude) {
+        whereClause['NOT'] = Object.entries(exclude).map(([key, value]) => ({
+            [key]: value,
+        }));
+    }
 
-  // Define a type for a Prisma model with a findFirst method.
-  type PrismaModel = {
-    findFirst(args: { where: unknown }): Promise<unknown | null>;
-  };
+    // Define a type for a Prisma model with a findFirst method.
+    type PrismaModel = {
+        findFirst(args: { where: unknown }): Promise<unknown | null>;
+    };
 
-  // Cast the dynamic model to that type.
-  const model = prisma[table as keyof typeof prisma] as unknown as PrismaModel;
+    // Cast the dynamic model to that type.
+    const model = prisma[table as keyof typeof prisma] as unknown as PrismaModel;
 
-  // Now call findFirst.
-  const record = await model.findFirst({
-    where: whereClause,
-  });
+    // Now call findFirst.
+    const record = await model.findFirst({
+        where: whereClause,
+    });
 
-  return !record;
+    return !record;
 }
 
 /**
@@ -52,7 +52,7 @@ export async function isUnique<T extends keyof PrismaClient & string>(
  * @returns - Settings with related `role` data or `null`.
  */
 export async function getSettings(): Promise<SystemSetting | null> {
-  const settings = await prisma.systemSetting.findFirst();
+    const settings = await prisma.systemSetting.findFirst();
 
-  return settings;
+    return settings;
 }

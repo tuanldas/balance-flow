@@ -1,5 +1,3 @@
 export function SidebarFooter() {
-  return (
-    <div></div>
-  );
+    return <div></div>;
 }

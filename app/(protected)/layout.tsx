@@ -1,17 +1,13 @@
 'use client';
 
-import {useEffect} from 'react';
-import {useRouter} from 'next/navigation';
-import {useSession} from 'next-auth/react';
-import {ScreenLoader} from '@/components/common/screen-loader';
-import {Layout11} from '@/layouts/layout-11';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Layout11 } from '@/layouts/layout-11';
+import { useSession } from 'next-auth/react';
+import { ScreenLoader } from '@/components/common/screen-loader';
 
-export default function ProtectedLayout({
-                                            children,
-                                        }: {
-    children: React.ReactNode;
-}) {
-    const {data: session, status} = useSession();
+export default function ProtectedLayout({ children }: { children: React.ReactNode }) {
+    const { data: session, status } = useSession();
     const router = useRouter();
 
     useEffect(() => {
@@ -21,7 +17,7 @@ export default function ProtectedLayout({
     }, [status, router]);
 
     if (status === 'loading') {
-        return <ScreenLoader/>;
+        return <ScreenLoader />;
     }
 
     return session ? <Layout11>{children}</Layout11> : null;
