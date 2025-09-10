@@ -1,7 +1,6 @@
 import { useLayout } from './context';
 import { Sidebar } from './sidebar';
 import { Header } from './header';
-import { HeaderMenu } from './header-menu';
 
 export function Wrapper({ children }: { children: React.ReactNode }) {
   const {isMobile} = useLayout();
@@ -15,8 +14,6 @@ export function Wrapper({ children }: { children: React.ReactNode }) {
           {!isMobile && <Sidebar />}
           <div className="grow overflow-y-auto p-5">
             <main className="grow" role="content">
-              {isMobile && <HeaderMenu/>}
-
               {children}
             </main>
           </div>

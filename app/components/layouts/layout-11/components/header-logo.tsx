@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Menu } from 'lucide-react';
 import { useLayout } from './context';
 import { toAbsoluteUrl } from '@/lib/helpers';
-import { HeaderMenuMobile } from './header-menu-mobile';
 import {
   Sheet,
   SheetBody,
@@ -41,7 +40,6 @@ export function HeaderLogo() {
           >
             <SheetHeader className="p-0 space-y-0" />
             <SheetBody className="flex flex-col grow p-0">
-              <HeaderMenuMobile />
               <SidebarMenu />
             </SheetBody>
           </SheetContent>

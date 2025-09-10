@@ -1,6 +1,5 @@
 import { useLayout } from './context';
 import { HeaderLogo } from './header-logo';
-import { HeaderMenu } from './header-menu';
 import { HeaderToolbar } from './header-toolbar';
 
 export function Header() {
@@ -11,7 +10,6 @@ export function Header() {
       <div className="@container grow px-4 lg:px-7.5 flex items-stretch justify-between gap-2.5">
         <div className="flex items-stretch">
           <HeaderLogo />
-          {!isMobile && <HeaderMenu/>}
         </div>
         <HeaderToolbar />
       </div>
