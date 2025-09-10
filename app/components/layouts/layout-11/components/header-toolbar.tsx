@@ -1,4 +1,4 @@
-import { Clock, User, Keyboard, Gift, HelpCircle, LogOut, Download, ExternalLink, Sun, Moon } from "lucide-react";
+import { LogOut, Sun, Moon } from "lucide-react";
 import { toAbsoluteUrl } from "@/lib/helpers";
 import {
   Avatar,
@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+//
 import { useTheme } from "next-themes";
 
 export function HeaderToolbar() {
@@ -56,18 +56,12 @@ export function HeaderToolbar() {
             </div>
           </div>
           
-          <DropdownMenuItem className="cursor-pointer py-1 rounded-md border border-border hover:bg-muted">
-            <Clock/>
-            <span>Set status</span>
-          </DropdownMenuItem>
+          
 
           <DropdownMenuSeparator />
 
 
-          <DropdownMenuItem>
-            <User/>
-            <span>Profile</span>
-          </DropdownMenuItem>
+          
 
 
           <DropdownMenuSeparator />
@@ -80,29 +74,7 @@ export function HeaderToolbar() {
 
           <DropdownMenuSeparator />
 
-          {/* Business-Focused Application Section */}
-          <DropdownMenuItem>
-            <Keyboard/>
-            <span>Keyboard shortcuts</span>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem>
-            <Gift/>
-            <span>Referrals</span>
-            <Badge variant="info" appearance="light" className="ms-auto">New</Badge>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem >
-            <Download/>
-            <span>Download apps</span>
-            <ExternalLink className="size-3 ms-auto" />
-          </DropdownMenuItem>
-
-          <DropdownMenuItem>
-            <HelpCircle/>
-            <span>Help</span>
-            <ExternalLink className="size-3 ms-auto" />
-          </DropdownMenuItem>
+          
 
           <DropdownMenuSeparator />
 
