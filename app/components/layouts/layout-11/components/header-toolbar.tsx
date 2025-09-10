@@ -1,4 +1,4 @@
-import { BellDot, Settings, Users, Clock, User, Bell, Keyboard, Gift, HelpCircle, LogOut, VolumeX, Download, ExternalLink, Sun, Moon } from "lucide-react";
+import { Clock, User, Keyboard, Gift, HelpCircle, LogOut, Download, ExternalLink, Sun, Moon } from "lucide-react";
 import { toAbsoluteUrl } from "@/lib/helpers";
 import {
   Avatar,
@@ -30,18 +30,6 @@ export function HeaderToolbar() {
 
   return (
     <nav className="flex items-center gap-2.5">
-      <Button variant="outline" className="hover:bg-background hover:text-foreground">
-        <Users />
-        <span>Add Team</span>
-      </Button>
-      <div className="flex items-center gap-1">
-        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
-          <BellDot className="opacity-100" />
-        </Button>
-        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
-          <Settings className="opacity-100" />
-        </Button>
-      </div>
       <DropdownMenu>
         <DropdownMenuTrigger className="cursor-pointer">
           <Avatar className="size-7">
@@ -75,36 +63,12 @@ export function HeaderToolbar() {
 
           <DropdownMenuSeparator />
 
-          {/* Notification and Settings Section */}
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>
-              <VolumeX/>
-              <span>Mute notifications</span>
-            </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent className="w-48">
-              <DropdownMenuItem>For 30 minutes</DropdownMenuItem>
-              <DropdownMenuItem>For 1 hour</DropdownMenuItem>
-              <DropdownMenuItem>For 4 hours</DropdownMenuItem>
-              <DropdownMenuItem>Until tomorrow</DropdownMenuItem>
-              <DropdownMenuItem>Until next week</DropdownMenuItem>
-              <DropdownMenuItem>Custom date and time</DropdownMenuItem>
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
 
           <DropdownMenuItem>
             <User/>
             <span>Profile</span>
           </DropdownMenuItem>
 
-          <DropdownMenuItem>
-            <Settings/>
-            <span>Settings</span>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem>
-            <Bell/>
-            <span>Notification settings</span>
-          </DropdownMenuItem>
 
           <DropdownMenuSeparator />
 
