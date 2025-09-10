@@ -24,7 +24,7 @@
 @import './components/scrollable.css';
 
 /* Demos */
-@import './demos/demo1.css';
+/* removed demo imports */
 
 /** Dark/Light Theme Variant **/
 @custom-variant dark (&:is(.dark *));
