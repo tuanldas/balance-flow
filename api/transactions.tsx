@@ -1,7 +1,7 @@
 import ApiCaller from '@/api/apiCaller.tsx';
 import { type IPaginatedResponse } from '@/api/types/pagination';
-import { type WalletTransactionType } from '@/api/types/wallet';
 import { type IUserTransactionItem } from '@/api/types/transactions';
+import { type WalletTransactionType } from '@/api/types/wallet';
 import { appendDefinedParams } from '@/utils/http';
 
 export const callApiGetUserTransactions = async (params?: {

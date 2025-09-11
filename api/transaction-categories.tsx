@@ -40,7 +40,11 @@ export const getTransactionCategories = async (params?: {
     }
 };
 
-export const getTransactionCategoryOptions = async (params?: { search?: string; type?: 'expense' | 'income'; limit?: number }) => {
+export const getTransactionCategoryOptions = async (params?: {
+    search?: string;
+    type?: 'expense' | 'income';
+    limit?: number;
+}) => {
     try {
         const apiCaller = new ApiCaller().setUrl('/transaction-categories-options');
         if (params) {

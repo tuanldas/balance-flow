@@ -7,8 +7,8 @@ import {
     type IWalletUpdateFormData,
     type WalletTransactionType,
 } from '@/api/types/wallet';
-import type { AxiosResponse } from 'axios';
 import { appendDefinedParams } from '@/utils/http';
+import type { AxiosResponse } from 'axios';
 
 export const callApiGetWallets = async ({ pageParam }: { pageParam: number }) => {
     const { data } = (await new ApiCaller().setUrl(`/wallets?page=${pageParam}`).get()) as AxiosResponse<unknown>;
