@@ -33,7 +33,9 @@ export default class ApiCaller {
     private static handleError(error: AxiosError) {
         if (error.response && error.response.status === 401) {
             removeAllCookies();
-            location.reload();
+            const unauthorizedError = new Error('Unauthorized');
+            unauthorizedError.name = 'UnauthorizedError';
+            return Promise.reject(unauthorizedError);
         }
 
         if (error.response && error.response.status === 403) {
