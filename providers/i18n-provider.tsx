@@ -2,12 +2,9 @@
 
 import { ReactNode, useEffect, useState } from 'react';
 import { I18N_LANGUAGES } from '@/i18n/config';
-import arTranslations from '@/i18n/messages/ar.json';
-import chTranslations from '@/i18n/messages/ch.json';
-import deTranslations from '@/i18n/messages/de.json';
 // Import translation files
 import enTranslations from '@/i18n/messages/en.json';
-import esTranslations from '@/i18n/messages/es.json';
+import viTranslations from '@/i18n/messages/vi.json';
 import { DirectionProvider as RadixDirectionProvider } from '@radix-ui/react-direction';
 import i18n from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
@@ -25,10 +22,7 @@ function I18nProvider({ children }: I18nProviderProps) {
         if (!i18n.isInitialized) {
             const resources = {
                 en: { translation: enTranslations },
-                ar: { translation: arTranslations },
-                es: { translation: esTranslations },
-                de: { translation: deTranslations },
-                ch: { translation: chTranslations },
+                vi: { translation: viTranslations },
             };
 
             i18n.use(LanguageDetector)

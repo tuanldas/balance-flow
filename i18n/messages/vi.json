@@ -1,0 +1,37 @@
+{
+    "common": {
+        "buttons": {
+            "save": "Lưu",
+            "cancel": "Hủy",
+            "delete": "Xóa",
+            "edit": "Sửa",
+            "add": "Thêm",
+            "remove": "Gỡ",
+            "submit": "Gửi",
+            "close": "Đóng"
+        },
+        "labels": {
+            "name": "Tên",
+            "email": "Email",
+            "password": "Mật khẩu",
+            "username": "Tên đăng nhập",
+            "phone": "Điện thoại",
+            "address": "Địa chỉ"
+        },
+        "messages": {
+            "welcome": "Xin chào",
+            "loading": "Đang tải...",
+            "error": "Đã xảy ra lỗi",
+            "success": "Thao tác thành công",
+            "confirm": "Bạn có chắc không?"
+        }
+    },
+    "navigation": {
+        "home": "Trang chủ",
+        "dashboard": "Bảng điều khiển",
+        "settings": "Cài đặt",
+        "profile": "Hồ sơ"
+    }
+}
+
+

@@ -15,4 +15,11 @@ export const I18N_LANGUAGES: Language[] = [
         direction: 'ltr',
         flag: '/media/flags/united-states.svg',
     },
+    {
+        code: 'vi',
+        name: 'Vietnamese',
+        shortName: 'VI',
+        direction: 'ltr',
+        flag: '/media/flags/vietnam.svg',
+    },
 ];
