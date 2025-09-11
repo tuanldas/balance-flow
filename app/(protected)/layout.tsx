@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/config/routes';
 import { Layout11 } from '@/layouts/layout-11';
 import { useAuth } from '@/providers/auth-provider';
 import { ScreenLoader } from '@/components/common/screen-loader';
@@ -12,7 +13,7 @@ export default function ProtectedLayout({ children }: { children: React.ReactNod
 
     useEffect(() => {
         if (!isLoading && !isAuthenticated) {
-            router.push('/signin');
+            router.push(ROUTES.signin);
         }
     }, [isLoading, isAuthenticated, router]);
 

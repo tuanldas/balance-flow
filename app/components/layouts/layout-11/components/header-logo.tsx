@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu } from 'lucide-react';
 import { toAbsoluteUrl } from '@/lib/helpers';
+import { ROUTES } from '@/config/routes';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetBody, SheetContent, SheetHeader, SheetTrigger } from '@/components/ui/sheet';
 import { useLayout } from './context';
@@ -35,7 +36,7 @@ export function HeaderLogo() {
                     </SheetContent>
                 </Sheet>
             )}
-            <Link href="/">
+            <Link href={ROUTES.home}>
                 <img src={toAbsoluteUrl('/media/app/default-logo.svg')} className="dark:hidden h-6" alt="logo" />
                 <img
                     src={toAbsoluteUrl('/media/app/default-logo-dark.svg')}

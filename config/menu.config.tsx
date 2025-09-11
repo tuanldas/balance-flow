@@ -1,5 +1,6 @@
 import { SquareActivity } from 'lucide-react';
 import { type MenuConfig } from './types';
+import { ROUTES } from './routes';
 
 export const MENU_SIDEBAR: MenuConfig = [
     {
@@ -7,7 +8,7 @@ export const MENU_SIDEBAR: MenuConfig = [
         children: [
             {
                 title: 'Dashboard',
-                path: '/',
+                path: ROUTES.home,
                 icon: SquareActivity,
             },
         ],
