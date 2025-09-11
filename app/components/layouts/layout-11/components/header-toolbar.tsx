@@ -1,6 +1,7 @@
 import { LogOut, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { toAbsoluteUrl } from '@/lib/helpers';
+import { useTypedTranslation } from '@/hooks/useTranslation';
 import { Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus } from '@/components/ui/avatar';
 import {
     DropdownMenu,
@@ -12,6 +13,7 @@ import {
 
 export function HeaderToolbar() {
     const { theme, setTheme } = useTheme();
+    const { t } = useTypedTranslation();
 
     const toggleTheme = () => {
         setTheme(theme === 'light' ? 'dark' : 'light');
@@ -50,7 +52,7 @@ export function HeaderToolbar() {
                     {/* Theme Toggle */}
                     <DropdownMenuItem onClick={toggleTheme}>
                         {theme === 'light' ? <Moon className="size-4" /> : <Sun className="size-4" />}
-                        <span>{theme === 'light' ? 'Dark mode' : 'Light mode'}</span>
+                        <span>{theme === 'light' ? t('common.theme.dark_mode') : t('common.theme.light_mode')}</span>
                     </DropdownMenuItem>
 
                     <DropdownMenuSeparator />
@@ -58,7 +60,7 @@ export function HeaderToolbar() {
                     {/* Action Items */}
                     <DropdownMenuItem>
                         <LogOut />
-                        <span>Log out</span>
+                        <span>{t('common.actions.logout')}</span>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>

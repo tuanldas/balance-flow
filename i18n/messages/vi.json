@@ -10,6 +10,13 @@
             "submit": "Gửi",
             "close": "Đóng"
         },
+        "theme": {
+            "dark_mode": "Chế độ tối",
+            "light_mode": "Chế độ sáng"
+        },
+        "actions": {
+            "logout": "Đăng xuất"
+        },
         "labels": {
             "name": "Tên",
             "email": "Email",

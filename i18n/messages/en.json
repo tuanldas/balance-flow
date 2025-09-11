@@ -10,6 +10,13 @@
             "submit": "Submit",
             "close": "Close"
         },
+        "theme": {
+            "dark_mode": "Dark mode",
+            "light_mode": "Light mode"
+        },
+        "actions": {
+            "logout": "Log out"
+        },
         "labels": {
             "name": "Name",
             "email": "Email",
