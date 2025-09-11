@@ -35,7 +35,7 @@ export function HeaderLogo() {
                     </SheetContent>
                 </Sheet>
             )}
-            <Link href="/layout-11">
+            <Link href="/">
                 <img src={toAbsoluteUrl('/media/app/default-logo.svg')} className="dark:hidden h-6" alt="logo" />
                 <img
                     src={toAbsoluteUrl('/media/app/default-logo-dark.svg')}

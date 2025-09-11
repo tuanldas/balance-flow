@@ -7,7 +7,7 @@ export const MENU_SIDEBAR: MenuConfig = [
         children: [
             {
                 title: 'Dashboard',
-                path: '/layout-11',
+                path: '/',
                 icon: SquareActivity,
             },
         ],
