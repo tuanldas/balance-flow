@@ -6,18 +6,18 @@ import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { RiErrorWarningFill } from '@remixicon/react';
 import { AlertCircle, Eye, EyeOff, LoaderCircleIcon } from 'lucide-react';
-import { signIn } from 'next-auth/react';
 import { useForm } from 'react-hook-form';
+import { useAuth } from '@/providers/auth-provider';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Icons } from '@/components/common/icons';
 import { getSigninSchema, SigninSchemaType } from '../forms/signin-schema';
 
 export default function Page() {
     const router = useRouter();
+    const auth = useAuth();
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -36,19 +36,8 @@ export default function Page() {
         setError(null);
 
         try {
-            const response = await signIn('credentials', {
-                redirect: false,
-                email: values.email,
-                password: values.password,
-                rememberMe: values.rememberMe,
-            });
-
-            if (response?.error) {
-                const errorData = JSON.parse(response.error);
-                setError(errorData.message);
-            } else {
-                router.push('/');
-            }
+            await auth.signIn({ email: values.email, password: values.password });
+            router.push('/');
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An unexpected error occurred. Please try again.');
         } finally {
@@ -73,11 +62,7 @@ export default function Page() {
                     </AlertTitle>
                 </Alert>
 
-                <div className="flex flex-col gap-3.5">
-                    <Button variant="outline" type="button" onClick={() => signIn('google', { callbackUrl: '/' })}>
-                        <Icons.googleColorful className="size-5! opacity-100!" /> Sign in with Google
-                    </Button>
-                </div>
+                {/* Social sign-in removed with NextAuth */}
 
                 <div className="relative py-1.5">
                     <div className="absolute inset-0 flex items-center">

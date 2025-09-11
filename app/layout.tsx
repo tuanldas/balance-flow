@@ -17,7 +17,7 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
     title: {
         template: '%s | Blance Flow',
-        default: 'Blance Flow', 
+        default: 'Blance Flow',
     },
 };
 

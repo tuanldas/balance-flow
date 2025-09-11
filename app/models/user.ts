@@ -1,9 +1,7 @@
-import { $Enums } from '@prisma/client';
 import { SystemSetting } from './system';
 
-// Enums
-export const UserStatus = $Enums.UserStatus;
-export type UserStatus = $Enums.UserStatus;
+// Enums (backend-driven). Use string to decouple from Prisma.
+export type UserStatus = string;
 
 // Models
 export interface User {
