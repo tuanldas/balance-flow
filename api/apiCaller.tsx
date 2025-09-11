@@ -1,4 +1,4 @@
-import { removeAllCookies } from '@/utils/cookies.ts';
+import { removeAllCookies } from '@/utils/cookies';
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 interface ApiCallMethodGet {
@@ -11,7 +11,7 @@ interface ApiCallMethodPost {
 }
 
 export default class ApiCaller {
-    private backendUrl = import.meta.env.VITE_APP_BACKEND_URL + '/api';
+    private backendUrl = (process.env.NEXT_PUBLIC_BACKEND_URL ?? 'http://localhost:8089') + '/api';
     private endpoint = '';
     private requestOptions: AxiosRequestConfig = {
         withCredentials: true,
