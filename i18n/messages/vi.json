@@ -68,7 +68,7 @@
         "delete_error": "Xóa ví thất bại",
         "delete_dialog": {
             "title": "Xóa ví",
-            "description": "Hành động này không thể hoàn tác. {name} sẽ bị xóa vĩnh viễn.",
+            "description": "Hành động này không thể hoàn tác. {{name}} sẽ bị xóa vĩnh viễn.",
             "cancel": "Hủy",
             "confirm": "Xóa"
         },

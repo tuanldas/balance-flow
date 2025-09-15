@@ -68,7 +68,7 @@
         "delete_error": "Failed to delete wallet",
         "delete_dialog": {
             "title": "Delete wallet",
-            "description": "This action cannot be undone. {name} will be permanently deleted.",
+            "description": "This action cannot be undone. {{name}} will be permanently deleted.",
             "cancel": "Cancel",
             "confirm": "Delete"
         },
