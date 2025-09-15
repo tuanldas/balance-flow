@@ -16,6 +16,7 @@ import { Toolbar, ToolbarActions, ToolbarHeading, ToolbarTitle } from '@/compone
 import { WalletsDropdownMenu } from './wallets-dropdown-menu';
 import AddWalletForm from './add-wallet-form';
 import EditWalletForm from './edit-wallet-form';
+import DeleteWalletDialog from './delete-wallet-dialog';
 import { formatMoneyCompact } from '@/utils/format';
 
 export default function WalletsPage() {
@@ -23,6 +24,7 @@ export default function WalletsPage() {
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [editingWallet, setEditingWallet] = useState<IWalletDetail | null>(null);
+    const [isDeleteOpen, setIsDeleteOpen] = useState(false);
     const { data, isLoading, isError, refetch, isFetchingNextPage, fetchNextPage, hasNextPage } =
         useInfiniteQuery<IPaginatedResponse<IWalletDetail> | null>({
             queryKey: ['wallets'],
@@ -157,6 +159,15 @@ export default function WalletsPage() {
                                                 >
                                                     {t('common.buttons.edit') ?? 'Edit'}
                                                 </button>
+                                                <button
+                                                    className="w-full text-left px-2.5 py-1.5 text-sm hover:bg-accent text-destructive"
+                                                    onClick={() => {
+                                                        setEditingWallet(w);
+                                                        setIsDeleteOpen(true);
+                                                    }}
+                                                >
+                                                    {t('common.buttons.delete') ?? 'Delete'}
+                                                </button>
                                             </WalletsDropdownMenu>
                                         </div>
                                     </div>
@@ -179,6 +190,12 @@ export default function WalletsPage() {
             )}
             <AddWalletForm isOpen={isFormOpen} onOpenChange={setIsFormOpen} />
             <EditWalletForm isOpen={isEditOpen} onOpenChange={setIsEditOpen} wallet={editingWallet} />
+            <DeleteWalletDialog
+                isOpen={isDeleteOpen}
+                onOpenChange={setIsDeleteOpen}
+                walletId={editingWallet?.id}
+                walletName={editingWallet?.name}
+            />
         </div>
     );
 }

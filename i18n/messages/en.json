@@ -64,6 +64,14 @@
             }
         },
         "edit": "Edit wallet",
+        "delete_success": "Wallet deleted successfully",
+        "delete_error": "Failed to delete wallet",
+        "delete_dialog": {
+            "title": "Delete wallet",
+            "description": "This action cannot be undone. {name} will be permanently deleted.",
+            "cancel": "Cancel",
+            "confirm": "Delete"
+        },
         "errors": {
             "id_required": "Wallet id is required"
         }
