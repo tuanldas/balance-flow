@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import currencyCodes from 'currency-codes';
+import { useTranslation } from '@/hooks/useTranslation';
 import { Button, ButtonArrow } from '@/components/ui/button';
 import {
     Command,
@@ -14,7 +15,6 @@ import {
 } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useTranslation } from '@/hooks/useTranslation';
 
 const POPULAR_CURRENCIES = ['VND', 'USD', 'EUR', 'JPY', 'GBP', 'AUD', 'CAD', 'CHF', 'CNY', 'HKD', 'SGD'];
 
@@ -51,8 +51,8 @@ export default function CurrencyCombobox({ value, onChange }: CurrencyComboboxPr
         const popularCurrencies: CurrencyItem[] = allCurrencies.filter((c: CurrencyItem) =>
             POPULAR_CURRENCIES.includes(c.code),
         );
-        const otherCurrencies: CurrencyItem[] = allCurrencies.filter((c: CurrencyItem) =>
-            !POPULAR_CURRENCIES.includes(c.code),
+        const otherCurrencies: CurrencyItem[] = allCurrencies.filter(
+            (c: CurrencyItem) => !POPULAR_CURRENCIES.includes(c.code),
         );
 
         setCurrencies([...popularCurrencies, ...otherCurrencies]);
@@ -78,14 +78,10 @@ export default function CurrencyCombobox({ value, onChange }: CurrencyComboboxPr
             </PopoverTrigger>
             <PopoverContent className="w-(--radix-popper-anchor-width) p-0">
                 <Command>
-                    <CommandInput
-                        placeholder={t('wallet.form.currency_search') || 'Search currency...'}
-                    />
+                    <CommandInput placeholder={t('wallet.form.currency_search') || 'Search currency...'} />
                     <CommandList>
                         <ScrollArea viewportClassName="max-h-[300px] [&>div]:block!">
-                            <CommandEmpty>
-                                {t('wallet.form.currency_not_found') || 'No currency found'}
-                            </CommandEmpty>
+                            <CommandEmpty>{t('wallet.form.currency_not_found') || 'No currency found'}</CommandEmpty>
                             <CommandGroup>
                                 {currencies.map((currency) => (
                                     <CommandItem
@@ -108,5 +104,3 @@ export default function CurrencyCombobox({ value, onChange }: CurrencyComboboxPr
         </Popover>
     );
 }
-
-

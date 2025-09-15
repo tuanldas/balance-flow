@@ -39,7 +39,7 @@ export function groupTimelineItems(
     const today = new Date();
     const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
-    const todayItems = items.filter(i => i.date >= startOfToday);
+    const todayItems = items.filter((i) => i.date >= startOfToday);
     const todayLabel = formatDate(today, locale, { weekday: 'long' }).toUpperCase();
     const todayDay: TimelineDay | null =
         todayItems.length > 0
@@ -51,8 +51,8 @@ export function groupTimelineItems(
 
     const byMonth = new Map<string, TimelineMonth & { __currencies: Set<string | undefined> }>();
     items
-        .filter(i => i.date < startOfToday)
-        .forEach(i => {
+        .filter((i) => i.date < startOfToday)
+        .forEach((i) => {
             const monthLabel = formatDate(i.date, locale, { month: 'long', year: 'numeric' });
             const key = `${i.date.getFullYear()}-${i.date.getMonth()}`;
             if (!byMonth.has(key)) {
@@ -65,9 +65,13 @@ export function groupTimelineItems(
             }
             const month = byMonth.get(key)!;
 
-            const dayLabel = formatDate(i.date, locale, { weekday: 'short', month: 'long', day: 'numeric' }).toUpperCase();
+            const dayLabel = formatDate(i.date, locale, {
+                weekday: 'short',
+                month: 'long',
+                day: 'numeric',
+            }).toUpperCase();
 
-            let day = month.days.find(d => d.label === dayLabel);
+            let day = month.days.find((d) => d.label === dayLabel);
             if (!day) {
                 day = { label: dayLabel, items: [] };
                 month.days.push(day);
@@ -83,11 +87,11 @@ export function groupTimelineItems(
             }
         });
 
-    const months = Array.from(byMonth.values()).map(m => ({
+    const months = Array.from(byMonth.values()).map((m) => ({
         label: m.label,
         total: m.__currencies.size > 1 ? { value: 0, currency: undefined } : m.total,
         days: m.days
-            .map(d => ({ ...d, items: d.items.sort((a, b) => b.date.getTime() - a.date.getTime()) }))
+            .map((d) => ({ ...d, items: d.items.sort((a, b) => b.date.getTime() - a.date.getTime()) }))
             .sort((a, b) => {
                 const da = a.items[0]?.date?.getTime() ?? 0;
                 const db = b.items[0]?.date?.getTime() ?? 0;
@@ -96,12 +100,10 @@ export function groupTimelineItems(
     }));
 
     months.sort((a, b) => {
-        const aTime = Math.max(...a.days.flatMap(d => d.items.map(it => it.date.getTime())));
-        const bTime = Math.max(...b.days.flatMap(d => d.items.map(it => it.date.getTime())));
+        const aTime = Math.max(...a.days.flatMap((d) => d.items.map((it) => it.date.getTime())));
+        const bTime = Math.max(...b.days.flatMap((d) => d.items.map((it) => it.date.getTime())));
         return bTime - aTime;
     });
 
     return { today: todayDay, months };
 }
-
-

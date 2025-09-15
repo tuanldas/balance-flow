@@ -1,18 +1,18 @@
 'use client';
 
-import {useState} from 'react';
-import {callApiCreateWallet} from '@/api/wallet';
-import type {IWalletFormData} from '@/api/types/wallet';
-import {zodResolver} from '@hookform/resolvers/zod';
-import {useMutation, useQueryClient} from '@tanstack/react-query';
-import {X} from 'lucide-react';
-import {useForm, useWatch} from 'react-hook-form';
-import {toast} from 'sonner';
+import { useState } from 'react';
+import type { IWalletFormData } from '@/api/types/wallet';
+import { callApiCreateWallet } from '@/api/wallet';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { X } from 'lucide-react';
+import { useForm, useWatch } from 'react-hook-form';
+import { toast } from 'sonner';
 import * as z from 'zod';
-import {useTranslation} from '@/hooks/useTranslation';
-import {Button} from '@/components/ui/button';
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from '@/components/ui/form';
-import {Input} from '@/components/ui/input';
+import { useTranslation } from '@/hooks/useTranslation';
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
     Sheet,
     SheetClose,
@@ -20,7 +20,7 @@ import {
     SheetDescription,
     SheetFooter,
     SheetHeader,
-    SheetTitle
+    SheetTitle,
 } from '@/components/ui/sheet';
 import CurrencyCombobox from './currency-combobox';
 
@@ -29,17 +29,19 @@ interface AddWalletFormProps {
     onOpenChange: (open: boolean) => void;
 }
 
-const AddWalletForm = ({isOpen, onOpenChange}: AddWalletFormProps) => {
-    const {t} = useTranslation();
+const AddWalletForm = ({ isOpen, onOpenChange }: AddWalletFormProps) => {
+    const { t } = useTranslation();
     const queryClient = useQueryClient();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [displayValue, setDisplayValue] = useState('');
     const [rawValue, setRawValue] = useState('0');
 
     const formSchema = z.object({
-        name: z.string().min(1, {message: t('wallet.form.errors.name_required') ?? 'Name is required'}),
-        balance: z.string().min(1, {message: t('wallet.form.errors.initial_balance_required') ?? 'Initial balance is required'}),
-        currency: z.string().min(1, {message: t('wallet.form.errors.currency_required') ?? 'Currency is required'}),
+        name: z.string().min(1, { message: t('wallet.form.errors.name_required') ?? 'Name is required' }),
+        balance: z
+            .string()
+            .min(1, { message: t('wallet.form.errors.initial_balance_required') ?? 'Initial balance is required' }),
+        currency: z.string().min(1, { message: t('wallet.form.errors.currency_required') ?? 'Currency is required' }),
     });
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -73,7 +75,7 @@ const AddWalletForm = ({isOpen, onOpenChange}: AddWalletFormProps) => {
         mutationFn: (data: IWalletFormData) => callApiCreateWallet(data),
         onSuccess: () => {
             toast.success(t('wallet.form.success') ?? 'Wallet created');
-            queryClient.invalidateQueries({queryKey: ['wallets']});
+            queryClient.invalidateQueries({ queryKey: ['wallets'] });
             form.reset();
             setRawValue('0');
             setDisplayValue('0');
@@ -110,21 +112,23 @@ const AddWalletForm = ({isOpen, onOpenChange}: AddWalletFormProps) => {
                             <FormField
                                 control={form.control}
                                 name="name"
-                                render={({field}) => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>{t('wallet.form.name') ?? 'Name'}</FormLabel>
                                         <FormControl>
                                             <Input
-                                                placeholder={t('wallet.form.name_placeholder') ?? 'Wallet name'} {...field} />
+                                                placeholder={t('wallet.form.name_placeholder') ?? 'Wallet name'}
+                                                {...field}
+                                            />
                                         </FormControl>
-                                        <FormMessage/>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
                             <FormField
                                 control={form.control}
                                 name="balance"
-                                render={({field}) => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>{t('wallet.form.initial_balance') ?? 'Initial balance'}</FormLabel>
                                         <div className="relative">
@@ -156,26 +160,25 @@ const AddWalletForm = ({isOpen, onOpenChange}: AddWalletFormProps) => {
                                                 />
                                             </FormControl>
                                             {currency && (
-                                                <div
-                                                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-muted-foreground">
+                                                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-muted-foreground">
                                                     {currency}
                                                 </div>
                                             )}
                                         </div>
-                                        <FormMessage/>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
                             <FormField
                                 control={form.control}
                                 name="currency"
-                                render={({field}) => (
+                                render={({ field }) => (
                                     <FormItem>
                                         <FormLabel>{t('wallet.form.currency') ?? 'Currency'}</FormLabel>
                                         <FormControl>
-                                            <CurrencyCombobox value={field.value} onChange={field.onChange}/>
+                                            <CurrencyCombobox value={field.value} onChange={field.onChange} />
                                         </FormControl>
-                                        <FormMessage/>
+                                        <FormMessage />
                                     </FormItem>
                                 )}
                             />
@@ -184,11 +187,13 @@ const AddWalletForm = ({isOpen, onOpenChange}: AddWalletFormProps) => {
                 </div>
                 <SheetFooter>
                     <Button type="submit" onClick={form.handleSubmit(onSubmit)} disabled={isSubmitting}>
-                        {isSubmitting ? t('common.messages.loading') ?? 'Saving...' : t('common.buttons.save') ?? 'Save'}
+                        {isSubmitting
+                            ? (t('common.messages.loading') ?? 'Saving...')
+                            : (t('common.buttons.save') ?? 'Save')}
                     </Button>
                     <SheetClose asChild>
                         <Button variant="outline">
-                            <X className="mr-2 h-4 w-4"/>
+                            <X className="mr-2 h-4 w-4" />
                             {t('common.buttons.cancel') ?? 'Cancel'}
                         </Button>
                     </SheetClose>
@@ -199,5 +204,3 @@ const AddWalletForm = ({isOpen, onOpenChange}: AddWalletFormProps) => {
 };
 
 export default AddWalletForm;
-
-

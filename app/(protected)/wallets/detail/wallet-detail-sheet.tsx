@@ -1,18 +1,18 @@
 'use client';
 
 import { useEffect, useMemo, useRef } from 'react';
-import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import { callApiGetWalletById, callApiGetWalletTransactions } from '@/api/wallet';
 import type { IWalletDetail, IWalletTransactionItem } from '@/api/types/wallet';
-import { useTranslation } from '@/hooks/useTranslation';
-import { Sheet as SheetRoot, SheetContent as SheetContentBase } from '@/components/ui/sheet';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
+import { callApiGetWalletById, callApiGetWalletTransactions } from '@/api/wallet';
 import { formatMoneyCompact } from '@/utils/format';
+import { groupTimelineItems, type TimelineItem } from '@/utils/transactions-timeline';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { Bus, CreditCard, Ticket } from 'lucide-react';
-import { groupTimelineItems, type TimelineItem } from '@/utils/transactions-timeline';
+import { useTranslation } from '@/hooks/useTranslation';
+import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
+import { SheetContent as SheetContentBase, Sheet as SheetRoot } from '@/components/ui/sheet';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface WalletDetailSheetProps {
     isOpen: boolean;
@@ -52,7 +52,7 @@ export default function WalletDetailSheet({ isOpen, onOpenChange, walletId }: Wa
             if (!walletId) return null;
             return callApiGetWalletTransactions(walletId, { page: Number(pageParam), per_page: 20 });
         },
-        getNextPageParam: lastPage => {
+        getNextPageParam: (lastPage) => {
             if (!lastPage) return undefined;
             return lastPage.current_page < lastPage.last_page ? lastPage.current_page + 1 : undefined;
         },
@@ -61,19 +61,19 @@ export default function WalletDetailSheet({ isOpen, onOpenChange, walletId }: Wa
 
     const transactions: IWalletTransactionItem[] = useMemo(() => {
         const pages = txPages?.pages ?? [];
-        const items = pages.flatMap(p => (p?.data ?? []) as IWalletTransactionItem[]);
+        const items = pages.flatMap((p) => (p?.data ?? []) as IWalletTransactionItem[]);
         return items;
     }, [txPages]);
 
     const timelineItems = useMemo<TimelineItem[]>(() => {
-        return transactions.map(tx => {
+        return transactions.map((tx) => {
             const categoryName = tx.category?.name ?? tx.transaction_type;
             const lowered = categoryName.toLowerCase();
             const icon = lowered.includes('transport')
                 ? 'transportation'
                 : lowered.includes('entertain')
-                ? 'entertainment'
-                : 'other';
+                  ? 'entertainment'
+                  : 'other';
             const signedValue = (tx.transaction_type === 'income' ? 1 : -1) * Number(tx.amount);
             return {
                 id: tx.id,
@@ -97,7 +97,7 @@ export default function WalletDetailSheet({ isOpen, onOpenChange, walletId }: Wa
     useEffect(() => {
         const sentinel = sentinelRef.current;
         if (!sentinel) return;
-        const observer = new IntersectionObserver(entries => {
+        const observer = new IntersectionObserver((entries) => {
             const entry = entries[0];
             if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
                 fetchNextPage();
@@ -126,13 +126,18 @@ export default function WalletDetailSheet({ isOpen, onOpenChange, walletId }: Wa
                             <div className="rounded-xl border bg-gradient-to-b from-primary/5 to-transparent p-5">
                                 <div className="flex items-start justify-between">
                                     <div>
-                                        <div className="text-xs text-muted-foreground">{t('wallet.detail.title') ?? 'Wallet'}</div>
+                                        <div className="text-xs text-muted-foreground">
+                                            {t('wallet.detail.title') ?? 'Wallet'}
+                                        </div>
                                         <div className="text-lg font-semibold text-mono">{data.name}</div>
                                     </div>
                                     <div className="text-right">
-                                        <div className="text-xs text-muted-foreground">{t('wallets.balance') ?? 'Balance'}</div>
+                                        <div className="text-xs text-muted-foreground">
+                                            {t('wallets.balance') ?? 'Balance'}
+                                        </div>
                                         <div className="text-2xl font-semibold text-mono">
-                                            {formatMoneyCompact(data.balance, { minimumFractionDigits: 0 })} {data.currency}
+                                            {formatMoneyCompact(data.balance, { minimumFractionDigits: 0 })}{' '}
+                                            {data.currency}
                                         </div>
                                     </div>
                                 </div>
@@ -141,7 +146,10 @@ export default function WalletDetailSheet({ isOpen, onOpenChange, walletId }: Wa
                                         <button
                                             key={p}
                                             className={
-                                                'rounded-md px-2 py-1 text-xs border ' + (i === 1 ? 'bg-primary text-primary-foreground border-primary' : 'border-input hover:bg-accent')
+                                                'rounded-md px-2 py-1 text-xs border ' +
+                                                (i === 1
+                                                    ? 'bg-primary text-primary-foreground border-primary'
+                                                    : 'border-input hover:bg-accent')
                                             }
                                             type="button"
                                             aria-label={`range-${p}`}
@@ -152,10 +160,11 @@ export default function WalletDetailSheet({ isOpen, onOpenChange, walletId }: Wa
                                 </div>
                             </div>
 
-                            
                             {data.description ? (
                                 <div className="space-y-1">
-                                    <div className="text-xs text-muted-foreground">{t('common.labels.description') ?? 'Description'}</div>
+                                    <div className="text-xs text-muted-foreground">
+                                        {t('common.labels.description') ?? 'Description'}
+                                    </div>
                                     <div className="text-sm">{data.description}</div>
                                 </div>
                             ) : null}
@@ -176,7 +185,9 @@ export default function WalletDetailSheet({ isOpen, onOpenChange, walletId }: Wa
                                         <div className="space-y-6">
                                             {todayGroup && (
                                                 <div className="space-y-3">
-                                                    <div className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">{t('common.today') ?? 'Today'}</div>
+                                                    <div className="text-[11px] uppercase tracking-wide text-muted-foreground font-semibold">
+                                                        {t('common.today') ?? 'Today'}
+                                                    </div>
                                                     <div className="flex flex-col">
                                                         {todayGroup.items.map((it: TimelineItem) => {
                                                             const amountNum = it.amount.value;
@@ -185,28 +196,51 @@ export default function WalletDetailSheet({ isOpen, onOpenChange, walletId }: Wa
                                                             const cat = it.category.name;
                                                             const icon = it.category.icon;
                                                             return (
-                                                                <div key={it.id} className="flex items-center gap-3 py-3 border-b border-border last:border-b-0">
+                                                                <div
+                                                                    key={it.id}
+                                                                    className="flex items-center gap-3 py-3 border-b border-border last:border-b-0"
+                                                                >
                                                                     <Checkbox className="mt-0.5" />
                                                                     <div className="flex flex-col grow min-w-0">
                                                                         <div className="flex items-center gap-2 min-w-0">
-                                                                            <div className="text-mono text-sm font-medium truncate">{it.title}</div>
-                                                                            <span className="text-xs text-secondary-foreground truncate">{format(new Date(it.date), 'p')}</span>
+                                                                            <div className="text-mono text-sm font-medium truncate">
+                                                                                {it.title}
+                                                                            </div>
+                                                                            <span className="text-xs text-secondary-foreground truncate">
+                                                                                {format(new Date(it.date), 'p')}
+                                                                            </span>
                                                                         </div>
                                                                     </div>
                                                                     <div className="shrink-0 flex items-center gap-3">
-                                                                        <Badge appearance="light" variant="outline" className="gap-1 text-xs">
+                                                                        <Badge
+                                                                            appearance="light"
+                                                                            variant="outline"
+                                                                            className="gap-1 text-xs"
+                                                                        >
                                                                             {icon === 'transportation' ? (
                                                                                 <Bus size={14} className="me-1" />
                                                                             ) : icon === 'entertainment' ? (
                                                                                 <Ticket size={14} className="me-1" />
                                                                             ) : (
-                                                                                <CreditCard size={14} className="me-1" />
+                                                                                <CreditCard
+                                                                                    size={14}
+                                                                                    className="me-1"
+                                                                                />
                                                                             )}
                                                                             {cat}
                                                                         </Badge>
-                                                                        <span className={isIncome ? 'text-green-600 text-sm font-medium text-mono' : 'text-sm font-medium text-mono'}>
+                                                                        <span
+                                                                            className={
+                                                                                isIncome
+                                                                                    ? 'text-green-600 text-sm font-medium text-mono'
+                                                                                    : 'text-sm font-medium text-mono'
+                                                                            }
+                                                                        >
                                                                             {sign}
-                                                                            {formatMoneyCompact(Math.abs(amountNum), { minimumFractionDigits: 0 })} {it.amount.currency ?? data?.currency}
+                                                                            {formatMoneyCompact(Math.abs(amountNum), {
+                                                                                minimumFractionDigits: 0,
+                                                                            })}{' '}
+                                                                            {it.amount.currency ?? data?.currency}
                                                                         </span>
                                                                     </div>
                                                                 </div>
@@ -219,10 +253,24 @@ export default function WalletDetailSheet({ isOpen, onOpenChange, walletId }: Wa
                                             {groupsByMonth.map((month, monthIndex) => (
                                                 <div key={`${month.label}-${monthIndex}`} className="space-y-4">
                                                     <div className="flex items-center justify-between">
-                                                        <h3 className="text-base font-semibold text-mono">{month.label}</h3>
-                                                        <span className={'text-base font-semibold text-mono ' + (month.total.value > 0 ? 'text-green-600' : '')}>
-                                                            {month.total.value < 0 ? '-' : month.total.value > 0 ? '+' : ''}
-                                                            {formatMoneyCompact(Math.abs(month.total.value), { minimumFractionDigits: 0 })} {month.total.currency ?? data?.currency}
+                                                        <h3 className="text-base font-semibold text-mono">
+                                                            {month.label}
+                                                        </h3>
+                                                        <span
+                                                            className={
+                                                                'text-base font-semibold text-mono ' +
+                                                                (month.total.value > 0 ? 'text-green-600' : '')
+                                                            }
+                                                        >
+                                                            {month.total.value < 0
+                                                                ? '-'
+                                                                : month.total.value > 0
+                                                                  ? '+'
+                                                                  : ''}
+                                                            {formatMoneyCompact(Math.abs(month.total.value), {
+                                                                minimumFractionDigits: 0,
+                                                            })}{' '}
+                                                            {month.total.currency ?? data?.currency}
                                                         </span>
                                                     </div>
                                                     {month.days.map((group, groupIndex) => (
@@ -238,28 +286,59 @@ export default function WalletDetailSheet({ isOpen, onOpenChange, walletId }: Wa
                                                                     const cat = it.category.name;
                                                                     const icon = it.category.icon;
                                                                     return (
-                                                                        <div key={it.id} className="flex items-center gap-3 py-3 border-b border-border last:border-b-0">
+                                                                        <div
+                                                                            key={it.id}
+                                                                            className="flex items-center gap-3 py-3 border-b border-border last:border-b-0"
+                                                                        >
                                                                             <Checkbox className="mt-0.5" />
                                                                             <div className="flex flex-col grow min-w-0">
                                                                                 <div className="flex items-center gap-2 min-w-0">
-                                                                                    <div className="text-mono text-sm font-medium truncate">{it.title}</div>
-                                                                                    <span className="text-xs text-secondary-foreground truncate">{format(new Date(it.date), 'p')}</span>
+                                                                                    <div className="text-mono text-sm font-medium truncate">
+                                                                                        {it.title}
+                                                                                    </div>
+                                                                                    <span className="text-xs text-secondary-foreground truncate">
+                                                                                        {format(new Date(it.date), 'p')}
+                                                                                    </span>
                                                                                 </div>
                                                                             </div>
                                                                             <div className="shrink-0 flex items-center gap-3">
-                                                                                <Badge appearance="light" variant="outline" className="gap-1 text-xs">
+                                                                                <Badge
+                                                                                    appearance="light"
+                                                                                    variant="outline"
+                                                                                    className="gap-1 text-xs"
+                                                                                >
                                                                                     {icon === 'transportation' ? (
-                                                                                        <Bus size={14} className="me-1" />
+                                                                                        <Bus
+                                                                                            size={14}
+                                                                                            className="me-1"
+                                                                                        />
                                                                                     ) : icon === 'entertainment' ? (
-                                                                                        <Ticket size={14} className="me-1" />
+                                                                                        <Ticket
+                                                                                            size={14}
+                                                                                            className="me-1"
+                                                                                        />
                                                                                     ) : (
-                                                                                        <CreditCard size={14} className="me-1" />
+                                                                                        <CreditCard
+                                                                                            size={14}
+                                                                                            className="me-1"
+                                                                                        />
                                                                                     )}
                                                                                     {cat}
                                                                                 </Badge>
-                                                                                <span className={isIncome ? 'text-green-600 text-sm font-medium text-mono' : 'text-sm font-medium text-mono'}>
+                                                                                <span
+                                                                                    className={
+                                                                                        isIncome
+                                                                                            ? 'text-green-600 text-sm font-medium text-mono'
+                                                                                            : 'text-sm font-medium text-mono'
+                                                                                    }
+                                                                                >
                                                                                     {sign}
-                                                                                    {formatMoneyCompact(Math.abs(amountNum), { minimumFractionDigits: 0 })} {it.amount.currency ?? data?.currency}
+                                                                                    {formatMoneyCompact(
+                                                                                        Math.abs(amountNum),
+                                                                                        { minimumFractionDigits: 0 },
+                                                                                    )}{' '}
+                                                                                    {it.amount.currency ??
+                                                                                        data?.currency}
                                                                                 </span>
                                                                             </div>
                                                                         </div>
@@ -270,8 +349,15 @@ export default function WalletDetailSheet({ isOpen, onOpenChange, walletId }: Wa
                                                     ))}
                                                 </div>
                                             ))}
-                                            <div ref={sentinelRef} className="text-center py-2 text-xs text-muted-foreground">
-                                                {hasNextPage ? (isFetchingNextPage ? (t('common.messages.loading') ?? 'Loading...') : '') : ''}
+                                            <div
+                                                ref={sentinelRef}
+                                                className="text-center py-2 text-xs text-muted-foreground"
+                                            >
+                                                {hasNextPage
+                                                    ? isFetchingNextPage
+                                                        ? (t('common.messages.loading') ?? 'Loading...')
+                                                        : ''
+                                                    : ''}
                                             </div>
                                         </div>
                                     )}
@@ -284,5 +370,3 @@ export default function WalletDetailSheet({ isOpen, onOpenChange, walletId }: Wa
         </SheetRoot>
     );
 }
-
-

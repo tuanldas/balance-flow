@@ -71,5 +71,3 @@ export const DeleteWalletDialog: FC<DeleteWalletDialogProps> = ({ isOpen, onOpen
 };
 
 export default DeleteWalletDialog;
-
-

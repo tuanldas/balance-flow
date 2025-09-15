@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { IPaginatedResponse } from '@/api/types/pagination';
 import type { IWalletDetail } from '@/api/types/wallet';
 import { callApiGetWallets } from '@/api/wallet';
+import { formatMoneyCompact } from '@/utils/format';
 import { coercePaginated } from '@/utils/pagination';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { AlertCircle, EllipsisVertical, Plus } from 'lucide-react';
@@ -13,11 +14,11 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Toolbar, ToolbarActions, ToolbarHeading, ToolbarTitle } from '@/components/common/toolbar';
-import { WalletsDropdownMenu } from './wallets-dropdown-menu';
 import AddWalletForm from './add-wallet-form';
-import EditWalletForm from './edit-wallet-form';
 import DeleteWalletDialog from './delete-wallet-dialog';
-import { formatMoneyCompact } from '@/utils/format';
+import WalletDetailSheet from './detail/wallet-detail-sheet';
+import EditWalletForm from './edit-wallet-form';
+import { WalletsDropdownMenu } from './wallets-dropdown-menu';
 
 export default function WalletsPage() {
     const { t } = useTranslation();
@@ -25,6 +26,8 @@ export default function WalletsPage() {
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [editingWallet, setEditingWallet] = useState<IWalletDetail | null>(null);
     const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
+    const [detailWalletId, setDetailWalletId] = useState<string | null>(null);
     const { data, isLoading, isError, refetch, isFetchingNextPage, fetchNextPage, hasNextPage } =
         useInfiniteQuery<IPaginatedResponse<IWalletDetail> | null>({
             queryKey: ['wallets'],
@@ -124,7 +127,13 @@ export default function WalletsPage() {
                             {items.map((w, index) => (
                                 <Card key={`${w.id}-${index}`} className="p-7.5">
                                     <div className="flex items-center flex-wrap justify-between gap-5">
-                                        <div className="flex items-center gap-3.5">
+                                        <div
+                                            className="flex items-center gap-3.5 cursor-pointer"
+                                            onClick={() => {
+                                                setDetailWalletId(w.id);
+                                                setIsDetailOpen(true);
+                                            }}
+                                        >
                                             <div className="flex flex-col">
                                                 <div className="text-lg font-medium text-mono">{w.name}</div>
                                                 <div className="text-sm text-secondary-foreground">
@@ -190,6 +199,7 @@ export default function WalletsPage() {
             )}
             <AddWalletForm isOpen={isFormOpen} onOpenChange={setIsFormOpen} />
             <EditWalletForm isOpen={isEditOpen} onOpenChange={setIsEditOpen} wallet={editingWallet} />
+            <WalletDetailSheet isOpen={isDetailOpen} onOpenChange={setIsDetailOpen} walletId={detailWalletId} />
             <DeleteWalletDialog
                 isOpen={isDeleteOpen}
                 onOpenChange={setIsDeleteOpen}
