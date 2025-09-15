@@ -15,7 +15,6 @@ export interface IWalletDetail {
     description?: string;
     currency: string;
     balance: string | number;
-    logo?: string;
 }
 
 export type WalletTransactionType = 'income' | 'expense' | 'transfer';
