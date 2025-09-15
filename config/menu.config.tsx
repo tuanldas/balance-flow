@@ -1,6 +1,6 @@
-import { SquareActivity } from 'lucide-react';
-import { type MenuConfig } from './types';
+import { SquareActivity, Wallet } from 'lucide-react';
 import { ROUTES } from './routes';
+import { type MenuConfig } from './types';
 
 export const MENU_SIDEBAR: MenuConfig = [
     {
@@ -10,6 +10,11 @@ export const MENU_SIDEBAR: MenuConfig = [
                 titleKey: 'navigation.dashboard',
                 path: ROUTES.home,
                 icon: SquareActivity,
+            },
+            {
+                titleKey: 'navigation.wallets',
+                path: ROUTES.wallets,
+                icon: Wallet,
             },
         ],
     },

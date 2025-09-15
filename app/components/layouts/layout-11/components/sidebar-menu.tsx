@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { MENU_SIDEBAR } from '@/config/menu.config';
+import { useTranslation } from '@/hooks/useTranslation';
 import {
     AccordionMenu,
     AccordionMenuGroup,
@@ -9,7 +10,6 @@ import {
     AccordionMenuLabel,
 } from '@/components/ui/accordion-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useTranslation } from '@/hooks/useTranslation';
 
 export function SidebarMenu() {
     const pathname = usePathname();

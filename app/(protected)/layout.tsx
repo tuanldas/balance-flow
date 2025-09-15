@@ -2,8 +2,8 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ROUTES } from '@/config/routes';
 import { Layout11 } from '@/layouts/layout-11';
+import { ROUTES } from '@/config/routes';
 import { useAuth } from '@/providers/auth-provider';
 import { ScreenLoader } from '@/components/common/screen-loader';
 
