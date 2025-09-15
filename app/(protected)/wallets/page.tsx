@@ -131,18 +131,10 @@ export default function WalletsPage() {
                                             <div className="flex items-center lg:justify-center flex-wrap gap-2 lg:gap-5">
                                                 <div className="grid grid-cols-1 content-between gap-1.5 border border-dashed border-input shrink-0 rounded-md px-2.5 py-2 min-w-24 max-w-auto">
                                                     <span className="text-mono text-sm leading-none font-semibold">
-                                                        {formatBalanceValue(w.balance)}
+                                                        {formatBalanceValue(w.balance)} {w.currency}
                                                     </span>
                                                     <span className="text-secondary-foreground text-xs font-medium">
                                                         {t('wallets.balance') ?? 'Balance'}
-                                                    </span>
-                                                </div>
-                                                <div className="grid grid-cols-1 content-between gap-1.5 border border-dashed border-input shrink-0 rounded-md px-2.5 py-2 min-w-24 max-w-auto">
-                                                    <span className="text-mono text-sm leading-none font-semibold">
-                                                        {w.currency}
-                                                    </span>
-                                                    <span className="text-secondary-foreground text-xs font-medium">
-                                                        {t('wallets.currency') ?? 'Currency'}
                                                     </span>
                                                 </div>
                                             </div>
