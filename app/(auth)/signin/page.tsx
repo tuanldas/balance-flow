@@ -1,22 +1,22 @@
 'use client';
 
-import {useState} from 'react';
-import {useRouter} from 'next/navigation';
-import {zodResolver} from '@hookform/resolvers/zod';
-import {AlertCircle, Eye, EyeOff, LoaderCircleIcon} from 'lucide-react';
-import {useForm} from 'react-hook-form';
-import {useAuth} from '@/providers/auth-provider';
-import {Alert, AlertIcon, AlertTitle} from '@/components/ui/alert';
-import {Button} from '@/components/ui/button';
-import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from '@/components/ui/form';
-import {Input} from '@/components/ui/input';
-import {getSigninSchema, SigninSchemaType} from '../forms/signin-schema';
-import {useTranslation} from '@/hooks/useTranslation';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { AlertCircle, Eye, EyeOff, LoaderCircleIcon } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useAuth } from '@/providers/auth-provider';
+import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { getSigninSchema, SigninSchemaType } from '../forms/signin-schema';
 
 export default function Page() {
     const router = useRouter();
     const auth = useAuth();
-    const {t} = useTranslation();
+    const { t } = useTranslation();
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -34,7 +34,7 @@ export default function Page() {
         setError(null);
 
         try {
-            await auth.signIn({email: values.email, password: values.password});
+            await auth.signIn({ email: values.email, password: values.password });
             router.push('/');
         } catch (err) {
             setError(err instanceof Error ? err.message : t('common.messages.error'));
@@ -53,7 +53,7 @@ export default function Page() {
                 {error && (
                     <Alert variant="destructive">
                         <AlertIcon>
-                            <AlertCircle/>
+                            <AlertCircle />
                         </AlertIcon>
                         <AlertTitle>{error}</AlertTitle>
                     </Alert>
@@ -62,13 +62,13 @@ export default function Page() {
                 <FormField
                     control={form.control}
                     name="email"
-                    render={({field}) => (
+                    render={({ field }) => (
                         <FormItem>
                             <FormLabel>{t('common.labels.email')}</FormLabel>
                             <FormControl>
                                 <Input placeholder={t('auth.signin.email_placeholder')} {...field} />
                             </FormControl>
-                            <FormMessage/>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
@@ -76,7 +76,7 @@ export default function Page() {
                 <FormField
                     control={form.control}
                     name="password"
-                    render={({field}) => (
+                    render={({ field }) => (
                         <FormItem>
                             <FormLabel>{t('common.labels.password')}</FormLabel>
                             <div className="relative">
@@ -92,29 +92,30 @@ export default function Page() {
                                     size="sm"
                                     onClick={() => setPasswordVisible(!passwordVisible)}
                                     className="absolute end-0 top-1/2 -translate-y-1/2 h-7 w-7 me-1.5 bg-transparent!"
-                                    aria-label={passwordVisible ? t('auth.signin.toggle_hide_password') : t('auth.signin.toggle_show_password')}
+                                    aria-label={
+                                        passwordVisible
+                                            ? t('auth.signin.toggle_hide_password')
+                                            : t('auth.signin.toggle_show_password')
+                                    }
                                 >
                                     {passwordVisible ? (
-                                        <EyeOff className="text-muted-foreground"/>
+                                        <EyeOff className="text-muted-foreground" />
                                     ) : (
-                                        <Eye className="text-muted-foreground"/>
+                                        <Eye className="text-muted-foreground" />
                                     )}
                                 </Button>
                             </div>
-                            <FormMessage/>
+                            <FormMessage />
                         </FormItem>
                     )}
                 />
 
-
                 <div className="flex flex-col gap-2.5">
                     <Button type="submit" disabled={isProcessing}>
-                        {isProcessing ? <LoaderCircleIcon className="size-4 animate-spin"/> : null}
+                        {isProcessing ? <LoaderCircleIcon className="size-4 animate-spin" /> : null}
                         {t('auth.signin.submit')}
                     </Button>
                 </div>
-
-
             </form>
         </Form>
     );
