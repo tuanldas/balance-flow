@@ -15,7 +15,9 @@
             "light_mode": "Light mode"
         },
         "actions": {
-            "logout": "Log out"
+            "logout": "Log out",
+            "retry": "Retry",
+            "load_more": "Load more"
         },
         "labels": {
             "name": "Name",
@@ -33,10 +35,18 @@
             "confirm": "Are you sure?"
         }
     },
+    "wallets": {
+        "title": "Wallets",
+        "create": "Create wallet",
+        "balance": "Balance",
+        "currency": "Currency",
+        "load_failed": "Failed to load wallets"
+    },
     "navigation": {
         "main": "Main",
         "home": "Home",
         "dashboard": "Dashboard",
+        "wallets": "Wallets",
         "settings": "Settings",
         "profile": "Profile"
     },

@@ -15,7 +15,9 @@
             "light_mode": "Chế độ sáng"
         },
         "actions": {
-            "logout": "Đăng xuất"
+            "logout": "Đăng xuất",
+            "retry": "Thử lại",
+            "load_more": "Tải thêm"
         },
         "labels": {
             "name": "Tên",
@@ -33,10 +35,18 @@
             "confirm": "Bạn có chắc không?"
         }
     },
+    "wallets": {
+        "title": "Ví",
+        "create": "Tạo ví",
+        "balance": "Số dư",
+        "currency": "Tiền tệ",
+        "load_failed": "Không tải được danh sách ví"
+    },
     "navigation": {
         "main": "Chính",
         "home": "Trang chủ",
         "dashboard": "Bảng điều khiển",
+        "wallets": "Ví",
         "settings": "Cài đặt",
         "profile": "Hồ sơ"
     },
@@ -57,5 +67,3 @@
         }
     }
 }
-
-
