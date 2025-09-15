@@ -15,6 +15,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Toolbar, ToolbarActions, ToolbarHeading, ToolbarTitle } from '@/components/common/toolbar';
 import { DropdownMenu1 } from '@/app/components/partials/dropdown-menu/dropdown-menu-1';
 import AddWalletForm from './add-wallet-form';
+import { formatMoneyCompact } from '@/utils/format';
 
 export default function WalletsPage() {
     const { t } = useTranslation();
@@ -39,19 +40,8 @@ export default function WalletsPage() {
         return pages.flatMap((p) => p?.data ?? []);
     }, [data]);
 
-    const formatBalanceValue = (value: string | number): string => {
-        const numeric = typeof value === 'number' ? value : Number(String(value).replace(/[,\s]/g, ''));
-        if (Number.isNaN(numeric)) return String(value);
-        try {
-            return new Intl.NumberFormat(undefined, {
-                style: 'decimal',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0,
-            }).format(numeric);
-        } catch {
-            return String(numeric);
-        }
-    };
+    const formatBalanceValue = (value: string | number): string =>
+        formatMoneyCompact(value, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
     // Infinite scroll sentinel
     const sentinelRef = useRef<HTMLDivElement | null>(null);
