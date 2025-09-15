@@ -1,0 +1,16 @@
+services:
+  web:
+    build:
+      context: .
+      target: dev
+    image: balance-flow:dev
+    command: npm run dev
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/app
+      - /app/node_modules
+    restart: unless-stopped
