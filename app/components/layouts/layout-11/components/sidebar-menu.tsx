@@ -9,9 +9,11 @@ import {
     AccordionMenuLabel,
 } from '@/components/ui/accordion-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useTranslation } from '@/hooks/useTranslation';
 
 export function SidebarMenu() {
     const pathname = usePathname();
+    const { t } = useTranslation();
 
     // Memoize matchPath to prevent unnecessary re-renders
     const matchPath = useCallback(
@@ -36,13 +38,13 @@ export function SidebarMenu() {
                 {MENU_SIDEBAR.map((item, index) => {
                     return (
                         <AccordionMenuGroup key={index}>
-                            <AccordionMenuLabel>{item.title}</AccordionMenuLabel>
+                            <AccordionMenuLabel>{item.titleKey ? t(item.titleKey) : item.title}</AccordionMenuLabel>
                             {item.children?.map((child, index) => {
                                 return (
                                     <AccordionMenuItem key={index} value={child.path || '#'}>
                                         <Link href={child.path || '#'}>
                                             {child.icon && <child.icon />}
-                                            <span>{child.title}</span>
+                                            <span>{child.titleKey ? t(child.titleKey) : child.title}</span>
                                         </Link>
                                     </AccordionMenuItem>
                                 );

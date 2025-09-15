@@ -34,6 +34,7 @@
         }
     },
     "navigation": {
+        "main": "Main",
         "home": "Home",
         "dashboard": "Dashboard",
         "settings": "Settings",

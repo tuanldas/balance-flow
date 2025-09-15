@@ -4,10 +4,10 @@ import { ROUTES } from './routes';
 
 export const MENU_SIDEBAR: MenuConfig = [
     {
-        title: 'Main',
+        titleKey: 'navigation.main',
         children: [
             {
-                title: 'Dashboard',
+                titleKey: 'navigation.dashboard',
                 path: ROUTES.home,
                 icon: SquareActivity,
             },
