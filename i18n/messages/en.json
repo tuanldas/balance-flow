@@ -46,6 +46,7 @@
         "add_new": "Add new wallet",
         "form": {
             "description": "Fill in the details to create a wallet",
+            "edit_description": "Update wallet details",
             "name": "Name",
             "name_placeholder": "Wallet name",
             "initial_balance": "Initial balance",
@@ -54,12 +55,17 @@
             "currency_search": "Search currency...",
             "currency_not_found": "No currency found",
             "success": "Wallet created successfully",
+            "update_success": "Wallet updated successfully",
             "error": "Failed to create wallet",
             "errors": {
                 "name_required": "Name is required",
                 "initial_balance_required": "Initial balance is required",
                 "currency_required": "Currency is required"
             }
+        },
+        "edit": "Edit wallet",
+        "errors": {
+            "id_required": "Wallet id is required"
         }
     },
     "navigation": {

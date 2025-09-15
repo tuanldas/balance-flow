@@ -15,11 +15,14 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Toolbar, ToolbarActions, ToolbarHeading, ToolbarTitle } from '@/components/common/toolbar';
 import { WalletsDropdownMenu } from './wallets-dropdown-menu';
 import AddWalletForm from './add-wallet-form';
+import EditWalletForm from './edit-wallet-form';
 import { formatMoneyCompact } from '@/utils/format';
 
 export default function WalletsPage() {
     const { t } = useTranslation();
     const [isFormOpen, setIsFormOpen] = useState(false);
+    const [isEditOpen, setIsEditOpen] = useState(false);
+    const [editingWallet, setEditingWallet] = useState<IWalletDetail | null>(null);
     const { data, isLoading, isError, refetch, isFetchingNextPage, fetchNextPage, hasNextPage } =
         useInfiniteQuery<IPaginatedResponse<IWalletDetail> | null>({
             queryKey: ['wallets'],
@@ -144,7 +147,17 @@ export default function WalletsPage() {
                                                         <EllipsisVertical />
                                                     </Button>
                                                 }
-                                            />
+                                            >
+                                                <button
+                                                    className="w-full text-left px-2.5 py-1.5 text-sm hover:bg-accent"
+                                                    onClick={() => {
+                                                        setEditingWallet(w);
+                                                        setIsEditOpen(true);
+                                                    }}
+                                                >
+                                                    {t('common.buttons.edit') ?? 'Edit'}
+                                                </button>
+                                            </WalletsDropdownMenu>
                                         </div>
                                     </div>
                                 </Card>
@@ -165,6 +178,7 @@ export default function WalletsPage() {
                 </>
             )}
             <AddWalletForm isOpen={isFormOpen} onOpenChange={setIsFormOpen} />
+            <EditWalletForm isOpen={isEditOpen} onOpenChange={setIsEditOpen} wallet={editingWallet} />
         </div>
     );
 }

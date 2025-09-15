@@ -46,6 +46,7 @@
         "add_new": "Thêm ví mới",
         "form": {
             "description": "Nhập thông tin để tạo ví",
+            "edit_description": "Cập nhật thông tin ví",
             "name": "Tên",
             "name_placeholder": "Tên ví",
             "initial_balance": "Số dư ban đầu",
@@ -54,12 +55,17 @@
             "currency_search": "Tìm kiếm tiền tệ...",
             "currency_not_found": "Không tìm thấy tiền tệ",
             "success": "Tạo ví thành công",
+            "update_success": "Cập nhật ví thành công",
             "error": "Tạo ví thất bại",
             "errors": {
                 "name_required": "Tên là bắt buộc",
                 "initial_balance_required": "Số dư ban đầu là bắt buộc",
                 "currency_required": "Tiền tệ là bắt buộc"
             }
+        },
+        "edit": "Sửa ví",
+        "errors": {
+            "id_required": "Thiếu mã ví"
         }
     },
     "navigation": {
