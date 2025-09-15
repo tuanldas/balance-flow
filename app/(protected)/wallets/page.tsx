@@ -39,6 +39,20 @@ export default function WalletsPage() {
         return pages.flatMap((p) => p?.data ?? []);
     }, [data]);
 
+    const formatBalanceValue = (value: string | number): string => {
+        const numeric = typeof value === 'number' ? value : Number(String(value).replace(/[,\s]/g, ''));
+        if (Number.isNaN(numeric)) return String(value);
+        try {
+            return new Intl.NumberFormat(undefined, {
+                style: 'decimal',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+            }).format(numeric);
+        } catch {
+            return String(numeric);
+        }
+    };
+
     // Infinite scroll sentinel
     const sentinelRef = useRef<HTMLDivElement | null>(null);
 
@@ -127,7 +141,7 @@ export default function WalletsPage() {
                                             <div className="flex items-center lg:justify-center flex-wrap gap-2 lg:gap-5">
                                                 <div className="grid grid-cols-1 content-between gap-1.5 border border-dashed border-input shrink-0 rounded-md px-2.5 py-2 min-w-24 max-w-auto">
                                                     <span className="text-mono text-sm leading-none font-semibold">
-                                                        {String(w.balance)}
+                                                        {formatBalanceValue(w.balance)}
                                                     </span>
                                                     <span className="text-secondary-foreground text-xs font-medium">
                                                         {t('wallets.balance') ?? 'Balance'}
