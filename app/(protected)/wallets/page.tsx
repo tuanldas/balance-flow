@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Toolbar, ToolbarActions, ToolbarHeading, ToolbarTitle } from '@/components/common/toolbar';
-import { WalletsDropdownMenu } from '@/app/components/partials/dropdown-menu/dropdown-menu-wallets';
+import { WalletsDropdownMenu } from './wallets-dropdown-menu';
 import AddWalletForm from './add-wallet-form';
 import { formatMoneyCompact } from '@/utils/format';
 
