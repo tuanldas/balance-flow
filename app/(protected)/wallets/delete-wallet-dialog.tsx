@@ -53,8 +53,7 @@ export const DeleteWalletDialog: FC<DeleteWalletDialogProps> = ({ isOpen, onOpen
                 <AlertDialogHeader>
                     <AlertDialogTitle>{t('wallet.delete_dialog.title') || 'Delete wallet'}</AlertDialogTitle>
                     <AlertDialogDescription>
-                        {t('wallet.delete_dialog.description') || 'This action cannot be undone.'}{' '}
-                        {walletName ? `(${walletName})` : ''}
+                        {t('wallet.delete_dialog.description', { name: walletName }) || 'This action cannot be undone.'}
                     </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
