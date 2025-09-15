@@ -14,10 +14,11 @@ import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Toolbar, ToolbarActions, ToolbarHeading, ToolbarTitle } from '@/components/common/toolbar';
 import { DropdownMenu1 } from '@/app/components/partials/dropdown-menu/dropdown-menu-1';
+import AddWalletForm from './add-wallet-form';
 
 export default function WalletsPage() {
     const { t } = useTranslation();
-    const [, setIsFormOpen] = useState(false);
+    const [isFormOpen, setIsFormOpen] = useState(false);
     const { data, isLoading, isError, refetch, isFetchingNextPage, fetchNextPage, hasNextPage } =
         useInfiniteQuery<IPaginatedResponse<IWalletDetail> | null>({
             queryKey: ['wallets'],
@@ -167,6 +168,7 @@ export default function WalletsPage() {
                     </div>
                 </>
             )}
+            <AddWalletForm isOpen={isFormOpen} onOpenChange={setIsFormOpen} />
         </div>
     );
 }
