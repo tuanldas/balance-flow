@@ -11,16 +11,18 @@ import {Button} from '@/components/ui/button';
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from '@/components/ui/form';
 import {Input} from '@/components/ui/input';
 import {getSigninSchema, SigninSchemaType} from '../forms/signin-schema';
+import {useTranslation} from '@/hooks/useTranslation';
 
 export default function Page() {
     const router = useRouter();
     const auth = useAuth();
+    const {t} = useTranslation();
     const [passwordVisible, setPasswordVisible] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const form = useForm<SigninSchemaType>({
-        resolver: zodResolver(getSigninSchema()),
+        resolver: zodResolver(getSigninSchema(t)),
         defaultValues: {
             email: '',
             password: '',
@@ -35,7 +37,7 @@ export default function Page() {
             await auth.signIn({email: values.email, password: values.password});
             router.push('/');
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'An unexpected error occurred. Please try again.');
+            setError(err instanceof Error ? err.message : t('common.messages.error'));
         } finally {
             setIsProcessing(false);
         }
@@ -45,7 +47,7 @@ export default function Page() {
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="block w-full space-y-5">
                 <div className="space-y-1.5 pb-3">
-                    <h1 className="text-2xl font-semibold tracking-tight text-center">Sign in to Metronic</h1>
+                    <h1 className="text-2xl font-semibold tracking-tight text-center">{t('auth.signin.title')}</h1>
                 </div>
 
                 {error && (
@@ -62,9 +64,9 @@ export default function Page() {
                     name="email"
                     render={({field}) => (
                         <FormItem>
-                            <FormLabel>Email</FormLabel>
+                            <FormLabel>{t('common.labels.email')}</FormLabel>
                             <FormControl>
-                                <Input placeholder="Your email" {...field} />
+                                <Input placeholder={t('auth.signin.email_placeholder')} {...field} />
                             </FormControl>
                             <FormMessage/>
                         </FormItem>
@@ -76,10 +78,10 @@ export default function Page() {
                     name="password"
                     render={({field}) => (
                         <FormItem>
-                            <FormLabel>Password</FormLabel>
+                            <FormLabel>{t('common.labels.password')}</FormLabel>
                             <div className="relative">
                                 <Input
-                                    placeholder="Your password"
+                                    placeholder={t('auth.signin.password_placeholder')}
                                     type={passwordVisible ? 'text' : 'password'}
                                     {...field}
                                 />
@@ -90,7 +92,7 @@ export default function Page() {
                                     size="sm"
                                     onClick={() => setPasswordVisible(!passwordVisible)}
                                     className="absolute end-0 top-1/2 -translate-y-1/2 h-7 w-7 me-1.5 bg-transparent!"
-                                    aria-label={passwordVisible ? 'Hide password' : 'Show password'}
+                                    aria-label={passwordVisible ? t('auth.signin.toggle_hide_password') : t('auth.signin.toggle_show_password')}
                                 >
                                     {passwordVisible ? (
                                         <EyeOff className="text-muted-foreground"/>
@@ -108,7 +110,7 @@ export default function Page() {
                 <div className="flex flex-col gap-2.5">
                     <Button type="submit" disabled={isProcessing}>
                         {isProcessing ? <LoaderCircleIcon className="size-4 animate-spin"/> : null}
-                        Continue
+                        {t('auth.signin.submit')}
                     </Button>
                 </div>
 

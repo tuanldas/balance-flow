@@ -38,6 +38,22 @@
         "dashboard": "Bảng điều khiển",
         "settings": "Cài đặt",
         "profile": "Hồ sơ"
+    },
+    "auth": {
+        "signin": {
+            "title": "Đăng nhập vào Metronic",
+            "email_placeholder": "Email của bạn",
+            "password_placeholder": "Mật khẩu của bạn",
+            "submit": "Tiếp tục",
+            "toggle_show_password": "Hiện mật khẩu",
+            "toggle_hide_password": "Ẩn mật khẩu",
+            "validation": {
+                "email_invalid": "Vui lòng nhập email hợp lệ.",
+                "email_required": "Email là bắt buộc.",
+                "password_min": "Mật khẩu phải có ít nhất 6 ký tự.",
+                "password_required": "Mật khẩu là bắt buộc."
+            }
+        }
     }
 }
 
