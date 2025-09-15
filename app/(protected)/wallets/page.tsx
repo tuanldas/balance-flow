@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Toolbar, ToolbarActions, ToolbarHeading, ToolbarTitle } from '@/components/common/toolbar';
-import { DropdownMenu1 } from '@/app/components/partials/dropdown-menu/dropdown-menu-1';
+import { WalletsDropdownMenu } from '@/app/components/partials/dropdown-menu/dropdown-menu-wallets';
 import AddWalletForm from './add-wallet-form';
 import { formatMoneyCompact } from '@/utils/format';
 
@@ -138,7 +138,7 @@ export default function WalletsPage() {
                                                     </span>
                                                 </div>
                                             </div>
-                                            <DropdownMenu1
+                                            <WalletsDropdownMenu
                                                 trigger={
                                                     <Button variant="ghost" mode="icon">
                                                         <EllipsisVertical />
