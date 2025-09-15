@@ -1,13 +1,12 @@
 'use client';
 
-import { useEffect, useMemo, useRef } from 'react';
-import Link from 'next/link';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { IPaginatedResponse } from '@/api/types/pagination';
 import type { IWalletDetail } from '@/api/types/wallet';
 import { callApiGetWallets } from '@/api/wallet';
 import { coercePaginated } from '@/utils/pagination';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { AlertCircle, EllipsisVertical } from 'lucide-react';
+import { AlertCircle, EllipsisVertical, Plus } from 'lucide-react';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -18,6 +17,7 @@ import { DropdownMenu1 } from '@/app/components/partials/dropdown-menu/dropdown-
 
 export default function WalletsPage() {
     const { t } = useTranslation();
+    const [, setIsFormOpen] = useState(false);
     const { data, isLoading, isError, refetch, isFetchingNextPage, fetchNextPage, hasNextPage } =
         useInfiniteQuery<IPaginatedResponse<IWalletDetail> | null>({
             queryKey: ['wallets'],
@@ -70,8 +70,8 @@ export default function WalletsPage() {
                     <ToolbarTitle>{t('wallets.title') ?? 'Wallets'}</ToolbarTitle>
                 </ToolbarHeading>
                 <ToolbarActions>
-                    <Button asChild mode="link" underlined="dashed">
-                        <Link href="#">{t('wallets.create') ?? 'Create wallet'}</Link>
+                    <Button onClick={() => setIsFormOpen(true)} mode="icon" variant="primary">
+                        <Plus className="h-4 w-4 text-white" />
                     </Button>
                 </ToolbarActions>
             </Toolbar>
