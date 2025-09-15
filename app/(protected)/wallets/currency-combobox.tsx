@@ -59,7 +59,7 @@ export default function CurrencyCombobox({ value, onChange }: CurrencyComboboxPr
     }, []);
 
     const selectedCurrency = currencies.find((currency) => currency.code === value);
-    const displayValue = selectedCurrency?.display || t('wallet.form.currency_placeholder') || 'Select currency';
+    const displayValue = selectedCurrency?.code || t('wallet.form.currency_placeholder') || 'Select currency';
 
     return (
         <Popover open={open} onOpenChange={setOpen}>
