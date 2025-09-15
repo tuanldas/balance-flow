@@ -33,10 +33,8 @@ export default function WalletDetailSheet({ isOpen, onOpenChange, walletId }: Wa
         staleTime: 30_000,
     });
 
-    // keep computed title for future header enhancements
     useMemo(() => data?.name ?? t('wallet.detail.title') ?? 'Wallet detail', [data?.name, t]);
 
-    // Transactions (infinite)
     const {
         data: txPages,
         isLoading: isTxLoading,
