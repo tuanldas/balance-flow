@@ -1,5 +1,6 @@
 {
     "common": {
+        "today": "Today",
         "buttons": {
             "save": "Save",
             "cancel": "Cancel",
@@ -43,6 +44,10 @@
         "load_failed": "Failed to load wallets"
     },
     "wallet": {
+        "detail": {
+            "title": "Wallet"
+        },
+        "untitled": "Untitled",
         "add_new": "Add new wallet",
         "form": {
             "description": "Fill in the details to create a wallet",

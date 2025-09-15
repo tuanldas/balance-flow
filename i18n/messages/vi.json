@@ -1,5 +1,6 @@
 {
     "common": {
+        "today": "Hôm nay",
         "buttons": {
             "save": "Lưu",
             "cancel": "Hủy",
@@ -43,6 +44,10 @@
         "load_failed": "Không tải được danh sách ví"
     },
     "wallet": {
+        "detail": {
+            "title": "Ví"
+        },
+        "untitled": "Không có tiêu đề",
         "add_new": "Thêm ví mới",
         "form": {
             "description": "Nhập thông tin để tạo ví",
