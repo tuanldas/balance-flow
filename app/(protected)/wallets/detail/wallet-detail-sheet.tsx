@@ -6,10 +6,10 @@ import { callApiGetWalletById, callApiGetWalletTransactions } from '@/api/wallet
 import { formatMoneyCompact } from '@/utils/format';
 import { groupTimelineItems, type TimelineItem } from '@/utils/transactions-timeline';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
-import TransactionsTimeline from '@/components/transactions/transactions-timeline';
 import { useTranslation } from '@/hooks/useTranslation';
 import { SheetContent as SheetContentBase, Sheet as SheetRoot } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
+import TransactionsTimeline from '@/components/transactions/transactions-timeline';
 
 interface WalletDetailSheetProps {
     isOpen: boolean;
@@ -182,7 +182,10 @@ export default function WalletDetailSheet({ isOpen, onOpenChange, walletId }: Wa
                                                 grouped={{ today: todayGroup, months: groupsByMonth }}
                                                 currencyFallback={data?.currency}
                                             />
-                                            <div ref={sentinelRef} className="text-center py-2 text-xs text-muted-foreground">
+                                            <div
+                                                ref={sentinelRef}
+                                                className="text-center py-2 text-xs text-muted-foreground"
+                                            >
                                                 {hasNextPage
                                                     ? isFetchingNextPage
                                                         ? (t('common.messages.loading') ?? 'Loading...')
