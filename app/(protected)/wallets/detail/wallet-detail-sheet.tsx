@@ -7,7 +7,7 @@ import { formatMoneyCompact } from '@/utils/format';
 import { groupTimelineItems, type TimelineItem } from '@/utils/transactions-timeline';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { useTranslation } from '@/hooks/useTranslation';
-import { SheetContent as SheetContentBase, Sheet as SheetRoot } from '@/components/ui/sheet';
+import { SheetContent as SheetContentBase, Sheet as SheetRoot, SheetTitle } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
 import TransactionsTimeline from '@/components/transactions/transactions-timeline';
 
@@ -105,6 +105,7 @@ export default function WalletDetailSheet({ isOpen, onOpenChange, walletId }: Wa
     return (
         <SheetRoot open={isOpen} onOpenChange={onOpenChange}>
             <SheetContentBase side="right" className="sm:max-w-none sm:w-2/3">
+                <SheetTitle className="sr-only">{t('wallet.detail.title') ?? 'Wallet'}</SheetTitle>
                 <div className="py-5 space-y-6">
                     {isLoading ? (
                         <div className="space-y-3">
