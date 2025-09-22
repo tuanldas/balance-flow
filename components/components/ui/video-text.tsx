@@ -1,8 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import {ElementType, ReactNode, useEffect, useRef} from 'react';
-import {cn} from '@/lib/utils';
+import { ElementType, ReactNode, useEffect, useRef } from 'react';
+import { cn } from '@/lib/utils';
 
 export interface VideoTextProps {
     /**
@@ -71,20 +71,20 @@ export interface VideoTextProps {
  * The video is masked by the content, creating a dynamic animated text look.
  */
 export function VideoText({
-                              src,
-                              children,
-                              className = '',
-                              autoPlay = true,
-                              muted = true,
-                              loop = true,
-                              preload = 'auto',
-                              fontSize = '20vw',
-                              fontWeight = 'bold',
-                              as: Component = 'div',
-                              onPlay,
-                              onPause,
-                              onEnded,
-                          }: VideoTextProps) {
+    src,
+    children,
+    className = '',
+    autoPlay = true,
+    muted = true,
+    loop = true,
+    preload = 'auto',
+    fontSize = '20vw',
+    fontWeight = 'bold',
+    as: Component = 'div',
+    onPlay,
+    onPause,
+    onEnded,
+}: VideoTextProps) {
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const textRef = useRef<HTMLDivElement>(null);
@@ -109,7 +109,8 @@ export function VideoText({
             ctx.font = `${fontWeight} ${typeof fontSize === 'number' ? `${fontSize}px` : fontSize} system-ui, -apple-system, sans-serif`;
             const textMetrics = ctx.measureText(text);
             const textWidth = textMetrics.width;
-            const textHeight = typeof fontSize === 'number' ? fontSize : parseFloat(fontSize.replace(/[^\d.]/g, '')) || 100;
+            const textHeight =
+                typeof fontSize === 'number' ? fontSize : parseFloat(fontSize.replace(/[^\d.]/g, '')) || 100;
 
             // Set canvas size to accommodate full text with padding
             const padding = 40;
@@ -181,7 +182,7 @@ export function VideoText({
                 crossOrigin="anonymous"
             >
                 {sources.map((source, index) => (
-                    <source key={index} src={source}/>
+                    <source key={index} src={source} />
                 ))}
                 Your browser does not support the video tag.
             </video>

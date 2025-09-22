@@ -1,10 +1,10 @@
 'use client';
 
-import React, {useCallback, useEffect, useState} from 'react';
-import {cva, type VariantProps} from 'class-variance-authority';
-import {Star} from 'lucide-react';
-import {motion, type SpringOptions, useInView, type UseInViewOptions} from 'motion/react';
-import {cn} from '@/lib/utils';
+import React, { useCallback, useEffect, useState } from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { Star } from 'lucide-react';
+import { motion, useInView, type SpringOptions, type UseInViewOptions } from 'motion/react';
+import { cn } from '@/lib/utils';
 
 const githubButtonVariants = cva(
     'cursor-pointer relative overflow-hidden will-change-transform backface-visibility-hidden transform-gpu transition-transform duration-200 ease-out hover:scale-105 group whitespace-nowrap focus-visible:outline-hidden inline-flex items-center justify-center whitespace-nowrap font-medium ring-offset-background disabled:pointer-events-none disabled:opacity-60 [&_svg]:shrink-0',
@@ -68,29 +68,29 @@ interface GithubButtonProps extends React.ComponentProps<'button'>, VariantProps
 }
 
 function GithubButton({
-                          initialStars = 0,
-                          targetStars = 0,
-                          starsClass = '',
-                          fixedWidth = true,
-                          animationDuration = 2,
-                          animationDelay = 0,
-                          autoAnimate = true,
-                          className,
-                          variant = 'default',
-                          size = 'default',
-                          showGithubIcon = true,
-                          showStarIcon = true,
-                          roundStars = false,
-                          separator = false,
-                          filled = false,
-                          repoUrl,
-                          onClick,
-                          label = '',
-                          useInViewTrigger = false,
-                          inViewOptions = {once: true},
-                          transition,
-                          ...props
-                      }: GithubButtonProps) {
+    initialStars = 0,
+    targetStars = 0,
+    starsClass = '',
+    fixedWidth = true,
+    animationDuration = 2,
+    animationDelay = 0,
+    autoAnimate = true,
+    className,
+    variant = 'default',
+    size = 'default',
+    showGithubIcon = true,
+    showStarIcon = true,
+    roundStars = false,
+    separator = false,
+    filled = false,
+    repoUrl,
+    onClick,
+    label = '',
+    useInViewTrigger = false,
+    inViewOptions = { once: true },
+    transition,
+    ...props
+}: GithubButtonProps) {
     const [currentStars, setCurrentStars] = useState(initialStars);
     const [isAnimating, setIsAnimating] = useState(false);
     const [starProgress, setStarProgress] = useState(filled ? 100 : 0);
@@ -234,7 +234,7 @@ function GithubButton({
     return (
         <button
             ref={ref}
-            className={cn(githubButtonVariants({variant, size, className}), separator && 'ps-0')}
+            className={cn(githubButtonVariants({ variant, size, className }), separator && 'ps-0')}
             onClick={handleClick}
             onKeyDown={handleKeyDown}
             role="button"
@@ -250,8 +250,7 @@ function GithubButton({
                     )}
                 >
                     <svg role="img" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                        <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
                     </svg>
                 </div>
             )}
@@ -261,7 +260,7 @@ function GithubButton({
             {/* Animated Star Icon */}
             {showStarIcon && (
                 <div className="relative inline-flex shrink-0">
-                    <Star className="fill-muted-foreground text-muted-foreground" aria-hidden="true"/>
+                    <Star className="fill-muted-foreground text-muted-foreground" aria-hidden="true" />
                     <Star
                         className="absolute top-0 start-0 text-yellow-400 fill-yellow-400"
                         size={18}
@@ -276,7 +275,7 @@ function GithubButton({
             {/* Animated Number Counter with Ticker Effect */}
             <div className={cn('flex flex-col font-semibold relative overflow-hidden', starsClass)}>
                 <motion.div
-                    animate={{opacity: 1}}
+                    animate={{ opacity: 1 }}
                     transition={{
                         type: 'spring',
                         stiffness: 300,
@@ -287,12 +286,13 @@ function GithubButton({
                 >
                     <span>{currentStars > 0 && formatNumber(currentStars)}</span>
                 </motion.div>
-                {fixedWidth &&
-                    <span className="opacity-0 h-0 overflow-hidden tabular-nums">{formatNumber(targetStars)}</span>}
+                {fixedWidth && (
+                    <span className="opacity-0 h-0 overflow-hidden tabular-nums">{formatNumber(targetStars)}</span>
+                )}
             </div>
         </button>
     );
 }
 
-export {GithubButton, githubButtonVariants};
-export type {GithubButtonProps};
+export { GithubButton, githubButtonVariants };
+export type { GithubButtonProps };

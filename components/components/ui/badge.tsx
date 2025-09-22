@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {cn} from '@/lib/utils';
-import {cva, type VariantProps} from 'class-variance-authority';
-import {Slot as SlotPrimitive} from 'radix-ui';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { Slot as SlotPrimitive } from 'radix-ui';
+import { cn } from '@/lib/utils';
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof badgeVariants> {
     asChild?: boolean;
@@ -152,10 +152,10 @@ const badgeVariants = cva(
                 className: 'text-destructive',
             },
 
-            {size: 'lg', appearance: 'ghost', className: 'px-0'},
-            {size: 'md', appearance: 'ghost', className: 'px-0'},
-            {size: 'sm', appearance: 'ghost', className: 'px-0'},
-            {size: 'xs', appearance: 'ghost', className: 'px-0'},
+            { size: 'lg', appearance: 'ghost', className: 'px-0' },
+            { size: 'md', appearance: 'ghost', className: 'px-0' },
+            { size: 'sm', appearance: 'ghost', className: 'px-0' },
+            { size: 'xs', appearance: 'ghost', className: 'px-0' },
         ],
         defaultVariants: {
             variant: 'primary',
@@ -180,46 +180,47 @@ const badgeButtonVariants = cva(
 );
 
 function Badge({
-                   className,
-                   variant,
-                   size,
-                   appearance,
-                   shape,
-                   asChild = false,
-                   disabled,
-                   ...props
-               }: React.ComponentProps<'span'> & VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
+    className,
+    variant,
+    size,
+    appearance,
+    shape,
+    asChild = false,
+    disabled,
+    ...props
+}: React.ComponentProps<'span'> & VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
     const Comp = asChild ? SlotPrimitive.Slot : 'span';
 
     return (
         <Comp
             data-slot="badge"
-            className={cn(badgeVariants({variant, size, appearance, shape, disabled}), className)}
+            className={cn(badgeVariants({ variant, size, appearance, shape, disabled }), className)}
             {...props}
         />
     );
 }
 
 function BadgeButton({
-                         className,
-                         variant,
-                         asChild = false,
-                         ...props
-                     }: React.ComponentProps<'button'> & VariantProps<typeof badgeButtonVariants> & {
-    asChild?: boolean
-}) {
+    className,
+    variant,
+    asChild = false,
+    ...props
+}: React.ComponentProps<'button'> &
+    VariantProps<typeof badgeButtonVariants> & {
+        asChild?: boolean;
+    }) {
     const Comp = asChild ? SlotPrimitive.Slot : 'span';
     return (
         <Comp
             data-slot="badge-button"
-            className={cn(badgeButtonVariants({variant, className}))}
+            className={cn(badgeButtonVariants({ variant, className }))}
             role="button"
             {...props}
         />
     );
 }
 
-function BadgeDot({className, ...props}: React.ComponentProps<'span'>) {
+function BadgeDot({ className, ...props }: React.ComponentProps<'span'>) {
     return (
         <span
             data-slot="badge-dot"
@@ -229,4 +230,4 @@ function BadgeDot({className, ...props}: React.ComponentProps<'span'>) {
     );
 }
 
-export {Badge, BadgeButton, BadgeDot, badgeVariants};
+export { Badge, BadgeButton, BadgeDot, badgeVariants };

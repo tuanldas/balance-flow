@@ -1,8 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import {AnimatePresence, Easing, motion, useMotionValue, useSpring, useTransform} from 'motion/react';
-import {cn} from '@/lib/utils';
+import { AnimatePresence, Easing, motion, useMotionValue, useSpring, useTransform } from 'motion/react';
+import { cn } from '@/lib/utils';
 
 type AnimationVariantType = 'spring' | 'tween' | 'inertia' | 'decay' | 'keyframes';
 type AnimationType = 'default' | 'flip' | 'reveal';
@@ -33,7 +33,7 @@ interface AvatarGroupTooltipProps {
     className?: string;
 }
 
-const StaggeredContent = ({content}: { content: React.ReactNode }) => {
+const StaggeredContent = ({ content }: { content: React.ReactNode }) => {
     const children = React.Children.toArray(content);
     return (
         <motion.div
@@ -41,16 +41,16 @@ const StaggeredContent = ({content}: { content: React.ReactNode }) => {
             animate="animate"
             exit="exit"
             variants={{
-                animate: {transition: {staggerChildren: 0.08}},
+                animate: { transition: { staggerChildren: 0.08 } },
             }}
         >
             {children.map((child, i) => (
                 <motion.div
                     key={i}
                     variants={{
-                        initial: {opacity: 0, y: 20},
-                        animate: {opacity: 1, y: 0, transition: {duration: 0.3, ease: 'easeOut'}},
-                        exit: {opacity: 0, y: -20, transition: {duration: 0.2, ease: 'easeIn'}},
+                        initial: { opacity: 0, y: 20 },
+                        animate: { opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' } },
+                        exit: { opacity: 0, y: -20, transition: { duration: 0.2, ease: 'easeIn' } },
                     }}
                 >
                     {child}
@@ -60,7 +60,7 @@ const StaggeredContent = ({content}: { content: React.ReactNode }) => {
     );
 };
 
-export function AvatarGroup({children, className, tooltipClassName, animation = 'default'}: AvatarGroupProps) {
+export function AvatarGroup({ children, className, tooltipClassName, animation = 'default' }: AvatarGroupProps) {
     const contextValue: AvatarGroupContextValue = {
         tooltipClassName,
         animation,
@@ -74,14 +74,14 @@ export function AvatarGroup({children, className, tooltipClassName, animation = 
 }
 
 export function AvatarGroupItem({
-                                    children,
-                                    className,
-                                    tooltipClassName,
-                                    animation: itemAnimation,
-                                }: AvatarGroupItemProps) {
+    children,
+    className,
+    tooltipClassName,
+    animation: itemAnimation,
+}: AvatarGroupItemProps) {
     const context = React.useContext(AvatarGroupContext);
     const [hoveredIndex, setHoveredIndex] = React.useState<boolean>(false);
-    const springConfig = {stiffness: 100, damping: 5};
+    const springConfig = { stiffness: 100, damping: 5 };
     const x = useMotionValue(0);
 
     const animation = itemAnimation || context?.animation || 'default';
@@ -113,7 +113,7 @@ export function AvatarGroupItem({
 
     const animationVariants = {
         default: {
-            initial: {opacity: 0, y: 20, scale: 0.6},
+            initial: { opacity: 0, y: 20, scale: 0.6 },
             animate: {
                 opacity: 1,
                 y: 0,
@@ -135,7 +135,7 @@ export function AvatarGroupItem({
             },
         },
         flip: {
-            initial: {opacity: 0, rotateX: -90},
+            initial: { opacity: 0, rotateX: -90 },
             animate: {
                 opacity: 1,
                 rotateX: 0,
@@ -155,9 +155,9 @@ export function AvatarGroupItem({
             },
         },
         reveal: {
-            initial: {opacity: 0, scale: 0.95},
-            animate: {opacity: 1, scale: 1, transition: {duration: 0.15, ease: 'easeOut' as Easing}},
-            exit: {opacity: 0, scale: 0.95, transition: {duration: 0.1, ease: 'easeIn' as Easing}},
+            initial: { opacity: 0, scale: 0.95 },
+            animate: { opacity: 1, scale: 1, transition: { duration: 0.15, ease: 'easeOut' as Easing } },
+            exit: { opacity: 0, scale: 0.95, transition: { duration: 0.1, ease: 'easeIn' as Easing } },
         },
     };
 
@@ -188,19 +188,19 @@ export function AvatarGroupItem({
                     >
                         <motion.div
                             className="absolute inset-x-10 -bottom-px z-30 h-px w-[20%] bg-gradient-to-r from-transparent via-emerald-500 dark:via-emerald-900 to-transparent"
-                            initial={{opacity: 0}}
-                            animate={{opacity: 1}}
-                            exit={{opacity: 0}}
-                            transition={{duration: 0.15}}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.15 }}
                         />
                         <motion.div
                             className="absolute -bottom-px left-10 z-30 h-px w-[40%] bg-gradient-to-r from-transparent via-sky-500 dark:via-sky-900 to-transparent"
-                            initial={{opacity: 0}}
-                            animate={{opacity: 1}}
-                            exit={{opacity: 0}}
-                            transition={{duration: 0.15}}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.15 }}
                         />
-                        {animation === 'reveal' ? <StaggeredContent content={tooltipContent}/> : tooltipContent}
+                        {animation === 'reveal' ? <StaggeredContent content={tooltipContent} /> : tooltipContent}
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -210,7 +210,7 @@ export function AvatarGroupItem({
                 whileHover={{
                     zIndex: 30,
                 }}
-                whileTap={{scale: 0.95}}
+                whileTap={{ scale: 0.95 }}
                 transition={{
                     duration: 0.5,
                 }}
@@ -222,13 +222,13 @@ export function AvatarGroupItem({
     );
 }
 
-export function AvatarGroupTooltip({children, className}: AvatarGroupTooltipProps) {
+export function AvatarGroupTooltip({ children, className }: AvatarGroupTooltipProps) {
     return (
         <motion.div
-            initial={{opacity: 0, y: 20, scale: 0.6}}
-            animate={{opacity: 1}}
-            exit={{opacity: 0}}
-            transition={{duration: 0.15}}
+            initial={{ opacity: 0, y: 20, scale: 0.6 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
             className={cn('hidden relative z-30', className)}
         >
             {children}

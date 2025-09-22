@@ -1,8 +1,8 @@
 'use client';
 
-import React, {useMemo, useRef} from 'react';
-import {motion, useInView, UseInViewOptions} from 'motion/react';
-import {cn} from '@/lib/utils';
+import React, { useMemo, useRef } from 'react';
+import { motion, useInView, UseInViewOptions } from 'motion/react';
+import { cn } from '@/lib/utils';
 
 interface ShimmeringTextProps {
     /** Text to display with shimmer effect */
@@ -32,21 +32,21 @@ interface ShimmeringTextProps {
 }
 
 export function ShimmeringText({
-                                   text,
-                                   duration = 2,
-                                   delay = 0,
-                                   repeat = true,
-                                   repeatDelay = 0.5,
-                                   className,
-                                   startOnView = true,
-                                   once = false,
-                                   inViewMargin,
-                                   spread = 2,
-                                   color,
-                                   shimmerColor,
-                               }: ShimmeringTextProps) {
+    text,
+    duration = 2,
+    delay = 0,
+    repeat = true,
+    repeatDelay = 0.5,
+    className,
+    startOnView = true,
+    once = false,
+    inViewMargin,
+    spread = 2,
+    color,
+    shimmerColor,
+}: ShimmeringTextProps) {
     const ref = useRef<HTMLSpanElement>(null);
-    const isInView = useInView(ref, {once, margin: inViewMargin});
+    const isInView = useInView(ref, { once, margin: inViewMargin });
 
     // Calculate dynamic spread based on text length
     const dynamicSpread = useMemo(() => {
@@ -70,8 +70,8 @@ export function ShimmeringText({
             style={
                 {
                     '--spread': `${dynamicSpread}px`,
-                    ...(color && {'--base-color': color}),
-                    ...(shimmerColor && {'--shimmer-color': shimmerColor}),
+                    ...(color && { '--base-color': color }),
+                    ...(shimmerColor && { '--shimmer-color': shimmerColor }),
                     backgroundImage: `var(--shimmer-bg), linear-gradient(var(--base-color), var(--base-color))`,
                 } as React.CSSProperties
             }
@@ -82,9 +82,9 @@ export function ShimmeringText({
             animate={
                 shouldAnimate
                     ? {
-                        backgroundPosition: '0% center',
-                        opacity: 1,
-                    }
+                          backgroundPosition: '0% center',
+                          opacity: 1,
+                      }
                     : {}
             }
             transition={{

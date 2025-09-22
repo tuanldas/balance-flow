@@ -1,8 +1,8 @@
 'use client';
 
-import React, {useEffect, useRef, useState} from 'react';
-import {motion, useInView, Variants} from 'motion/react';
-import {cn} from '@/lib/utils';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, useInView, Variants } from 'motion/react';
+import { cn } from '@/lib/utils';
 
 type RevealVariant =
     | 'fade'
@@ -36,146 +36,146 @@ const containerVariants: Record<RevealVariant, Variants> = {
     fade: {
         hidden: {},
         visible: {
-            transition: {staggerChildren: 0.02},
+            transition: { staggerChildren: 0.02 },
         },
     },
     slideUp: {
         hidden: {},
         visible: {
-            transition: {staggerChildren: 0.04},
+            transition: { staggerChildren: 0.04 },
         },
     },
     slideDown: {
         hidden: {},
         visible: {
-            transition: {staggerChildren: 0.04},
+            transition: { staggerChildren: 0.04 },
         },
     },
     slideLeft: {
         hidden: {},
         visible: {
-            transition: {staggerChildren: 0.04},
+            transition: { staggerChildren: 0.04 },
         },
     },
     slideRight: {
         hidden: {},
         visible: {
-            transition: {staggerChildren: 0.04},
+            transition: { staggerChildren: 0.04 },
         },
     },
     scale: {
         hidden: {},
         visible: {
-            transition: {staggerChildren: 0.06},
+            transition: { staggerChildren: 0.06 },
         },
     },
     blur: {
         hidden: {},
         visible: {
-            transition: {staggerChildren: 0.03},
+            transition: { staggerChildren: 0.03 },
         },
     },
     typewriter: {
         hidden: {},
         visible: {
-            transition: {staggerChildren: 0.15},
+            transition: { staggerChildren: 0.15 },
         },
     },
     wave: {
         hidden: {},
         visible: {
-            transition: {staggerChildren: 0.12},
+            transition: { staggerChildren: 0.12 },
         },
     },
     stagger: {
         hidden: {},
         visible: {
-            transition: {staggerChildren: 0.08},
+            transition: { staggerChildren: 0.08 },
         },
     },
     rotate: {
         hidden: {},
         visible: {
-            transition: {staggerChildren: 0.05},
+            transition: { staggerChildren: 0.05 },
         },
     },
     elastic: {
         hidden: {},
         visible: {
-            transition: {staggerChildren: 0.07},
+            transition: { staggerChildren: 0.07 },
         },
     },
 };
 
 const itemVariants: Record<RevealVariant, Variants> = {
     fade: {
-        hidden: {opacity: 0},
+        hidden: { opacity: 0 },
         visible: {
             opacity: 1,
-            transition: {duration: 0.6, ease: 'easeOut'},
+            transition: { duration: 0.6, ease: 'easeOut' },
         },
     },
     slideUp: {
-        hidden: {opacity: 0, y: 50, scale: 0.95},
+        hidden: { opacity: 0, y: 50, scale: 0.95 },
         visible: {
             opacity: 1,
             y: 0,
             scale: 1,
-            transition: {duration: 0.7, ease: [0.22, 1, 0.36, 1]},
+            transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
         },
     },
     slideDown: {
-        hidden: {opacity: 0, y: -30, scale: 0.98},
+        hidden: { opacity: 0, y: -30, scale: 0.98 },
         visible: {
             opacity: 1,
             y: 0,
             scale: 1,
-            transition: {duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94]},
+            transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
         },
     },
     slideLeft: {
-        hidden: {opacity: 0, x: 60, rotateY: 15},
+        hidden: { opacity: 0, x: 60, rotateY: 15 },
         visible: {
             opacity: 1,
             x: 0,
             rotateY: 0,
-            transition: {duration: 0.65, ease: [0.16, 1, 0.3, 1]},
+            transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] },
         },
     },
     slideRight: {
-        hidden: {opacity: 0, x: -60, rotateY: -15},
+        hidden: { opacity: 0, x: -60, rotateY: -15 },
         visible: {
             opacity: 1,
             x: 0,
             rotateY: 0,
-            transition: {duration: 0.65, ease: [0.16, 1, 0.3, 1]},
+            transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] },
         },
     },
     scale: {
-        hidden: {opacity: 0, scale: 0.8},
+        hidden: { opacity: 0, scale: 0.8 },
         visible: {
             opacity: 1,
             scale: 1,
-            transition: {duration: 0.4, ease: [0.34, 1.56, 0.64, 1]},
+            transition: { duration: 0.4, ease: [0.34, 1.56, 0.64, 1] },
         },
     },
     blur: {
-        hidden: {opacity: 0, filter: 'blur(4px)'},
+        hidden: { opacity: 0, filter: 'blur(4px)' },
         visible: {
             opacity: 1,
             filter: 'blur(0px)',
-            transition: {duration: 0.6, ease: 'easeOut'},
+            transition: { duration: 0.6, ease: 'easeOut' },
         },
     },
     typewriter: {
-        hidden: {width: 0},
+        hidden: { width: 0 },
         visible: {
             width: 'auto',
-            transition: {duration: 0.3, ease: 'easeInOut'},
+            transition: { duration: 0.3, ease: 'easeInOut' },
         },
     },
     wave: {
-        hidden: {opacity: 0, y: 20, rotateZ: -5},
+        hidden: { opacity: 0, y: 20, rotateZ: -5 },
         visible: {
             opacity: 1,
             y: [20, -10, 0],
@@ -188,24 +188,24 @@ const itemVariants: Record<RevealVariant, Variants> = {
         },
     },
     stagger: {
-        hidden: {opacity: 0, y: 30, scale: 0.9},
+        hidden: { opacity: 0, y: 30, scale: 0.9 },
         visible: {
             opacity: 1,
             y: 0,
             scale: 1,
-            transition: {duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94]},
+            transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] },
         },
     },
     rotate: {
-        hidden: {opacity: 0, rotateY: -90},
+        hidden: { opacity: 0, rotateY: -90 },
         visible: {
             opacity: 1,
             rotateY: 0,
-            transition: {duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94]},
+            transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] },
         },
     },
     elastic: {
-        hidden: {opacity: 0, scale: 0},
+        hidden: { opacity: 0, scale: 0 },
         visible: {
             opacity: 1,
             scale: [0, 1.2, 1],
@@ -219,19 +219,19 @@ const itemVariants: Record<RevealVariant, Variants> = {
 };
 
 export function TextReveal({
-                               children,
-                               variant = 'fade',
-                               className,
-                               style,
-                               delay = 0,
-                               duration = 0.6,
-                               staggerDelay = 0.03,
-                               once = true,
-                               startOnView = true,
-                               wordLevel = false,
-                           }: TextRevealProps) {
+    children,
+    variant = 'fade',
+    className,
+    style,
+    delay = 0,
+    duration = 0.6,
+    staggerDelay = 0.03,
+    once = true,
+    startOnView = true,
+    wordLevel = false,
+}: TextRevealProps) {
     const ref = useRef<HTMLDivElement>(null);
-    const isInView = useInView(ref, {once, margin: '-10%'});
+    const isInView = useInView(ref, { once, margin: '-10%' });
     const [hasAnimated, setHasAnimated] = useState(false);
 
     const shouldAnimate = startOnView ? isInView : true;
@@ -258,15 +258,18 @@ export function TextReveal({
         duration === 0.6
             ? originalVariant // Use original variant unchanged if default duration
             : {
-                hidden: originalVariant.hidden,
-                visible: {
-                    ...originalVariant.visible,
-                    transition: {
-                        ...((originalVariant.visible as Record<string, unknown>).transition as Record<string, unknown>),
-                        duration,
-                    },
-                },
-            };
+                  hidden: originalVariant.hidden,
+                  visible: {
+                      ...originalVariant.visible,
+                      transition: {
+                          ...((originalVariant.visible as Record<string, unknown>).transition as Record<
+                              string,
+                              unknown
+                          >),
+                          duration,
+                      },
+                  },
+              };
 
     useEffect(() => {
         if (shouldAnimate && !hasAnimated) {

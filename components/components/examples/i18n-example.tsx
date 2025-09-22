@@ -1,16 +1,16 @@
 'use client';
 
-import {useState} from 'react';
-import {useTranslation, useTypedTranslation} from '@/hooks/useTranslation';
-import {useLanguage} from '@/providers/i18n-provider';
-import {I18N_LANGUAGES} from '@/i18n/config';
-import {Button} from '@/components/ui/button';
-import {Card, CardContent, CardHeader, CardTitle,} from '@/components/ui/card';
+import { useState } from 'react';
+import { I18N_LANGUAGES } from '@/i18n/config';
+import { useTranslation, useTypedTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/providers/i18n-provider';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export function I18nExample() {
-    const {t, i18n} = useTranslation();
-    const {tButton, tLabel, tMessage, tNav} = useTypedTranslation();
-    const {language, changeLanguage} = useLanguage();
+    const { t, i18n } = useTranslation();
+    const { tButton, tLabel, tMessage, tNav } = useTypedTranslation();
+    const { language, changeLanguage } = useLanguage();
     const [count, setCount] = useState(5);
 
     return (
@@ -22,17 +22,31 @@ export function I18nExample() {
                 <CardContent className="space-y-4">
                     <div>
                         <h3 className="font-semibold mb-2">Direct Translation Keys:</h3>
-                        <p><strong>Welcome:</strong> {t('common.messages.welcome')}</p>
-                        <p><strong>Loading:</strong> {t('common.messages.loading')}</p>
-                        <p><strong>Current Language:</strong> {language.name}</p>
+                        <p>
+                            <strong>Welcome:</strong> {t('common.messages.welcome')}
+                        </p>
+                        <p>
+                            <strong>Loading:</strong> {t('common.messages.loading')}
+                        </p>
+                        <p>
+                            <strong>Current Language:</strong> {language.name}
+                        </p>
                     </div>
 
                     <div>
                         <h3 className="font-semibold mb-2">Using Typed Translation Helpers:</h3>
-                        <p><strong>Save Button:</strong> {tButton('save')}</p>
-                        <p><strong>Email Label:</strong> {tLabel('email')}</p>
-                        <p><strong>Success Message:</strong> {tMessage('success')}</p>
-                        <p><strong>Home Navigation:</strong> {tNav('home')}</p>
+                        <p>
+                            <strong>Save Button:</strong> {tButton('save')}
+                        </p>
+                        <p>
+                            <strong>Email Label:</strong> {tLabel('email')}
+                        </p>
+                        <p>
+                            <strong>Success Message:</strong> {tMessage('success')}
+                        </p>
+                        <p>
+                            <strong>Home Navigation:</strong> {tNav('home')}
+                        </p>
                     </div>
                 </CardContent>
             </Card>
@@ -44,9 +58,7 @@ export function I18nExample() {
                 <CardContent className="space-y-4">
                     <div>
                         <h3 className="font-semibold mb-2">Interpolation Example:</h3>
-                        <p>
-                            {t('You have {{count}} messages', {count})}
-                        </p>
+                        <p>{t('You have {{count}} messages', { count })}</p>
                         <div className="flex gap-2 mt-2">
                             <Button
                                 variant="outline"
@@ -57,11 +69,7 @@ export function I18nExample() {
                                 -
                             </Button>
                             <span className="px-4 py-2">{count}</span>
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => setCount(count + 1)}
-                            >
+                            <Button variant="outline" size="sm" onClick={() => setCount(count + 1)}>
                                 +
                             </Button>
                         </div>
@@ -69,9 +77,7 @@ export function I18nExample() {
 
                     <div>
                         <h3 className="font-semibold mb-2">Pluralization Example:</h3>
-                        <p>
-                            {t('item', {count})}
-                        </p>
+                        <p>{t('item', { count })}</p>
                         <p className="text-sm text-muted-foreground">
                             Note: Add pluralization rules to your JSON files for proper plural forms
                         </p>
@@ -95,11 +101,7 @@ export function I18nExample() {
                                     onClick={() => changeLanguage(lang.code)}
                                     className="flex items-center gap-2"
                                 >
-                                    <img
-                                        src={lang.flag}
-                                        alt={lang.name}
-                                        className="w-4 h-4"
-                                    />
+                                    <img src={lang.flag} alt={lang.name} className="w-4 h-4" />
                                     {lang.shortName}
                                 </Button>
                             ))}
@@ -113,10 +115,18 @@ export function I18nExample() {
                     <CardTitle>Debugging Information</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                    <p><strong>Current Language Code:</strong> {i18n.language}</p>
-                    <p><strong>Direction:</strong> {language.direction}</p>
-                    <p><strong>Available Languages:</strong> {i18n.languages.join(', ')}</p>
-                    <p><strong>Loaded Resources:</strong> {Object.keys(i18n.store.data).join(', ')}</p>
+                    <p>
+                        <strong>Current Language Code:</strong> {i18n.language}
+                    </p>
+                    <p>
+                        <strong>Direction:</strong> {language.direction}
+                    </p>
+                    <p>
+                        <strong>Available Languages:</strong> {i18n.languages.join(', ')}
+                    </p>
+                    <p>
+                        <strong>Loaded Resources:</strong> {Object.keys(i18n.store.data).join(', ')}
+                    </p>
                 </CardContent>
             </Card>
         </div>

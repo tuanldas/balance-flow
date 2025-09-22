@@ -1,8 +1,8 @@
 'use client';
 
-import React, {useEffect, useRef, useState} from 'react';
-import {animate, motion, useInView, UseInViewOptions, useMotionValue} from 'motion/react';
-import {cn} from '@/lib/utils';
+import React, { useEffect, useRef, useState } from 'react';
+import { animate, motion, useInView, UseInViewOptions, useMotionValue } from 'motion/react';
+import { cn } from '@/lib/utils';
 
 interface CountingNumberProps {
     from?: number;
@@ -18,20 +18,20 @@ interface CountingNumberProps {
 }
 
 export function CountingNumber({
-                                   from = 0,
-                                   to = 100,
-                                   duration = 2,
-                                   delay = 0,
-                                   className,
-                                   startOnView = true,
-                                   once = false,
-                                   inViewMargin,
-                                   onComplete,
-                                   format,
-                                   ...props
-                               }: CountingNumberProps) {
+    from = 0,
+    to = 100,
+    duration = 2,
+    delay = 0,
+    className,
+    startOnView = true,
+    once = false,
+    inViewMargin,
+    onComplete,
+    format,
+    ...props
+}: CountingNumberProps) {
     const ref = useRef<HTMLSpanElement>(null);
-    const isInView = useInView(ref, {once, margin: inViewMargin});
+    const isInView = useInView(ref, { once, margin: inViewMargin });
     const [hasAnimated, setHasAnimated] = useState(false);
     const [display, setDisplay] = useState(from);
     const motionValue = useMotionValue(from);

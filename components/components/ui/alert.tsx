@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {cn} from '@/lib/utils';
-import {Button} from '@/components/ui/button';
-import {cva, type VariantProps} from 'class-variance-authority';
-import {X} from 'lucide-react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { X } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 const alertVariants = cva('flex items-stretch w-full gap-2 group-[.toaster]:w-(--width)', {
     variants: {
@@ -89,7 +89,8 @@ const alertVariants = cva('flex items-stretch w-full gap-2 group-[.toaster]:w-(-
         {
             variant: 'destructive',
             appearance: 'outline',
-            className: 'border border-border bg-background text-destructive [&_[data-slot=alert-close]]:text-foreground',
+            className:
+                'border border-border bg-background text-destructive [&_[data-slot=alert-close]]:text-foreground',
         },
         {
             variant: 'success',
@@ -191,15 +192,14 @@ interface AlertProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<
     onClose?: () => void;
 }
 
-interface AlertIconProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof alertVariants> {
-}
+interface AlertIconProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof alertVariants> {}
 
-function Alert({className, variant, size, icon, appearance, close = false, onClose, children, ...props}: AlertProps) {
+function Alert({ className, variant, size, icon, appearance, close = false, onClose, children, ...props }: AlertProps) {
     return (
         <div
             data-slot="alert"
             role="alert"
-            className={cn(alertVariants({variant, size, icon, appearance}), className)}
+            className={cn(alertVariants({ variant, size, icon, appearance }), className)}
             {...props}
         >
             {children}
@@ -213,18 +213,18 @@ function Alert({className, variant, size, icon, appearance, close = false, onClo
                     data-slot="alert-close"
                     className={cn('group shrink-0 size-4')}
                 >
-                    <X className="opacity-60 group-hover:opacity-100 size-4"/>
+                    <X className="opacity-60 group-hover:opacity-100 size-4" />
                 </Button>
             )}
         </div>
     );
 }
 
-function AlertTitle({className, ...props}: React.HTMLAttributes<HTMLHeadingElement>) {
+function AlertTitle({ className, ...props }: React.HTMLAttributes<HTMLHeadingElement>) {
     return <div data-slot="alert-title" className={cn('grow tracking-tight', className)} {...props} />;
 }
 
-function AlertIcon({children, className, ...props}: AlertIconProps) {
+function AlertIcon({ children, className, ...props }: AlertIconProps) {
     return (
         <div data-slot="alert-icon" className={cn('shrink-0', className)} {...props}>
             {children}
@@ -232,7 +232,7 @@ function AlertIcon({children, className, ...props}: AlertIconProps) {
     );
 }
 
-function AlertToolbar({children, className, ...props}: AlertIconProps) {
+function AlertToolbar({ children, className, ...props }: AlertIconProps) {
     return (
         <div data-slot="alert-toolbar" className={cn(className)} {...props}>
             {children}
@@ -240,7 +240,7 @@ function AlertToolbar({children, className, ...props}: AlertIconProps) {
     );
 }
 
-function AlertDescription({className, ...props}: React.HTMLAttributes<HTMLParagraphElement>) {
+function AlertDescription({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
     return (
         <div
             data-slot="alert-description"
@@ -250,7 +250,7 @@ function AlertDescription({className, ...props}: React.HTMLAttributes<HTMLParagr
     );
 }
 
-function AlertContent({className, ...props}: React.HTMLAttributes<HTMLParagraphElement>) {
+function AlertContent({ className, ...props }: React.HTMLAttributes<HTMLParagraphElement>) {
     return (
         <div
             data-slot="alert-content"
@@ -260,4 +260,4 @@ function AlertContent({className, ...props}: React.HTMLAttributes<HTMLParagraphE
     );
 }
 
-export {Alert, AlertContent, AlertDescription, AlertIcon, AlertTitle, AlertToolbar};
+export { Alert, AlertContent, AlertDescription, AlertIcon, AlertTitle, AlertToolbar };

@@ -1,21 +1,15 @@
-import {MutableRefObject} from 'react';
-import {ImageInputFiles} from './image-input';
+import { MutableRefObject } from 'react';
+import { ImageInputFiles } from './image-input';
 
-export const openFileDialog = (
-    inputRef: MutableRefObject<HTMLInputElement | null>,
-): void => {
+export const openFileDialog = (inputRef: MutableRefObject<HTMLInputElement | null>): void => {
     if (!inputRef.current) {
         return;
     }
     inputRef.current.click();
 };
 
-export const getAcceptTypeString = (
-    acceptType?: string[],
-    allowNonImageType?: boolean,
-) => {
-    if (acceptType?.length)
-        return acceptType.map((item) => `.${item}`).join(', ');
+export const getAcceptTypeString = (acceptType?: string[], allowNonImageType?: boolean) => {
+    if (acceptType?.length) return acceptType.map((item) => `.${item}`).join(', ');
     if (allowNonImageType) return '';
     return 'image/*';
 };
@@ -40,10 +34,7 @@ export const getImage = async (file: File): Promise<HTMLImageElement> => {
     });
 };
 
-export const getListFiles = async (
-    files: FileList,
-    dataURLKey: string,
-): Promise<ImageInputFiles> => {
+export const getListFiles = async (files: FileList, dataURLKey: string): Promise<ImageInputFiles> => {
     const promiseFiles: Array<Promise<string>> = [];
     for (let i = 0; i < files.length; i += 1) {
         promiseFiles.push(getBase64(files[i]));

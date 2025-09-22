@@ -1,8 +1,8 @@
 'use client';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, {ChangeEvent, DragEvent, FC, useCallback, useRef, useState,} from 'react';
-import {getAcceptTypeString, getListFiles, openFileDialog} from './utils';
+import React, { ChangeEvent, DragEvent, FC, useCallback, useRef, useState } from 'react';
+import { getAcceptTypeString, getListFiles, openFileDialog } from './utils';
 
 interface ImageInputFile {
     dataURL?: string;
@@ -43,14 +43,7 @@ interface ImageInputExport {
 export const DEFAULT_NULL_INDEX = -1;
 export const DEFAULT_DATA_URL_KEY = 'dataURL';
 
-const ImageInput: FC<ImageInputProps> = ({
-                                             value,
-                                             acceptType,
-                                             inputProps,
-                                             multiple,
-                                             children,
-                                             onChange,
-                                         }) => {
+const ImageInput: FC<ImageInputProps> = ({ value, acceptType, inputProps, multiple, children, onChange }) => {
     const inValue = value || [];
     const inputRef = useRef<HTMLInputElement>(null);
     const [keyUpdate, setKeyUpdate] = useState<number>(DEFAULT_NULL_INDEX);
@@ -68,9 +61,7 @@ const ImageInput: FC<ImageInputProps> = ({
         handleClickInput();
     }, [handleClickInput]);
 
-    const onInputChange = async (
-        e: ChangeEvent<HTMLInputElement>,
-    ): Promise<void> => {
+    const onInputChange = async (e: ChangeEvent<HTMLInputElement>): Promise<void> => {
         await handleChange(e.target.files);
         if (inputRef.current) inputRef.current.value = '';
     };
@@ -159,7 +150,7 @@ const ImageInput: FC<ImageInputProps> = ({
                 onChange={(e) => {
                     onInputChange(e);
                 }}
-                style={{display: 'none'}}
+                style={{ display: 'none' }}
                 {...inputProps}
             />
             {children?.({
@@ -181,9 +172,4 @@ const ImageInput: FC<ImageInputProps> = ({
     );
 };
 
-export {
-    ImageInput,
-    type ImageInputProps,
-    type ImageInputFiles,
-    type ImageInputFile,
-};
+export { ImageInput, type ImageInputProps, type ImageInputFiles, type ImageInputFile };

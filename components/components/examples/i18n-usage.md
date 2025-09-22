@@ -20,14 +20,14 @@ The application uses `react-i18next` for internationalization with the following
 import { useTranslation } from '@/hooks/useTranslation';
 
 function MyComponent() {
-  const { t } = useTranslation();
+    const { t } = useTranslation();
 
-  return (
-    <div>
-      <h1>{t('common.messages.welcome')}</h1>
-      <p>{t('common.messages.loading')}</p>
-    </div>
-  );
+    return (
+        <div>
+            <h1>{t('common.messages.welcome')}</h1>
+            <p>{t('common.messages.loading')}</p>
+        </div>
+    );
 }
 ```
 
@@ -37,15 +37,15 @@ function MyComponent() {
 import { useTypedTranslation } from '@/hooks/useTranslation';
 
 function MyComponent() {
-  const { tButton, tLabel, tMessage } = useTypedTranslation();
+    const { tButton, tLabel, tMessage } = useTypedTranslation();
 
-  return (
-    <div>
-      <button>{tButton('save')}</button>
-      <label>{tLabel('email')}</label>
-      <p>{tMessage('success')}</p>
-    </div>
-  );
+    return (
+        <div>
+            <button>{tButton('save')}</button>
+            <label>{tLabel('email')}</label>
+            <p>{tMessage('success')}</p>
+        </div>
+    );
 }
 ```
 
@@ -77,16 +77,14 @@ return <p>{t('item', { count })}</p>;
 import { useLanguage } from '@/providers/i18n-provider';
 
 function LanguageSwitcher() {
-  const { language, changeLanguage } = useLanguage();
+    const { language, changeLanguage } = useLanguage();
 
-  return (
-    <div>
-      <p>Current: {language.name}</p>
-      <button onClick={() => changeLanguage('es')}>
-        Switch to Spanish
-      </button>
-    </div>
-  );
+    return (
+        <div>
+            <p>Current: {language.name}</p>
+            <button onClick={() => changeLanguage('es')}>Switch to Spanish</button>
+        </div>
+    );
 }
 ```
 
@@ -96,30 +94,30 @@ Translation files should follow this structure:
 
 ```json
 {
-  "common": {
-    "buttons": {
-      "save": "Save",
-      "cancel": "Cancel"
+    "common": {
+        "buttons": {
+            "save": "Save",
+            "cancel": "Cancel"
+        },
+        "labels": {
+            "name": "Name",
+            "email": "Email"
+        },
+        "messages": {
+            "welcome": "Welcome",
+            "loading": "Loading..."
+        }
     },
-    "labels": {
-      "name": "Name",
-      "email": "Email"
+    "pages": {
+        "home": {
+            "title": "Home Page",
+            "description": "Welcome to our application"
+        }
     },
-    "messages": {
-      "welcome": "Welcome",
-      "loading": "Loading..."
+    "navigation": {
+        "home": "Home",
+        "settings": "Settings"
     }
-  },
-  "pages": {
-    "home": {
-      "title": "Home Page",
-      "description": "Welcome to our application"
-    }
-  },
-  "navigation": {
-    "home": "Home",
-    "settings": "Settings"
-  }
 }
 ```
 

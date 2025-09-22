@@ -1,10 +1,10 @@
-import {ReactNode} from 'react';
-import {Button} from '@/components/ui/button';
-import {useDataGrid} from '@/components/ui/data-grid';
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select';
-import {Skeleton} from '@/components/ui/skeleton';
-import {ChevronLeftIcon, ChevronRightIcon} from 'lucide-react';
-import {cn} from '@/lib/utils';
+import { ReactNode } from 'react';
+import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
+import { useDataGrid } from '@/components/ui/data-grid';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface DataGridPaginationProps {
     sizes?: number[];
@@ -20,20 +20,20 @@ interface DataGridPaginationProps {
 }
 
 function DataGridPagination(props: DataGridPaginationProps) {
-    const {table, recordCount, isLoading} = useDataGrid();
+    const { table, recordCount, isLoading } = useDataGrid();
 
     const defaultProps: Partial<DataGridPaginationProps> = {
         sizes: [5, 10, 25, 50, 100],
         sizesLabel: 'Show',
         sizesDescription: 'per page',
-        sizesSkeleton: <Skeleton className="h-8 w-44"/>,
+        sizesSkeleton: <Skeleton className="h-8 w-44" />,
         moreLimit: 5,
         more: false,
         info: '{from} - {to} of {count}',
-        infoSkeleton: <Skeleton className="h-8 w-60"/>,
+        infoSkeleton: <Skeleton className="h-8 w-60" />,
     };
 
-    const mergedProps: DataGridPaginationProps = {...defaultProps, ...props};
+    const mergedProps: DataGridPaginationProps = { ...defaultProps, ...props };
 
     const btnBaseClasses = 'size-7 p-0 text-sm';
     const btnArrowClasses = btnBaseClasses + ' rtl:transform rtl:rotate-180';
@@ -46,9 +46,9 @@ function DataGridPagination(props: DataGridPaginationProps) {
     // Replace placeholders in paginationInfo
     const paginationInfo = mergedProps?.info
         ? mergedProps.info
-            .replace('{from}', from.toString())
-            .replace('{to}', to.toString())
-            .replace('{count}', recordCount.toString())
+              .replace('{from}', from.toString())
+              .replace('{to}', to.toString())
+              .replace('{count}', recordCount.toString())
         : `${from} - ${to} of ${recordCount}`;
 
     // Pagination limit logic
@@ -143,7 +143,7 @@ function DataGridPagination(props: DataGridPaginationProps) {
                             }}
                         >
                             <SelectTrigger className="w-fit" size="sm">
-                                <SelectValue placeholder={`${pageSize}`}/>
+                                <SelectValue placeholder={`${pageSize}`} />
                             </SelectTrigger>
                             <SelectContent side="top" className="min-w-[50px]">
                                 {mergedProps?.sizes?.map((size: number) => (
@@ -156,14 +156,14 @@ function DataGridPagination(props: DataGridPaginationProps) {
                     </>
                 )}
             </div>
-            <div
-                className="flex flex-col sm:flex-row justify-center sm:justify-end items-center gap-2.5 pt-2.5 sm:pt-0 order-1 sm:order-2">
+            <div className="flex flex-col sm:flex-row justify-center sm:justify-end items-center gap-2.5 pt-2.5 sm:pt-0 order-1 sm:order-2">
                 {isLoading ? (
                     mergedProps?.infoSkeleton
                 ) : (
                     <>
-                        <div
-                            className="text-sm text-muted-foreground text-nowrap order-2 sm:order-1">{paginationInfo}</div>
+                        <div className="text-sm text-muted-foreground text-nowrap order-2 sm:order-1">
+                            {paginationInfo}
+                        </div>
                         {pageCount > 1 && (
                             <div className="flex items-center space-x-1 order-1 sm:order-2">
                                 <Button
@@ -175,7 +175,7 @@ function DataGridPagination(props: DataGridPaginationProps) {
                                     disabled={!table.getCanPreviousPage()}
                                 >
                                     <span className="sr-only">Go to previous page</span>
-                                    <ChevronLeftIcon className="size-4"/>
+                                    <ChevronLeftIcon className="size-4" />
                                 </Button>
 
                                 {renderEllipsisPrevButton()}
@@ -193,7 +193,7 @@ function DataGridPagination(props: DataGridPaginationProps) {
                                     disabled={!table.getCanNextPage()}
                                 >
                                     <span className="sr-only">Go to next page</span>
-                                    <ChevronRightIcon className="size-4"/>
+                                    <ChevronRightIcon className="size-4" />
                                 </Button>
                             </div>
                         )}
@@ -204,4 +204,4 @@ function DataGridPagination(props: DataGridPaginationProps) {
     );
 }
 
-export {DataGridPagination, type DataGridPaginationProps};
+export { DataGridPagination, type DataGridPaginationProps };

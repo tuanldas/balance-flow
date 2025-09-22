@@ -1,8 +1,8 @@
 'use client';
 
-import {createContext, ReactNode, useContext} from 'react';
-import {cn} from '@/lib/utils';
-import {ColumnFiltersState, RowData, SortingState, Table} from '@tanstack/react-table';
+import { createContext, ReactNode, useContext } from 'react';
+import { ColumnFiltersState, RowData, SortingState, Table } from '@tanstack/react-table';
+import { cn } from '@/lib/utils';
 
 declare module '@tanstack/react-table' {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -99,10 +99,10 @@ function useDataGrid() {
 }
 
 function DataGridProvider<TData extends object>({
-                                                    children,
-                                                    table,
-                                                    ...props
-                                                }: DataGridProps<TData> & { table: Table<TData> }) {
+    children,
+    table,
+    ...props
+}: DataGridProps<TData> & { table: Table<TData> }) {
     return (
         <DataGridContext.Provider
             value={{
@@ -117,7 +117,7 @@ function DataGridProvider<TData extends object>({
     );
 }
 
-function DataGrid<TData extends object>({children, table, ...props}: DataGridProps<TData>) {
+function DataGrid<TData extends object>({ children, table, ...props }: DataGridProps<TData>) {
     const defaultProps: Partial<DataGridProps<TData>> = {
         loadingMode: 'skeleton',
         tableLayout: {
@@ -175,20 +175,22 @@ function DataGrid<TData extends object>({children, table, ...props}: DataGridPro
 }
 
 function DataGridContainer({
-                               children,
-                               className,
-                               border = true,
-                           }: {
+    children,
+    className,
+    border = true,
+}: {
     children: ReactNode;
     className?: string;
     border?: boolean;
 }) {
     return (
-        <div data-slot="data-grid"
-             className={cn('grid w-full', border && 'border border-border rounded-lg', className)}>
+        <div
+            data-slot="data-grid"
+            className={cn('grid w-full', border && 'border border-border rounded-lg', className)}
+        >
             {children}
         </div>
     );
 }
 
-export {useDataGrid, DataGridProvider, DataGrid, DataGridContainer};
+export { useDataGrid, DataGridProvider, DataGrid, DataGridContainer };

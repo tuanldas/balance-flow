@@ -1,18 +1,18 @@
 'use client';
 
 import * as React from 'react';
-import {HTMLMotionProps, motion, type Transition} from 'motion/react';
-import {cn} from '@/lib/utils';
+import { HTMLMotionProps, motion, type Transition } from 'motion/react';
+import { cn } from '@/lib/utils';
 
 type GradientBackgroundProps = HTMLMotionProps<'div'> & {
     transition?: Transition;
 };
 
 function GradientBackground({
-                                className,
-                                transition = {duration: 10, ease: 'easeInOut', repeat: Infinity},
-                                ...props
-                            }: GradientBackgroundProps) {
+    className,
+    transition = { duration: 10, ease: 'easeInOut', repeat: Infinity },
+    ...props
+}: GradientBackgroundProps) {
     return (
         <motion.div
             data-slot="gradient-background"
@@ -32,4 +32,4 @@ function GradientBackground({
     );
 }
 
-export {GradientBackground, type GradientBackgroundProps};
+export { GradientBackground, type GradientBackgroundProps };

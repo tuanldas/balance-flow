@@ -1,8 +1,9 @@
 @font-face {
     font-family: 'keenicons-duotone';
-    src: url('fonts/keenicons-duotone.ttf?gcn9yo') format('truetype'),
-    url('fonts/keenicons-duotone.woff?gcn9yo') format('woff'),
-    url('fonts/keenicons-duotone.svg?gcn9yo#keenicons-duotone') format('svg');
+    src:
+        url('fonts/keenicons-duotone.ttf?gcn9yo') format('truetype'),
+        url('fonts/keenicons-duotone.woff?gcn9yo') format('woff'),
+        url('fonts/keenicons-duotone.svg?gcn9yo#keenicons-duotone') format('svg');
     font-weight: normal;
     font-style: normal;
     font-display: block;

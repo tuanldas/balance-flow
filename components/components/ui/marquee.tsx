@@ -1,5 +1,5 @@
-import React, {ComponentPropsWithoutRef, useRef} from 'react';
-import {cn} from '@/lib/utils';
+import React, { ComponentPropsWithoutRef, useRef } from 'react';
+import { cn } from '@/lib/utils';
 
 interface MarqueeProps extends ComponentPropsWithoutRef<'div'> {
     /**
@@ -49,17 +49,17 @@ interface MarqueeProps extends ComponentPropsWithoutRef<'div'> {
 }
 
 export function Marquee({
-                            className,
-                            reverse = false,
-                            pauseOnHover = false,
-                            children,
-                            vertical = false,
-                            repeat = 4,
-                            ariaLabel,
-                            ariaLive = 'off',
-                            ariaRole = 'marquee',
-                            ...props
-                        }: MarqueeProps) {
+    className,
+    reverse = false,
+    pauseOnHover = false,
+    children,
+    vertical = false,
+    repeat = 4,
+    ariaLabel,
+    ariaLive = 'off',
+    ariaRole = 'marquee',
+    ...props
+}: MarqueeProps) {
     const marqueeRef = useRef<HTMLDivElement>(null);
 
     return (
@@ -83,7 +83,7 @@ export function Marquee({
             {React.useMemo(
                 () => (
                     <>
-                        {Array.from({length: repeat}, (_, i) => (
+                        {Array.from({ length: repeat }, (_, i) => (
                             <div
                                 key={i}
                                 className={cn(

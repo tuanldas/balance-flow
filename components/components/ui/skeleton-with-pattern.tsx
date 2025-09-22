@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {cn} from '@/lib/utils';
+import { cn } from '@/lib/utils';
 
 interface SkeletonWithPatternProps extends React.ComponentProps<'div'> {
     patternColor?: string;
@@ -7,11 +7,11 @@ interface SkeletonWithPatternProps extends React.ComponentProps<'div'> {
 }
 
 function SkeletonWithPattern({
-                                 className,
-                                 patternColor = '#e5e7eb',
-                                 patternOpacity = 0.3,
-                                 ...props
-                             }: SkeletonWithPatternProps) {
+    className,
+    patternColor = '#e5e7eb',
+    patternOpacity = 0.3,
+    ...props
+}: SkeletonWithPatternProps) {
     const svgPattern = `
     <svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -48,11 +48,11 @@ function SkeletonWithPattern({
             style={{
                 backgroundImage: `url("data:image/svg+xml,${encodedSvg}")`,
                 backgroundSize: '60px 60px',
-                backgroundRepeat: 'repeat'
+                backgroundRepeat: 'repeat',
             }}
             {...props}
         />
     );
 }
 
-export {SkeletonWithPattern};
+export { SkeletonWithPattern };

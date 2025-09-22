@@ -1,8 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import {ElementType, ReactNode, useEffect, useRef, useState} from 'react';
-import {cn} from '@/lib/utils';
+import { ElementType, ReactNode, useEffect, useRef, useState } from 'react';
+import { cn } from '@/lib/utils';
 
 export interface SvgTextProps {
     /**
@@ -39,15 +39,15 @@ export interface SvgTextProps {
  * The SVG is masked by the content, creating a dynamic text look.
  */
 export function SvgText({
-                            svg,
-                            children,
-                            className = '',
-                            fontSize = '20vw',
-                            fontWeight = 'bold',
-                            as: Component = 'div',
-                        }: SvgTextProps) {
+    svg,
+    children,
+    className = '',
+    fontSize = '20vw',
+    fontWeight = 'bold',
+    as: Component = 'div',
+}: SvgTextProps) {
     const textRef = useRef<HTMLDivElement>(null);
-    const [textDimensions, setTextDimensions] = useState({width: 0, height: 0});
+    const [textDimensions, setTextDimensions] = useState({ width: 0, height: 0 });
     const content = React.Children.toArray(children).join('');
     const maskId = React.useId();
 
@@ -103,7 +103,7 @@ export function SvgText({
             >
                 <defs>
                     <mask id={maskId}>
-                        <rect width="100%" height="100%" fill="black"/>
+                        <rect width="100%" height="100%" fill="black" />
                         <text
                             x="50%"
                             y="50%"

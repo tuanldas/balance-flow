@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {cva, type VariantProps} from 'class-variance-authority';
-import {ChevronDown, LucideIcon} from 'lucide-react';
-import {Slot as SlotPrimitive} from 'radix-ui';
-import {cn} from '@/lib/utils';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { ChevronDown, LucideIcon } from 'lucide-react';
+import { Slot as SlotPrimitive } from 'radix-ui';
+import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
     'cursor-pointer group whitespace-nowrap focus-visible:outline-hidden inline-flex items-center justify-center has-data-[arrow=true]:justify-between whitespace-nowrap text-sm font-medium ring-offset-background transition-[color,box-shadow] disabled:pointer-events-none disabled:opacity-60 [&_svg]:shrink-0',
@@ -13,12 +13,12 @@ const buttonVariants = cva(
                 mono: 'bg-zinc-950 text-white dark:bg-zinc-300 dark:text-black hover:bg-zinc-950/90 dark:hover:bg-zinc-300/90 data-[state=open]:bg-zinc-950/90 dark:data-[state=open]:bg-zinc-300/90',
                 destructive:
                     'bg-destructive text-destructive-foreground hover:bg-destructive/90 data-[state=open]:bg-destructive/90',
-                secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/90 data-[state=open]:bg-secondary/90',
-                outline: 'bg-background text-accent-foreground border border-input hover:bg-accent data-[state=open]:bg-accent',
-                dashed:
-                    'text-accent-foreground border border-input border-dashed bg-background hover:bg-accent hover:text-accent-foreground data-[state=open]:text-accent-foreground',
-                ghost:
-                    'text-accent-foreground hover:bg-accent hover:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
+                secondary:
+                    'bg-secondary text-secondary-foreground hover:bg-secondary/90 data-[state=open]:bg-secondary/90',
+                outline:
+                    'bg-background text-accent-foreground border border-input hover:bg-accent data-[state=open]:bg-accent',
+                dashed: 'text-accent-foreground border border-input border-dashed bg-background hover:bg-accent hover:text-accent-foreground data-[state=open]:text-accent-foreground',
+                ghost: 'text-accent-foreground hover:bg-accent hover:text-accent-foreground data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
                 dim: 'text-muted-foreground hover:text-foreground data-[state=open]:text-foreground',
                 foreground: '',
                 inverse: '',
@@ -292,7 +292,8 @@ const buttonVariants = cva(
             {
                 variant: 'destructive',
                 appearance: 'ghost',
-                className: 'bg-transparent text-destructive/90 hover:bg-destructive/5 data-[state=open]:bg-destructive/5',
+                className:
+                    'bg-transparent text-destructive/90 hover:bg-destructive/5 data-[state=open]:bg-destructive/5',
             },
             {
                 variant: 'ghost',
@@ -358,24 +359,24 @@ const buttonVariants = cva(
 );
 
 function Button({
-                    className,
-                    selected,
-                    variant,
-                    shape,
-                    appearance,
-                    mode,
-                    size,
-                    autoHeight,
-                    underlined,
-                    underline,
-                    asChild = false,
-                    placeholder = false,
-                    ...props
-                }: React.ComponentProps<'button'> &
+    className,
+    selected,
+    variant,
+    shape,
+    appearance,
+    mode,
+    size,
+    autoHeight,
+    underlined,
+    underline,
+    asChild = false,
+    placeholder = false,
+    ...props
+}: React.ComponentProps<'button'> &
     VariantProps<typeof buttonVariants> & {
-    selected?: boolean;
-    asChild?: boolean;
-}) {
+        selected?: boolean;
+        asChild?: boolean;
+    }) {
     const Comp = asChild ? SlotPrimitive.Slot : 'button';
     return (
         <Comp
@@ -395,7 +396,7 @@ function Button({
                 }),
                 asChild && props.disabled && 'pointer-events-none opacity-50',
             )}
-            {...(selected && {'data-state': 'open'})}
+            {...(selected && { 'data-state': 'open' })}
             {...props}
         />
     );
@@ -405,8 +406,8 @@ interface ButtonArrowProps extends React.SVGProps<SVGSVGElement> {
     icon?: LucideIcon; // Allows passing any Lucide icon
 }
 
-function ButtonArrow({icon: Icon = ChevronDown, className, ...props}: ButtonArrowProps) {
+function ButtonArrow({ icon: Icon = ChevronDown, className, ...props }: ButtonArrowProps) {
     return <Icon data-slot="button-arrow" className={cn('ms-auto -me-1', className)} {...props} />;
 }
 
-export {Button, ButtonArrow, buttonVariants};
+export { Button, ButtonArrow, buttonVariants };

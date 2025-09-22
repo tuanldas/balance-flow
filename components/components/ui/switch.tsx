@@ -1,9 +1,9 @@
 'use client';
 
 import * as React from 'react';
-import {cn} from '@/lib/utils';
-import {cva, type VariantProps} from 'class-variance-authority';
-import {Switch as SwitchPrimitive} from 'radix-ui';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { Switch as SwitchPrimitive } from 'radix-ui';
+import { cn } from '@/lib/utils';
 
 // Define a context for `permanent` state
 const SwitchContext = React.createContext<{ permanent: boolean }>({
@@ -127,13 +127,13 @@ const switchIndicatorVariants = cva(
 );
 
 function SwitchWrapper({
-                           className,
-                           children,
-                           permanent = false,
-                           ...props
-                       }: React.HTMLAttributes<HTMLDivElement> & { permanent?: boolean }) {
+    className,
+    children,
+    permanent = false,
+    ...props
+}: React.HTMLAttributes<HTMLDivElement> & { permanent?: boolean }) {
     return (
-        <SwitchContext.Provider value={{permanent}}>
+        <SwitchContext.Provider value={{ permanent }}>
             <div data-slot="switch-wrapper" className={cn('relative inline-flex items-center', className)} {...props}>
                 {children}
             </div>
@@ -142,12 +142,12 @@ function SwitchWrapper({
 }
 
 function Switch({
-                    className,
-                    thumbClassName = '',
-                    shape,
-                    size,
-                    ...props
-                }: React.ComponentProps<typeof SwitchPrimitive.Root> &
+    className,
+    thumbClassName = '',
+    shape,
+    size,
+    ...props
+}: React.ComponentProps<typeof SwitchPrimitive.Root> &
     VariantProps<typeof switchVariants> & { thumbClassName?: string }) {
     const context = useSwitchContext();
     const permanent = context?.permanent ?? false;
@@ -155,29 +155,29 @@ function Switch({
     return (
         <SwitchPrimitive.Root
             data-slot="switch"
-            className={cn(switchVariants({shape, size, permanent}), className)}
+            className={cn(switchVariants({ shape, size, permanent }), className)}
             {...props}
         >
-            <SwitchPrimitive.Thumb className={cn(switchThumbVariants({shape, size}), thumbClassName)}/>
+            <SwitchPrimitive.Thumb className={cn(switchThumbVariants({ shape, size }), thumbClassName)} />
         </SwitchPrimitive.Root>
     );
 }
 
 function SwitchIndicator({
-                             className,
-                             state,
-                             ...props
-                         }: React.HTMLAttributes<HTMLSpanElement> & VariantProps<typeof switchIndicatorVariants>) {
+    className,
+    state,
+    ...props
+}: React.HTMLAttributes<HTMLSpanElement> & VariantProps<typeof switchIndicatorVariants>) {
     const context = useSwitchContext();
     const permanent = context?.permanent ?? false;
 
     return (
         <span
             data-slot="switch-indicator"
-            className={cn(switchIndicatorVariants({state, permanent}), className)}
+            className={cn(switchIndicatorVariants({ state, permanent }), className)}
             {...props}
         />
     );
 }
 
-export {Switch, SwitchIndicator, SwitchWrapper};
+export { Switch, SwitchIndicator, SwitchWrapper };

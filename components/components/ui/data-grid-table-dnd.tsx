@@ -1,6 +1,21 @@
-import {CSSProperties, Fragment, useId} from 'react';
-import {Button} from '@/components/ui/button';
-import {useDataGrid} from '@/components/ui/data-grid';
+import { CSSProperties, Fragment, useId } from 'react';
+import {
+    closestCenter,
+    DndContext,
+    KeyboardSensor,
+    MouseSensor,
+    TouchSensor,
+    useSensor,
+    useSensors,
+    type DragEndEvent,
+} from '@dnd-kit/core';
+import { restrictToParentElement } from '@dnd-kit/modifiers';
+import { horizontalListSortingStrategy, SortableContext, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { Cell, flexRender, Header, HeaderGroup, Row } from '@tanstack/react-table';
+import { GripVertical } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useDataGrid } from '@/components/ui/data-grid';
 import {
     DataGridTableBase,
     DataGridTableBody,
@@ -16,27 +31,12 @@ import {
     DataGridTableHeadRowCellResize,
     DataGridTableRowSpacer,
 } from '@/components/ui/data-grid-table';
-import {
-    closestCenter,
-    DndContext,
-    type DragEndEvent,
-    KeyboardSensor,
-    MouseSensor,
-    TouchSensor,
-    useSensor,
-    useSensors,
-} from '@dnd-kit/core';
-import {restrictToParentElement} from '@dnd-kit/modifiers';
-import {horizontalListSortingStrategy, SortableContext, useSortable} from '@dnd-kit/sortable';
-import {CSS} from '@dnd-kit/utilities';
-import {Cell, flexRender, Header, HeaderGroup, Row} from '@tanstack/react-table';
-import {GripVertical} from 'lucide-react';
 
-function DataGridTableDndHeader<TData>({header}: { header: Header<TData, unknown> }) {
-    const {props} = useDataGrid();
-    const {column} = header;
+function DataGridTableDndHeader<TData>({ header }: { header: Header<TData, unknown> }) {
+    const { props } = useDataGrid();
+    const { column } = header;
 
-    const {attributes, isDragging, listeners, setNodeRef, transform, transition} = useSortable({
+    const { attributes, isDragging, listeners, setNodeRef, transform, transition } = useSortable({
         id: header.column.id,
     });
 
@@ -62,19 +62,19 @@ function DataGridTableDndHeader<TData>({header}: { header: Header<TData, unknown
                     {...listeners}
                     aria-label="Drag to reorder"
                 >
-                    <GripVertical className="opacity-50" aria-hidden="true"/>
+                    <GripVertical className="opacity-50" aria-hidden="true" />
                 </Button>
                 {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
                 {props.tableLayout?.columnsResizable && column.getCanResize() && (
-                    <DataGridTableHeadRowCellResize header={header}/>
+                    <DataGridTableHeadRowCellResize header={header} />
                 )}
             </div>
         </DataGridTableHeadRowCell>
     );
 }
 
-function DataGridTableDndCell<TData>({cell}: { cell: Cell<TData, unknown> }) {
-    const {isDragging, setNodeRef, transform, transition} = useSortable({
+function DataGridTableDndCell<TData>({ cell }: { cell: Cell<TData, unknown> }) {
+    const { isDragging, setNodeRef, transform, transition } = useSortable({
         id: cell.column.id,
     });
 
@@ -94,8 +94,8 @@ function DataGridTableDndCell<TData>({cell}: { cell: Cell<TData, unknown> }) {
     );
 }
 
-function DataGridTableDnd<TData>({handleDragEnd}: { handleDragEnd: (event: DragEndEvent) => void }) {
-    const {table, isLoading, props} = useDataGrid();
+function DataGridTableDnd<TData>({ handleDragEnd }: { handleDragEnd: (event: DragEndEvent) => void }) {
+    const { table, isLoading, props } = useDataGrid();
     const pagination = table.getState().pagination;
 
     const sensors = useSensors(useSensor(MouseSensor, {}), useSensor(TouchSensor, {}), useSensor(KeyboardSensor, {}));
@@ -116,10 +116,12 @@ function DataGridTableDnd<TData>({handleDragEnd}: { handleDragEnd: (event: DragE
 
                             return (
                                 <DataGridTableHeadRow headerGroup={headerGroup} key={index}>
-                                    <SortableContext items={table.getState().columnOrder}
-                                                     strategy={horizontalListSortingStrategy}>
+                                    <SortableContext
+                                        items={table.getState().columnOrder}
+                                        strategy={horizontalListSortingStrategy}
+                                    >
                                         {headerGroup.headers.map((header, index) => (
-                                            <DataGridTableDndHeader header={header} key={index}/>
+                                            <DataGridTableDndHeader header={header} key={index} />
                                         ))}
                                     </SortableContext>
                                 </DataGridTableHeadRow>
@@ -127,11 +129,11 @@ function DataGridTableDnd<TData>({handleDragEnd}: { handleDragEnd: (event: DragE
                         })}
                     </DataGridTableHead>
 
-                    {(props.tableLayout?.stripped || !props.tableLayout?.rowBorder) && <DataGridTableRowSpacer/>}
+                    {(props.tableLayout?.stripped || !props.tableLayout?.rowBorder) && <DataGridTableRowSpacer />}
 
                     <DataGridTableBody>
                         {props.loadingMode === 'skeleton' && isLoading && pagination?.pageSize ? (
-                            Array.from({length: pagination.pageSize}).map((_, rowIndex) => (
+                            Array.from({ length: pagination.pageSize }).map((_, rowIndex) => (
                                 <DataGridTableBodyRowSkeleton key={rowIndex}>
                                     {table.getVisibleFlatColumns().map((column, colIndex) => {
                                         return (
@@ -154,17 +156,17 @@ function DataGridTableDnd<TData>({handleDragEnd}: { handleDragEnd: (event: DragE
                                                         items={table.getState().columnOrder}
                                                         strategy={horizontalListSortingStrategy}
                                                     >
-                                                        <DataGridTableDndCell cell={cell}/>
+                                                        <DataGridTableDndCell cell={cell} />
                                                     </SortableContext>
                                                 );
                                             })}
                                         </DataGridTableBodyRow>
-                                        {row.getIsExpanded() && <DataGridTableBodyRowExpandded row={row}/>}
+                                        {row.getIsExpanded() && <DataGridTableBodyRowExpandded row={row} />}
                                     </Fragment>
                                 );
                             })
                         ) : (
-                            <DataGridTableEmpty/>
+                            <DataGridTableEmpty />
                         )}
                     </DataGridTableBody>
                 </DataGridTableBase>
@@ -173,4 +175,4 @@ function DataGridTableDnd<TData>({handleDragEnd}: { handleDragEnd: (event: DragE
     );
 }
 
-export {DataGridTableDnd};
+export { DataGridTableDnd };

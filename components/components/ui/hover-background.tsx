@@ -1,8 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import {HTMLMotionProps, motion, useMotionValue, useSpring} from 'motion/react';
-import {cn} from '@/lib/utils';
+import { HTMLMotionProps, motion, useMotionValue, useSpring } from 'motion/react';
+import { cn } from '@/lib/utils';
 
 type HoverBackgroundProps = HTMLMotionProps<'div'> & {
     objectCount?: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
@@ -14,7 +14,7 @@ type HoverBackgroundProps = HTMLMotionProps<'div'> & {
     };
 };
 
-function HoverBackground({className, objectCount = 12, children, colors = {}, ...props}: HoverBackgroundProps) {
+function HoverBackground({ className, objectCount = 12, children, colors = {}, ...props }: HoverBackgroundProps) {
     const {
         background = 'bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900',
         objects = [
@@ -51,7 +51,7 @@ function HoverBackground({className, objectCount = 12, children, colors = {}, ..
 
     const animatedObjects = React.useMemo(
         () =>
-            Array.from({length: objectCount}, (_, i) => {
+            Array.from({ length: objectCount }, (_, i) => {
                 const shape = Math.random() > 0.5 ? 'circle' : 'square';
                 return {
                     id: i,
@@ -103,8 +103,8 @@ function HoverBackground({className, objectCount = 12, children, colors = {}, ..
             onHoverStart={handleHoverStart}
             onHoverEnd={handleHoverEnd}
             onMouseMove={handleMouseMove}
-            whileHover={{scale: 1.02}}
-            transition={{duration: 0.3, ease: 'easeOut'}}
+            whileHover={{ scale: 1.02 }}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
             animate={{
                 backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'],
             }}
@@ -178,7 +178,7 @@ function HoverBackground({className, objectCount = 12, children, colors = {}, ..
             {/* Floating Particles on Hover */}
             {isHovered && (
                 <div className="absolute inset-0 pointer-events-none">
-                    {Array.from({length: 20}).map((_, i) => (
+                    {Array.from({ length: 20 }).map((_, i) => (
                         <motion.div
                             key={`particle-${i}`}
                             className="absolute w-1 h-1 bg-white/60 rounded-full"
@@ -186,7 +186,7 @@ function HoverBackground({className, objectCount = 12, children, colors = {}, ..
                                 left: `${Math.random() * 100}%`,
                                 top: `${Math.random() * 100}%`,
                             }}
-                            initial={{opacity: 0, scale: 0}}
+                            initial={{ opacity: 0, scale: 0 }}
                             animate={{
                                 opacity: [0, 1, 0],
                                 scale: [0, 1, 0],
@@ -209,4 +209,4 @@ function HoverBackground({className, objectCount = 12, children, colors = {}, ..
     );
 }
 
-export {HoverBackground, type HoverBackgroundProps};
+export { HoverBackground, type HoverBackgroundProps };

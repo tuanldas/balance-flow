@@ -1,23 +1,23 @@
 'use client';
 
-import {cn} from '@/lib/utils';
-import {inputVariants} from '@/components/ui/input';
-import type {VariantProps} from 'class-variance-authority';
+import type { VariantProps } from 'class-variance-authority';
 import {
     composeRenderProps,
-    DateField as DateFieldRa,
     DateFieldProps,
-    DateInput as DateInputRa,
+    DateField as DateFieldRa,
     DateInputProps as DateInputPropsRa,
-    DateSegment as DateSegmentRa,
+    DateInput as DateInputRa,
     DateSegmentProps,
+    DateSegment as DateSegmentRa,
     DateValue as DateValueRa,
-    TimeField as TimeFieldRa,
     TimeFieldProps,
+    TimeField as TimeFieldRa,
     TimeValue as TimeValueRa,
 } from 'react-aria-components';
+import { cn } from '@/lib/utils';
+import { inputVariants } from '@/components/ui/input';
 
-function DateField<T extends DateValueRa>({className, children, ...props}: DateFieldProps<T>) {
+function DateField<T extends DateValueRa>({ className, children, ...props }: DateFieldProps<T>) {
     return (
         <DateFieldRa
             className={composeRenderProps(className, (className) => cn(className))}
@@ -29,7 +29,7 @@ function DateField<T extends DateValueRa>({className, children, ...props}: DateF
     );
 }
 
-function TimeField<T extends TimeValueRa>({className, children, ...props}: TimeFieldProps<T>) {
+function TimeField<T extends TimeValueRa>({ className, children, ...props }: TimeFieldProps<T>) {
     return (
         <TimeFieldRa
             className={composeRenderProps(className, (className) => cn(className))}
@@ -41,7 +41,7 @@ function TimeField<T extends TimeValueRa>({className, children, ...props}: TimeF
     );
 }
 
-function DateSegment({className, ...props}: DateSegmentProps) {
+function DateSegment({ className, ...props }: DateSegmentProps) {
     return (
         <DateSegmentRa
             className={composeRenderProps(className, (className) =>
@@ -73,19 +73,19 @@ interface DateInputProps extends DateInputPropsRa, VariantProps<typeof inputVari
     variant?: VariantProps<typeof inputVariants>['variant'];
 }
 
-function DateInput({className, variant = 'md', ...props}: Omit<DateInputProps, 'children'>) {
+function DateInput({ className, variant = 'md', ...props }: Omit<DateInputProps, 'children'>) {
     return (
         <DateInputRa
             data-slot="input"
             className={composeRenderProps(className, (className) =>
-                cn(inputVariants({variant}), dateInputStyles, className),
+                cn(inputVariants({ variant }), dateInputStyles, className),
             )}
             {...props}
         >
-            {(segment) => <DateSegment segment={segment}/>}
+            {(segment) => <DateSegment segment={segment} />}
         </DateInputRa>
     );
 }
 
-export {DateField, DateInput, DateSegment, TimeField, dateInputStyles};
-export type {DateInputProps};
+export { DateField, DateInput, DateSegment, TimeField, dateInputStyles };
+export type { DateInputProps };

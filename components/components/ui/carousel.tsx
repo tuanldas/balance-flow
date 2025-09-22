@@ -1,10 +1,10 @@
 'use client';
 
 import * as React from 'react';
-import {Button} from '@/components/ui/button';
-import useEmblaCarousel, {type UseEmblaCarouselType} from 'embla-carousel-react';
-import {ArrowLeft, ArrowRight} from 'lucide-react';
-import {cn} from '@/lib/utils';
+import useEmblaCarousel, { type UseEmblaCarouselType } from 'embla-carousel-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 type CarouselApi = UseEmblaCarouselType[1];
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>;
@@ -40,14 +40,14 @@ function useCarousel() {
 }
 
 function Carousel({
-                      orientation = 'horizontal',
-                      opts,
-                      setApi,
-                      plugins,
-                      className,
-                      children,
-                      ...props
-                  }: React.ComponentProps<'div'> & CarouselProps) {
+    orientation = 'horizontal',
+    opts,
+    setApi,
+    plugins,
+    className,
+    children,
+    ...props
+}: React.ComponentProps<'div'> & CarouselProps) {
     const [carouselRef, api] = useEmblaCarousel(
         {
             ...opts,
@@ -128,38 +128,44 @@ function Carousel({
     );
 }
 
-function CarouselContent({className, ...props}: React.ComponentProps<'div'>) {
-    const {carouselRef, orientation} = useCarousel();
+function CarouselContent({ className, ...props }: React.ComponentProps<'div'>) {
+    const { carouselRef, orientation } = useCarousel();
 
     return (
         <div ref={carouselRef} className="overflow-hidden" data-slot="carousel-content">
             <div
-                className={cn('flex', orientation === 'horizontal' ? '-ml-4' : '-mt-4 flex-col', className)} {...props} />
+                className={cn('flex', orientation === 'horizontal' ? '-ml-4' : '-mt-4 flex-col', className)}
+                {...props}
+            />
         </div>
     );
 }
 
-function CarouselItem({className, ...props}: React.ComponentProps<'div'>) {
-    const {orientation} = useCarousel();
+function CarouselItem({ className, ...props }: React.ComponentProps<'div'>) {
+    const { orientation } = useCarousel();
 
     return (
         <div
             role="group"
             aria-roledescription="slide"
             data-slot="carousel-item"
-            className={cn('min-w-0 shrink-0 grow-0 basis-full', orientation === 'horizontal' ? 'pl-4' : 'pt-4', className)}
+            className={cn(
+                'min-w-0 shrink-0 grow-0 basis-full',
+                orientation === 'horizontal' ? 'pl-4' : 'pt-4',
+                className,
+            )}
             {...props}
         />
     );
 }
 
 function CarouselPrevious({
-                              className,
-                              variant = 'outline',
-                              size = 'icon',
-                              ...props
-                          }: React.ComponentProps<typeof Button>) {
-    const {orientation, scrollPrev, canScrollPrev} = useCarousel();
+    className,
+    variant = 'outline',
+    size = 'icon',
+    ...props
+}: React.ComponentProps<typeof Button>) {
+    const { orientation, scrollPrev, canScrollPrev } = useCarousel();
 
     return (
         <Button
@@ -177,19 +183,19 @@ function CarouselPrevious({
             onClick={scrollPrev}
             {...props}
         >
-            <ArrowLeft/>
+            <ArrowLeft />
             <span className="sr-only">Previous slide</span>
         </Button>
     );
 }
 
 function CarouselNext({
-                          className,
-                          variant = 'outline',
-                          size = 'icon',
-                          ...props
-                      }: React.ComponentProps<typeof Button>) {
-    const {orientation, scrollNext, canScrollNext} = useCarousel();
+    className,
+    variant = 'outline',
+    size = 'icon',
+    ...props
+}: React.ComponentProps<typeof Button>) {
+    const { orientation, scrollNext, canScrollNext } = useCarousel();
 
     return (
         <Button
@@ -207,10 +213,10 @@ function CarouselNext({
             onClick={scrollNext}
             {...props}
         >
-            <ArrowRight/>
+            <ArrowRight />
             <span className="sr-only">Next slide</span>
         </Button>
     );
 }
 
-export {type CarouselApi, Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext};
+export { type CarouselApi, Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext };

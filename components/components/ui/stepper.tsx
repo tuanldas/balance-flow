@@ -3,8 +3,8 @@
 'use client';
 
 import * as React from 'react';
-import {createContext, useContext} from 'react';
-import {cn} from '@/lib/utils';
+import { createContext, useContext } from 'react';
+import { cn } from '@/lib/utils';
 
 // Types
 type StepperOrientation = 'horizontal' | 'vertical';
@@ -61,15 +61,15 @@ interface StepperProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 function Stepper({
-                     defaultValue = 1,
-                     value,
-                     onValueChange,
-                     orientation = 'horizontal',
-                     className,
-                     children,
-                     indicators = {},
-                     ...props
-                 }: StepperProps) {
+    defaultValue = 1,
+    value,
+    onValueChange,
+    orientation = 'horizontal',
+    className,
+    children,
+    indicators = {},
+    ...props
+}: StepperProps) {
     const [activeStep, setActiveStep] = React.useState(defaultValue);
     const [triggerNodes, setTriggerNodes] = React.useState<HTMLButtonElement[]>([]);
 
@@ -103,7 +103,8 @@ function Stepper({
         if (triggerNodes[idx]) triggerNodes[idx].focus();
     };
     const focusNext = (currentIdx: number) => focusTrigger((currentIdx + 1) % triggerNodes.length);
-    const focusPrev = (currentIdx: number) => focusTrigger((currentIdx - 1 + triggerNodes.length) % triggerNodes.length);
+    const focusPrev = (currentIdx: number) =>
+        focusTrigger((currentIdx - 1 + triggerNodes.length) % triggerNodes.length);
     const focusFirst = () => focusTrigger(0);
     const focusLast = () => focusTrigger(triggerNodes.length - 1);
 
@@ -114,9 +115,12 @@ function Stepper({
             setActiveStep: handleSetActiveStep,
             stepsCount: React.Children.toArray(children).filter(
                 (child): child is React.ReactElement =>
-                    React.isValidElement(child) && (child.type as {
-                        displayName?: string
-                    }).displayName === 'StepperItem',
+                    React.isValidElement(child) &&
+                    (
+                        child.type as {
+                            displayName?: string;
+                        }
+                    ).displayName === 'StepperItem',
             ).length,
             orientation,
             registerTrigger,
@@ -154,22 +158,22 @@ interface StepperItemProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 function StepperItem({
-                         step,
-                         completed = false,
-                         disabled = false,
-                         loading = false,
-                         className,
-                         children,
-                         ...props
-                     }: StepperItemProps) {
-    const {activeStep} = useStepper();
+    step,
+    completed = false,
+    disabled = false,
+    loading = false,
+    className,
+    children,
+    ...props
+}: StepperItemProps) {
+    const { activeStep } = useStepper();
 
     const state: StepState = completed || step < activeStep ? 'completed' : activeStep === step ? 'active' : 'inactive';
 
     const isLoading = loading && step === activeStep;
 
     return (
-        <StepItemContext.Provider value={{step, state, isDisabled: disabled, isLoading}}>
+        <StepItemContext.Provider value={{ step, state, isDisabled: disabled, isLoading }}>
             <div
                 data-slot="stepper-item"
                 className={cn(
@@ -177,7 +181,7 @@ function StepperItem({
                     className,
                 )}
                 data-state={state}
-                {...(isLoading ? {'data-loading': true} : {})}
+                {...(isLoading ? { 'data-loading': true } : {})}
                 {...props}
             >
                 {children}
@@ -190,12 +194,12 @@ interface StepperTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonEleme
     asChild?: boolean;
 }
 
-function StepperTrigger({asChild = false, className, children, tabIndex, ...props}: StepperTriggerProps) {
-    const {state, isLoading} = useStepItem();
+function StepperTrigger({ asChild = false, className, children, tabIndex, ...props }: StepperTriggerProps) {
+    const { state, isLoading } = useStepItem();
     const stepperCtx = useStepper();
-    const {setActiveStep, activeStep, registerTrigger, triggerNodes, focusNext, focusPrev, focusFirst, focusLast} =
+    const { setActiveStep, activeStep, registerTrigger, triggerNodes, focusNext, focusPrev, focusFirst, focusLast } =
         stepperCtx;
-    const {step, isDisabled} = useStepItem();
+    const { step, isDisabled } = useStepItem();
     const isSelected = activeStep === step;
     const id = `stepper-tab-${step}`;
     const panelId = `stepper-panel-${step}`;
@@ -245,8 +249,8 @@ function StepperTrigger({asChild = false, className, children, tabIndex, ...prop
     if (asChild) {
         return (
             <span data-slot="stepper-trigger" data-state={state} className={className}>
-        {children}
-      </span>
+                {children}
+            </span>
         );
     }
 
@@ -275,9 +279,9 @@ function StepperTrigger({asChild = false, className, children, tabIndex, ...prop
     );
 }
 
-function StepperIndicator({children, className}: React.ComponentProps<'div'>) {
-    const {state, isLoading} = useStepItem();
-    const {indicators} = useStepper();
+function StepperIndicator({ children, className }: React.ComponentProps<'div'>) {
+    const { state, isLoading } = useStepItem();
+    const { indicators } = useStepper();
 
     return (
         <div
@@ -295,17 +299,17 @@ function StepperIndicator({children, className}: React.ComponentProps<'div'>) {
                     (state === 'active' && indicators.active) ||
                     (state === 'inactive' && indicators.inactive))
                     ? (isLoading && indicators.loading) ||
-                    (state === 'completed' && indicators.completed) ||
-                    (state === 'active' && indicators.active) ||
-                    (state === 'inactive' && indicators.inactive)
+                      (state === 'completed' && indicators.completed) ||
+                      (state === 'active' && indicators.active) ||
+                      (state === 'inactive' && indicators.inactive)
                     : children}
             </div>
         </div>
     );
 }
 
-function StepperSeparator({className}: React.ComponentProps<'div'>) {
-    const {state} = useStepItem();
+function StepperSeparator({ className }: React.ComponentProps<'div'>) {
+    const { state } = useStepItem();
 
     return (
         <div
@@ -319,8 +323,8 @@ function StepperSeparator({className}: React.ComponentProps<'div'>) {
     );
 }
 
-function StepperTitle({children, className}: React.ComponentProps<'h3'>) {
-    const {state} = useStepItem();
+function StepperTitle({ children, className }: React.ComponentProps<'h3'>) {
+    const { state } = useStepItem();
 
     return (
         <h3 data-slot="stepper-title" data-state={state} className={cn('text-sm font-medium leading-none', className)}>
@@ -329,19 +333,22 @@ function StepperTitle({children, className}: React.ComponentProps<'h3'>) {
     );
 }
 
-function StepperDescription({children, className}: React.ComponentProps<'div'>) {
-    const {state} = useStepItem();
+function StepperDescription({ children, className }: React.ComponentProps<'div'>) {
+    const { state } = useStepItem();
 
     return (
-        <div data-slot="stepper-description" data-state={state}
-             className={cn('text-sm text-muted-foreground', className)}>
+        <div
+            data-slot="stepper-description"
+            data-state={state}
+            className={cn('text-sm text-muted-foreground', className)}
+        >
             {children}
         </div>
     );
 }
 
-function StepperNav({children, className}: React.ComponentProps<'nav'>) {
-    const {activeStep, orientation} = useStepper();
+function StepperNav({ children, className }: React.ComponentProps<'nav'>) {
+    const { activeStep, orientation } = useStepper();
 
     return (
         <nav
@@ -358,8 +365,8 @@ function StepperNav({children, className}: React.ComponentProps<'nav'>) {
     );
 }
 
-function StepperPanel({children, className}: React.ComponentProps<'div'>) {
-    const {activeStep} = useStepper();
+function StepperPanel({ children, className }: React.ComponentProps<'div'>) {
+    const { activeStep } = useStepper();
 
     return (
         <div data-slot="stepper-panel" data-state={activeStep} className={cn('w-full', className)}>
@@ -373,8 +380,8 @@ interface StepperContentProps extends React.ComponentProps<'div'> {
     forceMount?: boolean;
 }
 
-function StepperContent({value, forceMount, children, className}: StepperContentProps) {
-    const {activeStep} = useStepper();
+function StepperContent({ value, forceMount, children, className }: StepperContentProps) {
+    const { activeStep } = useStepper();
     const isActive = value === activeStep;
 
     if (!forceMount && !isActive) {

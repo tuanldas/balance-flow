@@ -1,4 +1,4 @@
-import {ReactNode, RefObject, useCallback, useEffect, useRef} from 'react';
+import { ReactNode, RefObject, useCallback, useEffect, useRef } from 'react';
 
 type ScrollspyProps = {
     children: ReactNode;
@@ -13,15 +13,15 @@ type ScrollspyProps = {
 };
 
 export function Scrollspy({
-                              children,
-                              targetRef,
-                              onUpdate,
-                              className,
-                              offset = 0,
-                              smooth = true,
-                              dataAttribute = 'scrollspy',
-                              history = true,
-                          }: ScrollspyProps) {
+    children,
+    targetRef,
+    onUpdate,
+    className,
+    offset = 0,
+    smooth = true,
+    dataAttribute = 'scrollspy',
+    history = true,
+}: ScrollspyProps) {
     const selfRef = useRef<HTMLDivElement | null>(null);
     const anchorElementsRef = useRef<Element[] | null>(null);
     const prevIdTracker = useRef<string | null>(null);
@@ -75,8 +75,11 @@ export function Scrollspy({
         // If at bottom, force last anchor
         if (scrollElement) {
             const scrollHeight =
-                scrollElement === window ? document.documentElement.scrollHeight : (scrollElement as HTMLElement).scrollHeight;
-            const clientHeight = scrollElement === window ? window.innerHeight : (scrollElement as HTMLElement).clientHeight;
+                scrollElement === window
+                    ? document.documentElement.scrollHeight
+                    : (scrollElement as HTMLElement).scrollHeight;
+            const clientHeight =
+                scrollElement === window ? window.innerHeight : (scrollElement as HTMLElement).clientHeight;
             if (scrollTop + clientHeight >= scrollHeight - 2) {
                 activeIdx = anchorElementsRef.current.length - 1;
             }

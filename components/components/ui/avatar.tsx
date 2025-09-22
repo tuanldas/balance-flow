@@ -1,9 +1,9 @@
 'use client';
 
 import * as React from 'react';
-import {cn} from '@/lib/utils';
-import {cva, VariantProps} from 'class-variance-authority';
-import {Avatar as AvatarPrimitive} from 'radix-ui';
+import { cva, VariantProps } from 'class-variance-authority';
+import { Avatar as AvatarPrimitive } from 'radix-ui';
+import { cn } from '@/lib/utils';
 
 const avatarStatusVariants = cva('flex items-center rounded-full size-2 border-2 border-background', {
     variants: {
@@ -19,14 +19,17 @@ const avatarStatusVariants = cva('flex items-center rounded-full size-2 border-2
     },
 });
 
-function Avatar({className, ...props}: React.ComponentProps<typeof AvatarPrimitive.Root>) {
+function Avatar({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Root>) {
     return (
-        <AvatarPrimitive.Root data-slot="avatar"
-                              className={cn('relative flex shrink-0 size-10', className)} {...props} />
+        <AvatarPrimitive.Root
+            data-slot="avatar"
+            className={cn('relative flex shrink-0 size-10', className)}
+            {...props}
+        />
     );
 }
 
-function AvatarImage({className, ...props}: React.ComponentProps<typeof AvatarPrimitive.Image>) {
+function AvatarImage({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Image>) {
     return (
         <div className={cn('relative overflow-hidden rounded-full', className)}>
             <AvatarPrimitive.Image data-slot="avatar-image" className={cn('aspect-square h-full w-full')} {...props} />
@@ -34,7 +37,7 @@ function AvatarImage({className, ...props}: React.ComponentProps<typeof AvatarPr
     );
 }
 
-function AvatarFallback({className, ...props}: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
+function AvatarFallback({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
     return (
         <AvatarPrimitive.Fallback
             data-slot="avatar-fallback"
@@ -47,7 +50,7 @@ function AvatarFallback({className, ...props}: React.ComponentProps<typeof Avata
     );
 }
 
-function AvatarIndicator({className, ...props}: React.HTMLAttributes<HTMLDivElement>) {
+function AvatarIndicator({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
     return (
         <div
             data-slot="avatar-indicator"
@@ -58,11 +61,11 @@ function AvatarIndicator({className, ...props}: React.HTMLAttributes<HTMLDivElem
 }
 
 function AvatarStatus({
-                          className,
-                          variant,
-                          ...props
-                      }: React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof avatarStatusVariants>) {
-    return <div data-slot="avatar-status" className={cn(avatarStatusVariants({variant}), className)} {...props} />;
+    className,
+    variant,
+    ...props
+}: React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof avatarStatusVariants>) {
+    return <div data-slot="avatar-status" className={cn(avatarStatusVariants({ variant }), className)} {...props} />;
 }
 
-export {Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus, avatarStatusVariants};
+export { Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus, avatarStatusVariants };

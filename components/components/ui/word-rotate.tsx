@@ -1,8 +1,8 @@
 'use client';
 
-import React, {useEffect, useRef, useState} from 'react';
-import {motion, MotionProps, useInView, UseInViewOptions, Variants} from 'motion/react';
-import {cn} from '@/lib/utils';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion, MotionProps, useInView, UseInViewOptions, Variants } from 'motion/react';
+import { cn } from '@/lib/utils';
 
 interface WordRotateProps extends Omit<MotionProps, 'children'> {
     words: string[];
@@ -18,20 +18,20 @@ interface WordRotateProps extends Omit<MotionProps, 'children'> {
 }
 
 export function WordRotate({
-                               words,
-                               duration = 1500,
-                               animationStyle = 'fade',
-                               loop = true,
-                               className,
-                               containerClassName,
-                               pauseDuration = 300,
-                               startOnView = true,
-                               once = false,
-                               inViewMargin,
-                               ...props
-                           }: WordRotateProps) {
+    words,
+    duration = 1500,
+    animationStyle = 'fade',
+    loop = true,
+    className,
+    containerClassName,
+    pauseDuration = 300,
+    startOnView = true,
+    once = false,
+    inViewMargin,
+    ...props
+}: WordRotateProps) {
     const ref = useRef<HTMLSpanElement>(null);
-    const isInView = useInView(ref, {once, margin: inViewMargin as UseInViewOptions['margin']});
+    const isInView = useInView(ref, { once, margin: inViewMargin as UseInViewOptions['margin'] });
     const [hasAnimated, setHasAnimated] = useState(false);
     const [currentWord, setCurrentWord] = useState(0);
     const [show, setShow] = useState(true);
@@ -39,7 +39,7 @@ export function WordRotate({
     // Animation variants
     const variants: Record<string, Variants> = {
         fade: {
-            initial: {opacity: 0},
+            initial: { opacity: 0 },
             animate: {
                 opacity: 1,
                 transition: {
@@ -56,7 +56,7 @@ export function WordRotate({
             },
         },
         'slide-up': {
-            initial: {opacity: 0, y: 24},
+            initial: { opacity: 0, y: 24 },
             animate: {
                 opacity: 1,
                 y: 0,
@@ -77,7 +77,7 @@ export function WordRotate({
             },
         },
         'slide-down': {
-            initial: {opacity: 0, y: -24},
+            initial: { opacity: 0, y: -24 },
             animate: {
                 opacity: 1,
                 y: 0,
@@ -98,7 +98,7 @@ export function WordRotate({
             },
         },
         scale: {
-            initial: {opacity: 0, scale: 0.8},
+            initial: { opacity: 0, scale: 0.8 },
             animate: {
                 opacity: 1,
                 scale: 1,
@@ -119,7 +119,7 @@ export function WordRotate({
             },
         },
         flip: {
-            initial: {opacity: 0, rotateX: 90},
+            initial: { opacity: 0, rotateX: 90 },
             animate: {
                 opacity: 1,
                 rotateX: 0,
@@ -171,7 +171,7 @@ export function WordRotate({
                 animate={show ? 'animate' : 'exit'}
                 exit="exit"
                 variants={variants[animationStyle]}
-                transition={{duration: 0.5}}
+                transition={{ duration: 0.5 }}
                 style={{
                     perspective: animationStyle === 'flip' ? 1000 : undefined,
                 }}

@@ -1,10 +1,10 @@
 'use client';
 
 import * as React from 'react';
-import {cva, type VariantProps} from 'class-variance-authority';
-import {ChevronDown} from 'lucide-react';
-import {Accordion as AccordionPrimitive} from 'radix-ui';
-import {cn} from '@/lib/utils';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { ChevronDown } from 'lucide-react';
+import { Accordion as AccordionPrimitive } from 'radix-ui';
+import { cn } from '@/lib/utils';
 
 interface AccordionMenuContextValue {
     matchPath: (href: string) => boolean;
@@ -39,22 +39,20 @@ interface AccordionMenuProps {
 const AccordionMenuContext = React.createContext<AccordionMenuContextValue>({
     matchPath: () => false,
     selectedValue: '',
-    setSelectedValue: () => {
-    },
+    setSelectedValue: () => {},
     nestedStates: {},
-    setNestedStates: () => {
-    },
+    setNestedStates: () => {},
 });
 
 function AccordionMenu({
-                           className,
-                           matchPath = () => false,
-                           classNames,
-                           children,
-                           selectedValue,
-                           onItemClick,
-                           ...props
-                       }: React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Root> & AccordionMenuProps) {
+    className,
+    matchPath = () => false,
+    classNames,
+    children,
+    selectedValue,
+    onItemClick,
+    ...props
+}: React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Root> & AccordionMenuProps) {
     const [internalSelectedValue, setInternalSelectedValue] = React.useState<string | undefined>(selectedValue);
     React.useEffect(() => {
         setInternalSelectedValue(selectedValue);
@@ -65,7 +63,7 @@ function AccordionMenu({
             let result: string[] = [];
             React.Children.forEach(nodes, (node) => {
                 if (React.isValidElement(node)) {
-                    const {value, children} = node.props as {
+                    const { value, children } = node.props as {
                         value?: string;
                         children?: React.ReactNode;
                     };
@@ -104,8 +102,8 @@ function AccordionMenu({
         Array.isArray(nestedStates['root'])
             ? nestedStates['root']
             : typeof nestedStates['root'] === 'string'
-                ? [nestedStates['root']]
-                : []
+              ? [nestedStates['root']]
+              : []
     ) as string[];
     const singleValue = (nestedStates['root'] ?? '') as string;
 
@@ -126,7 +124,7 @@ function AccordionMenu({
                     data-slot="accordion-menu"
                     value={singleValue}
                     className={cn('w-full', classNames?.root, className)}
-                    onValueChange={(value: string) => setNestedStates((prev) => ({...prev, root: value}))}
+                    onValueChange={(value: string) => setNestedStates((prev) => ({ ...prev, root: value }))}
                     {...props}
                     role="menu"
                 >
@@ -137,7 +135,7 @@ function AccordionMenu({
                     data-slot="accordion-menu"
                     value={multipleValue}
                     className={cn('w-full', classNames?.root, className)}
-                    onValueChange={(value: string | string[]) => setNestedStates((prev) => ({...prev, root: value}))}
+                    onValueChange={(value: string | string[]) => setNestedStates((prev) => ({ ...prev, root: value }))}
                     {...props}
                     role="menu"
                 >
@@ -150,8 +148,8 @@ function AccordionMenu({
 
 type AccordionMenuGroupProps = React.ComponentPropsWithoutRef<'div'>;
 
-function AccordionMenuGroup({children, className, ...props}: AccordionMenuGroupProps) {
-    const {classNames} = React.useContext(AccordionMenuContext);
+function AccordionMenuGroup({ children, className, ...props }: AccordionMenuGroupProps) {
+    const { classNames } = React.useContext(AccordionMenuContext);
     return (
         <div
             data-slot="accordion-menu-group"
@@ -166,8 +164,8 @@ function AccordionMenuGroup({children, className, ...props}: AccordionMenuGroupP
 
 type AccordionMenuLabelProps = React.ComponentPropsWithoutRef<'div'>;
 
-function AccordionMenuLabel({children, className, ...props}: AccordionMenuLabelProps) {
-    const {classNames} = React.useContext(AccordionMenuContext);
+function AccordionMenuLabel({ children, className, ...props }: AccordionMenuLabelProps) {
+    const { classNames } = React.useContext(AccordionMenuContext);
 
     return (
         <div
@@ -183,8 +181,8 @@ function AccordionMenuLabel({children, className, ...props}: AccordionMenuLabelP
 
 type AccordionMenuSeparatorProps = React.ComponentPropsWithoutRef<'div'>;
 
-function AccordionMenuSeparator({className, ...props}: AccordionMenuSeparatorProps) {
-    const {classNames} = React.useContext(AccordionMenuContext);
+function AccordionMenuSeparator({ className, ...props }: AccordionMenuSeparatorProps) {
+    const { classNames } = React.useContext(AccordionMenuContext);
     return (
         <div
             data-slot="accordion-menu-separator"
@@ -212,24 +210,24 @@ const itemVariants = cva(
 );
 
 function AccordionMenuItem({
-                               className,
-                               children,
-                               variant,
-                               asChild,
-                               onClick,
-                               ...props
-                           }: React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Item> &
+    className,
+    children,
+    variant,
+    asChild,
+    onClick,
+    ...props
+}: React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Item> &
     VariantProps<typeof itemVariants> & {
-    onClick?: React.MouseEventHandler<HTMLElement>;
-}) {
-    const {classNames, selectedValue, matchPath, onItemClick} = React.useContext(AccordionMenuContext);
+        onClick?: React.MouseEventHandler<HTMLElement>;
+    }) {
+    const { classNames, selectedValue, matchPath, onItemClick } = React.useContext(AccordionMenuContext);
     return (
         <AccordionPrimitive.Item className="flex" {...props}>
             <AccordionPrimitive.Header className="flex w-full">
                 <AccordionPrimitive.Trigger
                     asChild={asChild}
                     data-slot="accordion-menu-item"
-                    className={cn(itemVariants({variant}), classNames?.item, className)}
+                    className={cn(itemVariants({ variant }), classNames?.item, className)}
                     onClick={(e) => {
                         if (onItemClick) {
                             onItemClick(props.value, e);
@@ -250,7 +248,9 @@ function AccordionMenuItem({
                             }
                         }
                     }}
-                    data-selected={matchPath(props.value as string) || selectedValue === props.value ? 'true' : undefined}
+                    data-selected={
+                        matchPath(props.value as string) || selectedValue === props.value ? 'true' : undefined
+                    }
                 >
                     {children}
                 </AccordionPrimitive.Trigger>
@@ -260,11 +260,11 @@ function AccordionMenuItem({
 }
 
 function AccordionMenuSub({
-                              className,
-                              children,
-                              ...props
-                          }: React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Item>) {
-    const {classNames} = React.useContext(AccordionMenuContext);
+    className,
+    children,
+    ...props
+}: React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Item>) {
+    const { classNames } = React.useContext(AccordionMenuContext);
     return (
         <AccordionPrimitive.Item data-slot="accordion-menu-sub" className={cn(classNames?.sub, className)} {...props}>
             {children}
@@ -273,10 +273,10 @@ function AccordionMenuSub({
 }
 
 function AccordionMenuSubTrigger({
-                                     className,
-                                     children,
-                                 }: React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>) {
-    const {classNames} = React.useContext(AccordionMenuContext);
+    className,
+    children,
+}: React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>) {
+    const { classNames } = React.useContext(AccordionMenuContext);
     return (
         <AccordionPrimitive.Header className="flex">
             <AccordionPrimitive.Trigger
@@ -303,29 +303,29 @@ function AccordionMenuSubTrigger({
 
 type AccordionMenuSubContentProps = (
     | (React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Content> & {
-    type: 'single';
-    collapsible: boolean;
-    defaultValue?: string;
-})
+          type: 'single';
+          collapsible: boolean;
+          defaultValue?: string;
+      })
     | (React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Content> & {
-    type: 'multiple';
-    collapsible?: boolean;
-    defaultValue?: string | string[];
-})
-    ) & {
+          type: 'multiple';
+          collapsible?: boolean;
+          defaultValue?: string | string[];
+      })
+) & {
     parentValue: string;
 };
 
 function AccordionMenuSubContent({
-                                     className,
-                                     children,
-                                     type,
-                                     collapsible,
-                                     defaultValue,
-                                     parentValue,
-                                     ...props
-                                 }: AccordionMenuSubContentProps) {
-    const {nestedStates, setNestedStates, classNames} = React.useContext(AccordionMenuContext);
+    className,
+    children,
+    type,
+    collapsible,
+    defaultValue,
+    parentValue,
+    ...props
+}: AccordionMenuSubContentProps) {
+    const { nestedStates, setNestedStates, classNames } = React.useContext(AccordionMenuContext);
     let currentValue;
     if (type === 'multiple') {
         const stateValue = nestedStates[parentValue];
@@ -362,7 +362,7 @@ function AccordionMenuSubContent({
                     data-slot="accordion-menu-sub-wrapper"
                     onValueChange={(value: string | string[]) => {
                         const newValue = Array.isArray(value) ? value : [value];
-                        setNestedStates((prev) => ({...prev, [parentValue]: newValue}));
+                        setNestedStates((prev) => ({ ...prev, [parentValue]: newValue }));
                     }}
                 >
                     {children}
@@ -375,10 +375,12 @@ function AccordionMenuSubContent({
                     value={currentValue as string}
                     role="menu"
                     data-slot="accordion-menu-sub-wrapper"
-                    onValueChange={(value: string | string[]) => setNestedStates((prev) => ({
-                        ...prev,
-                        [parentValue]: value
-                    }))}
+                    onValueChange={(value: string | string[]) =>
+                        setNestedStates((prev) => ({
+                            ...prev,
+                            [parentValue]: value,
+                        }))
+                    }
                 >
                     {children}
                 </AccordionPrimitive.Root>
@@ -389,8 +391,8 @@ function AccordionMenuSubContent({
 
 type AccordionMenuIndicatorProps = React.ComponentPropsWithoutRef<'span'>;
 
-function AccordionMenuIndicator({className, ...props}: AccordionMenuIndicatorProps) {
-    const {classNames} = React.useContext(AccordionMenuContext);
+function AccordionMenuIndicator({ className, ...props }: AccordionMenuIndicatorProps) {
+    const { classNames } = React.useContext(AccordionMenuContext);
     return (
         <span
             aria-hidden="true"

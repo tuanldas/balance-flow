@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {useCopyToClipboard} from '@/hooks/use-copy-to-clipboard';
-import {cn} from '@/lib/utils';
-import {Button} from '@/components/ui/button';
-import {cva, type VariantProps} from 'class-variance-authority';
-import {Check, Copy} from 'lucide-react';
-import {Slot as SlotPrimitive} from 'radix-ui';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { Check, Copy } from 'lucide-react';
+import { Slot as SlotPrimitive } from 'radix-ui';
+import { cn } from '@/lib/utils';
+import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard';
+import { Button } from '@/components/ui/button';
 
 export interface CodeProps extends React.HTMLAttributes<HTMLElement>, VariantProps<typeof codeVariants> {
     asChild?: boolean;
@@ -32,24 +32,24 @@ const codeVariants = cva('relative rounded-md bg-muted font-mono text-sm font-me
 });
 
 function Code({
-                  className,
-                  variant,
-                  size,
-                  asChild = false,
-                  showCopyButton = false,
-                  copyText,
-                  children,
-                  ...props
-              }: CodeProps) {
-    const {copy, copied} = useCopyToClipboard();
+    className,
+    variant,
+    size,
+    asChild = false,
+    showCopyButton = false,
+    copyText,
+    children,
+    ...props
+}: CodeProps) {
+    const { copy, copied } = useCopyToClipboard();
     const Comp = asChild ? SlotPrimitive.Slot : 'code';
     const textToCopy = copyText || (typeof children === 'string' ? children : '');
 
     return (
         <span className={cn('inline-flex items-center gap-2', className)} data-slot="code">
-      <Comp data-slot="code-panel" className={cn(codeVariants({variant, size}))} {...props}>
-        {children}
-      </Comp>
+            <Comp data-slot="code-panel" className={cn(codeVariants({ variant, size }))} {...props}>
+                {children}
+            </Comp>
             {showCopyButton && textToCopy && (
                 <Button
                     mode="icon"
@@ -58,11 +58,11 @@ function Code({
                     className="h-4 w-4 p-0 opacity-60 hover:opacity-100"
                     onClick={() => copy(textToCopy)}
                 >
-                    {copied ? <Check className="h-3 w-3"/> : <Copy className="h-3 w-3"/>}
+                    {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
                 </Button>
             )}
-    </span>
+        </span>
     );
 }
 
-export {Code, codeVariants};
+export { Code, codeVariants };

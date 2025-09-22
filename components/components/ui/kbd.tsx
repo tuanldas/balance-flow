@@ -1,8 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import {cn} from '@/lib/utils';
-import {cva, type VariantProps} from 'class-variance-authority';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
 
 const kbdVariants = cva('inline-flex items-center justify-center font-mono rounded-md', {
     variants: {
@@ -22,8 +22,8 @@ const kbdVariants = cva('inline-flex items-center justify-center font-mono round
     },
 });
 
-function Kbd({className, variant, size, ...props}: React.ComponentProps<'kbd'> & VariantProps<typeof kbdVariants>) {
-    return <kbd data-slot="kbd" className={cn(kbdVariants({variant, size}), className)} {...props} />;
+function Kbd({ className, variant, size, ...props }: React.ComponentProps<'kbd'> & VariantProps<typeof kbdVariants>) {
+    return <kbd data-slot="kbd" className={cn(kbdVariants({ variant, size }), className)} {...props} />;
 }
 
-export {Kbd, kbdVariants};
+export { Kbd, kbdVariants };

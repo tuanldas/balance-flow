@@ -2,14 +2,11 @@
 'use client';
 
 import * as React from 'react';
-import {cn} from '@/lib/utils';
 import {
     defaultDropAnimation,
     defaultDropAnimationSideEffects,
     DndContext,
     DragEndEvent,
-    type DraggableAttributes,
-    type DraggableSyntheticListeners,
     DragOverEvent,
     DragOverlay,
     DragStartEvent,
@@ -19,6 +16,8 @@ import {
     UniqueIdentifier,
     useSensor,
     useSensors,
+    type DraggableAttributes,
+    type DraggableSyntheticListeners,
 } from '@dnd-kit/core';
 import {
     arrayMove,
@@ -28,8 +27,9 @@ import {
     useSortable,
     verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
-import {CSS} from '@dnd-kit/utilities';
-import {Slot} from '@radix-ui/react-slot';
+import { CSS } from '@dnd-kit/utilities';
+import { Slot } from '@radix-ui/react-slot';
+import { cn } from '@/lib/utils';
 
 interface KanbanContextProps<T> {
     columns: Record<string, T[]>;
@@ -44,13 +44,11 @@ interface KanbanContextProps<T> {
 
 const KanbanContext = React.createContext<KanbanContextProps<any>>({
     columns: {},
-    setColumns: () => {
-    },
+    setColumns: () => {},
     getItemId: () => '',
     columnIds: [],
     activeId: null,
-    setActiveId: () => {
-    },
+    setActiveId: () => {},
     findContainer: () => undefined,
     isColumn: () => false,
 });
@@ -105,7 +103,7 @@ export interface KanbanRootProps<T> {
     onMove?: (event: KanbanMoveEvent) => void;
 }
 
-function Kanban<T>({value, onValueChange, getItemValue, children, className, onMove}: KanbanRootProps<T>) {
+function Kanban<T>({ value, onValueChange, getItemValue, children, className, onMove }: KanbanRootProps<T>) {
     const columns = value;
     const setColumns = onValueChange;
     const [activeId, setActiveId] = React.useState<UniqueIdentifier | null>(null);
@@ -143,7 +141,7 @@ function Kanban<T>({value, onValueChange, getItemValue, children, className, onM
                 return;
             }
 
-            const {active, over} = event;
+            const { active, over } = event;
             if (!over) return;
 
             if (isColumn(active.id)) return;
@@ -182,7 +180,7 @@ function Kanban<T>({value, onValueChange, getItemValue, children, className, onM
 
     const handleDragEnd = React.useCallback(
         (event: DragEndEvent) => {
-            const {active, over} = event;
+            const { active, over } = event;
             setActiveId(null);
 
             if (!over) return;
@@ -193,7 +191,9 @@ function Kanban<T>({value, onValueChange, getItemValue, children, className, onM
                 const overContainer = findContainer(over.id);
 
                 if (activeContainer && overContainer) {
-                    const activeIndex = columns[activeContainer].findIndex((item: T) => getItemValue(item) === active.id);
+                    const activeIndex = columns[activeContainer].findIndex(
+                        (item: T) => getItemValue(item) === active.id,
+                    );
                     const overIndex = isColumn(over.id)
                         ? columns[overContainer].length
                         : columns[overContainer].findIndex((item: T) => getItemValue(item) === over.id);
@@ -260,8 +260,12 @@ function Kanban<T>({value, onValueChange, getItemValue, children, className, onM
 
     return (
         <KanbanContext.Provider value={contextValue}>
-            <DndContext sensors={sensors} onDragStart={handleDragStart} onDragOver={handleDragOver}
-                        onDragEnd={handleDragEnd}>
+            <DndContext
+                sensors={sensors}
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
+                onDragEnd={handleDragEnd}
+            >
                 <div data-slot="kanban" data-dragging={activeId !== null} className={cn(className)}>
                     {children}
                 </div>
@@ -275,8 +279,8 @@ export interface KanbanBoardProps {
     children: React.ReactNode;
 }
 
-function KanbanBoard({children, className}: KanbanBoardProps) {
-    const {columnIds} = React.useContext(KanbanContext);
+function KanbanBoard({ children, className }: KanbanBoardProps) {
+    const { columnIds } = React.useContext(KanbanContext);
 
     return (
         <SortableContext items={columnIds} strategy={rectSortingStrategy}>
@@ -294,7 +298,7 @@ export interface KanbanColumnProps {
     disabled?: boolean;
 }
 
-function KanbanColumn({value, className, children, disabled}: KanbanColumnProps) {
+function KanbanColumn({ value, className, children, disabled }: KanbanColumnProps) {
     const {
         setNodeRef,
         transform,
@@ -307,7 +311,7 @@ function KanbanColumn({value, className, children, disabled}: KanbanColumnProps)
         disabled,
     });
 
-    const {activeId, isColumn} = React.useContext(KanbanContext);
+    const { activeId, isColumn } = React.useContext(KanbanContext);
     const isColumnDragging = activeId ? isColumn(activeId) : false;
 
     const style = {
@@ -316,7 +320,7 @@ function KanbanColumn({value, className, children, disabled}: KanbanColumnProps)
     } as React.CSSProperties;
 
     return (
-        <ColumnContext.Provider value={{attributes, listeners, isDragging: isColumnDragging, disabled}}>
+        <ColumnContext.Provider value={{ attributes, listeners, isDragging: isColumnDragging, disabled }}>
             <div
                 data-slot="kanban-column"
                 data-value={value}
@@ -344,8 +348,8 @@ export interface KanbanColumnHandleProps {
     cursor?: boolean;
 }
 
-function KanbanColumnHandle({asChild, className, children, cursor = true}: KanbanColumnHandleProps) {
-    const {attributes, listeners, isDragging, disabled} = React.useContext(ColumnContext);
+function KanbanColumnHandle({ asChild, className, children, cursor = true }: KanbanColumnHandleProps) {
+    const { attributes, listeners, isDragging, disabled } = React.useContext(ColumnContext);
 
     const Comp = asChild ? Slot : 'div';
 
@@ -375,7 +379,7 @@ export interface KanbanItemProps {
     disabled?: boolean;
 }
 
-function KanbanItem({value, asChild = false, className, children, disabled}: KanbanItemProps) {
+function KanbanItem({ value, asChild = false, className, children, disabled }: KanbanItemProps) {
     const {
         setNodeRef,
         transform,
@@ -388,7 +392,7 @@ function KanbanItem({value, asChild = false, className, children, disabled}: Kan
         disabled,
     });
 
-    const {activeId, isColumn} = React.useContext(KanbanContext);
+    const { activeId, isColumn } = React.useContext(KanbanContext);
     const isItemDragging = activeId ? !isColumn(activeId) : false;
 
     const style = {
@@ -399,7 +403,7 @@ function KanbanItem({value, asChild = false, className, children, disabled}: Kan
     const Comp = asChild ? Slot : 'div';
 
     return (
-        <ItemContext.Provider value={{listeners, isDragging: isItemDragging, disabled}}>
+        <ItemContext.Provider value={{ listeners, isDragging: isItemDragging, disabled }}>
             <Comp
                 data-slot="kanban-item"
                 data-value={value}
@@ -423,8 +427,8 @@ export interface KanbanItemHandleProps {
     cursor?: boolean;
 }
 
-function KanbanItemHandle({asChild, className, children, cursor = true}: KanbanItemHandleProps) {
-    const {listeners, isDragging, disabled} = React.useContext(ItemContext);
+function KanbanItemHandle({ asChild, className, children, cursor = true }: KanbanItemHandleProps) {
+    const { listeners, isDragging, disabled } = React.useContext(ItemContext);
 
     const Comp = asChild ? Slot : 'div';
 
@@ -447,8 +451,8 @@ export interface KanbanColumnContentProps {
     children: React.ReactNode;
 }
 
-function KanbanColumnContent({value, className, children}: KanbanColumnContentProps) {
-    const {columns, getItemId} = React.useContext(KanbanContext);
+function KanbanColumnContent({ value, className, children }: KanbanColumnContentProps) {
+    const { columns, getItemId } = React.useContext(KanbanContext);
 
     const itemIds = React.useMemo(() => columns[value].map(getItemId), [columns, getItemId, value]);
 
@@ -466,8 +470,8 @@ export interface KanbanOverlayProps {
     children?: React.ReactNode | ((params: { value: UniqueIdentifier; variant: 'column' | 'item' }) => React.ReactNode);
 }
 
-function KanbanOverlay({children, className}: KanbanOverlayProps) {
-    const {activeId, isColumn} = React.useContext(KanbanContext);
+function KanbanOverlay({ children, className }: KanbanOverlayProps) {
+    const { activeId, isColumn } = React.useContext(KanbanContext);
     const [dimensions, setDimensions] = React.useState<{ width: number; height: number } | null>(null);
 
     React.useEffect(() => {
@@ -477,7 +481,7 @@ function KanbanOverlay({children, className}: KanbanOverlayProps) {
             );
             if (element) {
                 const rect = element.getBoundingClientRect();
-                setDimensions({width: rect.width, height: rect.height});
+                setDimensions({ width: rect.width, height: rect.height });
             }
         } else {
             setDimensions(null);

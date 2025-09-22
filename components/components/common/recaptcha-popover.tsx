@@ -1,11 +1,11 @@
 'use client';
 
 import * as Popover from '@radix-ui/react-popover';
-import {RiErrorWarningFill} from '@remixicon/react';
-import {toast} from 'sonner';
-import {useRecaptchaV2} from '@/hooks/use-recaptcha-v2';
-import {Alert, AlertIcon, AlertTitle} from '@/components/ui/alert';
-import {Button} from '@/components/ui/button';
+import { RiErrorWarningFill } from '@remixicon/react';
+import { toast } from 'sonner';
+import { useRecaptchaV2 } from '@/hooks/use-recaptcha-v2';
+import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 
 interface RecaptchaPopoverProps {
     open: boolean;
@@ -16,14 +16,15 @@ interface RecaptchaPopoverProps {
 }
 
 export function RecaptchaPopover({
-                                     open,
-                                     onOpenChange,
-                                     onVerify,
-                                     trigger,
-                                     verifyButtonText = 'Verify & Submit',
-                                 }: RecaptchaPopoverProps) {
-    const {containerRef, getToken, resetCaptcha, initializeRecaptcha} =
-        useRecaptchaV2(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '');
+    open,
+    onOpenChange,
+    onVerify,
+    trigger,
+    verifyButtonText = 'Verify & Submit',
+}: RecaptchaPopoverProps) {
+    const { containerRef, getToken, resetCaptcha, initializeRecaptcha } = useRecaptchaV2(
+        process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '',
+    );
 
     const handleOpenChange = (newOpen: boolean) => {
         onOpenChange(newOpen);
@@ -44,11 +45,9 @@ export function RecaptchaPopover({
                     () => (
                         <Alert variant="mono" icon="destructive">
                             <AlertIcon>
-                                <RiErrorWarningFill/>
+                                <RiErrorWarningFill />
                             </AlertIcon>
-                            <AlertTitle>
-                                Please complete the reCAPTCHA verification.
-                            </AlertTitle>
+                            <AlertTitle>Please complete the reCAPTCHA verification.</AlertTitle>
                         </Alert>
                     ),
                     {
@@ -64,7 +63,7 @@ export function RecaptchaPopover({
                 () => (
                     <Alert variant="mono" icon="destructive">
                         <AlertIcon>
-                            <RiErrorWarningFill/>
+                            <RiErrorWarningFill />
                         </AlertIcon>
                         <AlertTitle>Please complete the reCAPTCHA verification.</AlertTitle>
                     </Alert>
@@ -94,17 +93,12 @@ export function RecaptchaPopover({
                     }}
                 >
                     <div className="flex flex-col gap-4">
-                        <div ref={containerRef} className="min-h-[78px]"/>
-                        <Button
-                            type="button"
-                            variant="mono"
-                            onClick={handleVerify}
-                            className="w-full"
-                        >
+                        <div ref={containerRef} className="min-h-[78px]" />
+                        <Button type="button" variant="mono" onClick={handleVerify} className="w-full">
                             {verifyButtonText}
                         </Button>
                     </div>
-                    <Popover.Arrow className="fill-white"/>
+                    <Popover.Arrow className="fill-white" />
                 </Popover.Content>
             </Popover.Portal>
         </Popover.Root>

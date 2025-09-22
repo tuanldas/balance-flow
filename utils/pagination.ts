@@ -8,6 +8,7 @@ export function coercePaginated<T>(data: unknown): IPaginatedResponse<T> | null 
 
     const payload = maybePayload as Record<string, unknown>;
     const items = payload.data as unknown as unknown[] | undefined;
+    console.log(maybePayload);
     if (!Array.isArray(items)) return null;
 
     const typedItems = items as T[];
