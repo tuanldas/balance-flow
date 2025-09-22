@@ -86,8 +86,13 @@
         "home": "Trang chủ",
         "dashboard": "Bảng điều khiển",
         "wallets": "Ví",
+        "transactions": "Giao dịch",
         "settings": "Cài đặt",
         "profile": "Hồ sơ"
+    },
+    "transactions": {
+        "title": "Giao dịch",
+        "load_failed": "Không tải được danh sách giao dịch"
     },
     "auth": {
         "signin": {

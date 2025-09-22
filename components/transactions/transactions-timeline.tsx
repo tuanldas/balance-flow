@@ -77,6 +77,7 @@ export default function TransactionsTimeline({
 }) {
     const { t } = useTranslation();
     const today = grouped.today;
+    const days: TimelineDay[] = [...(today ? [today] : []), ...grouped.months.flatMap((m) => m.days)];
 
     return (
         <div className="space-y-6">
@@ -90,25 +91,11 @@ export default function TransactionsTimeline({
                 </div>
             ) : null}
 
-            {grouped.months.map((month, monthIndex) => (
-                <div key={`${month.label}-${monthIndex}`} className="space-y-4">
-                    <div className="flex items-center justify-between">
-                        <h3 className="text-base font-semibold text-mono">{month.label}</h3>
-                        <span
-                            className={
-                                'text-base font-semibold text-mono ' + (month.total.value > 0 ? 'text-green-600' : '')
-                            }
-                        >
-                            {month.total.value < 0 ? '-' : month.total.value > 0 ? '+' : ''}
-                            {formatMoneyCompact(Math.abs(month.total.value), { minimumFractionDigits: 0 })}{' '}
-                            {month.total.currency ?? currencyFallback}
-                        </span>
-                    </div>
-                    {month.days.map((day, dayIndex) => (
-                        <DaySection key={`${day.label}-${dayIndex}`} day={day} currencyFallback={currencyFallback} />
-                    ))}
-                </div>
-            ))}
+            {days
+                .filter((d) => d !== today)
+                .map((day, idx) => (
+                    <DaySection key={`${day.label}-${idx}`} day={day} currencyFallback={currencyFallback} />
+                ))}
         </div>
     );
 }

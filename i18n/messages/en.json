@@ -86,8 +86,13 @@
         "home": "Home",
         "dashboard": "Dashboard",
         "wallets": "Wallets",
+        "transactions": "Transactions",
         "settings": "Settings",
         "profile": "Profile"
+    },
+    "transactions": {
+        "title": "Transactions",
+        "load_failed": "Failed to load transactions"
     },
     "auth": {
         "signin": {

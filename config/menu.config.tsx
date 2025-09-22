@@ -1,4 +1,4 @@
-import { SquareActivity, Wallet } from 'lucide-react';
+import { ListOrdered, SquareActivity, Wallet } from 'lucide-react';
 import { ROUTES } from './routes';
 import { type MenuConfig } from './types';
 
@@ -15,6 +15,11 @@ export const MENU_SIDEBAR: MenuConfig = [
                 titleKey: 'navigation.wallets',
                 path: ROUTES.wallets,
                 icon: Wallet,
+            },
+            {
+                titleKey: 'navigation.transactions',
+                path: ROUTES.transactions,
+                icon: ListOrdered,
             },
         ],
     },
