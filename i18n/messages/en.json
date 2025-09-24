@@ -96,7 +96,13 @@
         "add": "Add transaction",
         "category": "Category",
         "date": "Date",
-        "type": "Type"
+        "type": "Type",
+        "amount": "Amount",
+        "note": "Note",
+        "type_values": {
+            "income": "Income",
+            "expense": "Expense"
+        }
     },
     "auth": {
         "signin": {

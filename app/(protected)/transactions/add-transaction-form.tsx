@@ -7,6 +7,7 @@ import {
     callApiGetWalletOptions,
     type CreateWalletTransactionPayload,
 } from '@/api/wallet';
+import { formatMoneyCompact } from '@/utils/format';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Button } from '@/components/ui/button';
@@ -15,7 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-type Option = { id: string; name: string };
+type Option = { id: string; name: string; balance?: number | string; currency?: string };
 
 export default function AddTransactionForm({
     isOpen,
@@ -65,9 +66,16 @@ export default function AddTransactionForm({
 
     const [walletId, setWalletId] = useState<string>('');
     const [categoryId, setCategoryId] = useState<string>('');
-    const [amount, setAmount] = useState<string>('');
-    const [date, setDate] = useState<string>('');
-    const [type, setType] = useState<'income' | 'expense' | 'transfer'>('expense');
+    const [amount, setAmount] = useState<string>('0');
+    const [amountDisplay, setAmountDisplay] = useState<string>('0');
+    const [date, setDate] = useState<string>(() => {
+        const d = new Date();
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    });
+    const [type, setType] = useState<'income' | 'expense'>('expense');
     const [description, setDescription] = useState<string>('');
 
     const { mutateAsync, isPending } = useMutation({
@@ -110,11 +118,19 @@ export default function AddTransactionForm({
                                 <SelectValue placeholder={t('wallet.untitled') ?? 'Select wallet'} />
                             </SelectTrigger>
                             <SelectContent>
-                                {walletOptions.map((w) => (
-                                    <SelectItem key={w.id} value={w.id}>
-                                        {w.name}
-                                    </SelectItem>
-                                ))}
+                                {walletOptions.map((w) => {
+                                    const hasBalance = w.balance !== undefined && w.currency !== undefined;
+                                    const label = hasBalance
+                                        ? `${w.name} - ${formatMoneyCompact(Number(w.balance) || 0, {
+                                              minimumFractionDigits: 0,
+                                          })} ${w.currency}`
+                                        : w.name;
+                                    return (
+                                        <SelectItem key={w.id} value={w.id}>
+                                            {label}
+                                        </SelectItem>
+                                    );
+                                })}
                             </SelectContent>
                         </Select>
                     </div>
@@ -136,12 +152,43 @@ export default function AddTransactionForm({
                     </div>
 
                     <div className="grid gap-2">
-                        <Label>{t('wallet.form.initial_balance') ?? 'Amount'}</Label>
+                        <Label>{t('transactions.amount') ?? 'Amount'}</Label>
                         <Input
-                            type="number"
-                            inputMode="decimal"
-                            value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
+                            type="text"
+                            inputMode="numeric"
+                            value={amountDisplay}
+                            onChange={(e) => {
+                                const value = e.target.value.replace(/[^0-9]/g, '');
+                                const normalized = value || '0';
+                                setAmount(normalized);
+                                setAmountDisplay(
+                                    value
+                                        ? formatMoneyCompact(normalized, {
+                                              minimumFractionDigits: 0,
+                                              maximumFractionDigits: 0,
+                                          })
+                                        : '',
+                                );
+                            }}
+                            onFocus={() => {
+                                if (amount === '0') {
+                                    setAmountDisplay('');
+                                }
+                            }}
+                            onBlur={() => {
+                                if (!amount || amount === '0') {
+                                    setAmount('0');
+                                    setAmountDisplay('0');
+                                } else {
+                                    setAmountDisplay(
+                                        formatMoneyCompact(Number(amount), {
+                                            minimumFractionDigits: 0,
+                                            maximumFractionDigits: 0,
+                                        }),
+                                    );
+                                }
+                            }}
+                            placeholder={formatMoneyCompact(0)}
                         />
                     </div>
 
@@ -152,20 +199,23 @@ export default function AddTransactionForm({
 
                     <div className="grid gap-2">
                         <Label>{t('transactions.type') ?? 'Type'}</Label>
-                        <Select value={type} onValueChange={(v) => setType(v as 'income' | 'expense' | 'transfer')}>
+                        <Select value={type} onValueChange={(v) => setType(v as 'income' | 'expense')}>
                             <SelectTrigger>
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="income">Income</SelectItem>
-                                <SelectItem value="expense">Expense</SelectItem>
-                                <SelectItem value="transfer">Transfer</SelectItem>
+                                <SelectItem value="income">
+                                    {t('transactions.type_values.income') ?? 'Income'}
+                                </SelectItem>
+                                <SelectItem value="expense">
+                                    {t('transactions.type_values.expense') ?? 'Expense'}
+                                </SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
 
                     <div className="grid gap-2">
-                        <Label>{t('wallet.form.description') ?? 'Description'}</Label>
+                        <Label>{t('transactions.note') ?? 'Note'}</Label>
                         <Input value={description} onChange={(e) => setDescription(e.target.value)} />
                     </div>
                 </div>

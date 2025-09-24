@@ -18,7 +18,7 @@ export default function TransactionsPage() {
     const { t } = useTranslation();
     const [isFormOpen, setIsFormOpen] = useState(false);
 
-    const { data, isError, refetch, isFetchingNextPage, fetchNextPage, hasNextPage } =
+    const { data, isLoading, isError, refetch, isFetchingNextPage, fetchNextPage, hasNextPage } =
         useInfiniteQuery<IPaginatedResponse<IUserTransactionItem> | null>({
             queryKey: ['transactions'],
             initialPageParam: 1,
@@ -37,14 +37,23 @@ export default function TransactionsPage() {
     }, [data]);
 
     const timelineItems = useMemo<TimelineItem[]>(() => {
-        return items.map((tx) => ({
-            id: tx.id,
-            title: tx.category?.name || '',
-            account: tx.wallet?.name || '',
-            category: { name: tx.category?.name || '' },
-            amount: { value: Number(tx.amount) || 0, currency: tx.wallet?.currency },
-            date: new Date(tx.transaction_date),
-        }));
+        return items.map((tx) => {
+            const raw = Number(tx.amount) || 0;
+            const signed =
+                tx.transaction_type === 'expense'
+                    ? -Math.abs(raw)
+                    : tx.transaction_type === 'income'
+                      ? Math.abs(raw)
+                      : 0;
+            return {
+                id: tx.id,
+                title: tx.category?.name || '',
+                account: tx.wallet?.name || '',
+                category: { name: tx.category?.name || '' },
+                amount: { value: signed, currency: tx.wallet?.currency },
+                date: new Date(tx.transaction_date),
+            };
+        });
     }, [items]);
 
     const grouped = useMemo(() => groupTimelineItems(timelineItems), [timelineItems]);
@@ -86,7 +95,9 @@ export default function TransactionsPage() {
                 </ToolbarActions>
             </Toolbar>
 
-            {isError || !data ? (
+            {isLoading ? (
+                <div className="text-sm text-muted-foreground">{t('common.messages.loading') ?? 'Loading...'}</div>
+            ) : isError ? (
                 <div className="space-y-4">
                     <Alert variant="destructive">
                         <AlertIcon>

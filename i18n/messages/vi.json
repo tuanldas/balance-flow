@@ -96,7 +96,13 @@
         "add": "Thêm giao dịch",
         "category": "Danh mục",
         "date": "Ngày",
-        "type": "Loại"
+        "type": "Loại",
+        "amount": "Số tiền",
+        "note": "Ghi chú",
+        "type_values": {
+            "income": "Thu",
+            "expense": "Chi"
+        }
     },
     "auth": {
         "signin": {
