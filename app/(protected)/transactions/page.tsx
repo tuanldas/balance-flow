@@ -1,27 +1,29 @@
 'use client';
 
-import {useEffect, useMemo, useRef} from 'react';
-import {callApiGetUserTransactions} from '@/api/transactions';
-import type {IPaginatedResponse} from '@/api/types/pagination';
-import type {IUserTransactionItem} from '@/api/types/transactions';
-import {groupTimelineItems, type TimelineItem} from '@/utils/transactions-timeline';
-import {useInfiniteQuery} from '@tanstack/react-query';
-import {AlertCircle} from 'lucide-react';
-import {useTranslation} from '@/hooks/useTranslation';
-import {Alert, AlertIcon, AlertTitle} from '@/components/ui/alert';
-import {Button} from '@/components/ui/button';
-import {Toolbar, ToolbarHeading, ToolbarTitle} from '@/components/common/toolbar';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { callApiGetUserTransactions } from '@/api/transactions';
+import type { IPaginatedResponse } from '@/api/types/pagination';
+import type { IUserTransactionItem } from '@/api/types/transactions';
+import { groupTimelineItems, type TimelineItem } from '@/utils/transactions-timeline';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { AlertCircle, Plus } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
+import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Toolbar, ToolbarActions, ToolbarHeading, ToolbarTitle } from '@/components/common/toolbar';
 import TransactionsTimeline from '@/components/transactions/transactions-timeline';
+import AddTransactionForm from './add-transaction-form';
 
 export default function TransactionsPage() {
-    const {t} = useTranslation();
+    const { t } = useTranslation();
+    const [isFormOpen, setIsFormOpen] = useState(false);
 
-    const {data, isError, refetch, isFetchingNextPage, fetchNextPage, hasNextPage} =
+    const { data, isLoading, isError, refetch, isFetchingNextPage, fetchNextPage, hasNextPage } =
         useInfiniteQuery<IPaginatedResponse<IUserTransactionItem> | null>({
             queryKey: ['transactions'],
             initialPageParam: 1,
-            queryFn: async ({pageParam}) => {
-                return await callApiGetUserTransactions({per_page: 20, page: Number(pageParam)});
+            queryFn: async ({ pageParam }) => {
+                return await callApiGetUserTransactions({ per_page: 20, page: Number(pageParam) });
             },
             getNextPageParam: (lastPage) => {
                 if (!lastPage) return undefined;
@@ -35,14 +37,23 @@ export default function TransactionsPage() {
     }, [data]);
 
     const timelineItems = useMemo<TimelineItem[]>(() => {
-        return items.map((tx) => ({
-            id: tx.id,
-            title: tx.category?.name || '',
-            account: tx.wallet?.name || '',
-            category: {name: tx.category?.name || ''},
-            amount: {value: Number(tx.amount) || 0, currency: tx.wallet?.currency},
-            date: new Date(tx.transaction_date),
-        }));
+        return items.map((tx) => {
+            const raw = Number(tx.amount) || 0;
+            const signed =
+                tx.transaction_type === 'expense'
+                    ? -Math.abs(raw)
+                    : tx.transaction_type === 'income'
+                      ? Math.abs(raw)
+                      : 0;
+            return {
+                id: tx.id,
+                title: tx.category?.name || '',
+                account: tx.wallet?.name || '',
+                category: { name: tx.category?.name || '' },
+                amount: { value: signed, currency: tx.wallet?.currency },
+                date: new Date(tx.transaction_date),
+            };
+        });
     }, [items]);
 
     const grouped = useMemo(() => groupTimelineItems(timelineItems), [timelineItems]);
@@ -77,13 +88,20 @@ export default function TransactionsPage() {
                 <ToolbarHeading>
                     <ToolbarTitle>{t('transactions.title') ?? 'Transactions'}</ToolbarTitle>
                 </ToolbarHeading>
+                <ToolbarActions>
+                    <Button onClick={() => setIsFormOpen(true)} variant="primary" mode="icon">
+                        <Plus className="h-4 w-4 text-white" />
+                    </Button>
+                </ToolbarActions>
             </Toolbar>
 
-            {isError || !data ? (
+            {isLoading ? (
+                <div className="text-sm text-muted-foreground">{t('common.messages.loading') ?? 'Loading...'}</div>
+            ) : isError ? (
                 <div className="space-y-4">
                     <Alert variant="destructive">
                         <AlertIcon>
-                            <AlertCircle/>
+                            <AlertCircle />
                         </AlertIcon>
                         <AlertTitle>{t('transactions.load_failed') ?? 'Failed to load transactions'}</AlertTitle>
                     </Alert>
@@ -93,7 +111,7 @@ export default function TransactionsPage() {
                 </div>
             ) : (
                 <>
-                    <TransactionsTimeline grouped={grouped}/>
+                    <TransactionsTimeline grouped={grouped} />
 
                     <div
                         ref={sentinelRef}
@@ -107,6 +125,7 @@ export default function TransactionsPage() {
                     </div>
                 </>
             )}
+            <AddTransactionForm isOpen={isFormOpen} onOpenChange={setIsFormOpen} />
         </div>
     );
 }

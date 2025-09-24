@@ -1,4 +1,4 @@
-import ApiCaller from '@/api/apiCaller.tsx';
+import ApiCaller from '@/api/apiCaller';
 import { type IPaginatedResponse } from '@/api/types/pagination';
 import {
     type IWalletDetail,
@@ -82,5 +82,20 @@ export const callApiUpdateWallet = async (walletId: string, formData: IWalletUpd
 
 export const callApiDeleteWallet = async (walletId: string) => {
     const { data } = (await new ApiCaller().setUrl(`/wallets/${walletId}`).delete()) as AxiosResponse<unknown>;
+    return data;
+};
+
+export interface CreateWalletTransactionPayload {
+    category_id: string;
+    amount: number | string;
+    transaction_date: string; // YYYY-MM-DD or ISO
+    transaction_type: WalletTransactionType;
+    description?: string;
+}
+
+export const callApiCreateWalletTransaction = async (walletId: string, payload: CreateWalletTransactionPayload) => {
+    const { data } = (await new ApiCaller()
+        .setUrl(`/wallets/${walletId}/transactions`)
+        .post({ data: payload })) as AxiosResponse<unknown>;
     return data;
 };
