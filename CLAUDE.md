@@ -159,6 +159,61 @@ The project uses **shadcn/ui** components with extensive customization:
 - **File Upload** (`file-upload.tsx`): File upload with drag & drop
 - **Avatar Group** (`avatar-group.tsx`): Stacked avatar display
 
+## Git Commit Guidelines
+
+**IMPORTANT: All commit messages MUST be written in Vietnamese.**
+
+### Commit Message Format
+
+```
+<type>: <subject in Vietnamese>
+
+<body in Vietnamese (optional)>
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+### Commit Types (in Vietnamese)
+
+- **feat**: Thêm tính năng mới
+- **fix**: Sửa lỗi
+- **docs**: Cập nhật tài liệu
+- **style**: Thay đổi format, thiếu dấu chấm phẩy, không ảnh hưởng code
+- **refactor**: Tái cấu trúc code, không phải bug fix hay thêm feature
+- **perf**: Cải thiện hiệu suất
+- **test**: Thêm hoặc sửa tests
+- **chore**: Cập nhật build scripts, dependencies, config files
+- **revert**: Hoàn tác commit trước đó
+
+### Examples
+
+```bash
+# Feature
+feat: thêm chức năng đăng nhập bằng Google
+
+# Bug fix
+fix: sửa lỗi hiển thị avatar trong sidebar
+
+# Documentation
+docs: cập nhật hướng dẫn cài đặt trong README
+
+# Chore
+chore: cập nhật dependencies React lên v19.2.0
+
+# Refactor
+refactor: tối ưu hóa component UserProfile
+```
+
+### Best Practices
+
+- Sử dụng động từ nguyên thể ở đầu câu (thêm, sửa, cập nhật, tối ưu)
+- Giữ subject ngắn gọn (dưới 72 ký tự)
+- Viết rõ ràng, dễ hiểu nội dung thay đổi
+- Không dùng dấu chấm ở cuối subject
+- Body giải thích chi tiết hơn nếu cần (optional)
+
 ## Key Conventions
 
 - All components use TypeScript (`.tsx` extension)
@@ -167,3 +222,4 @@ The project uses **shadcn/ui** components with extensive customization:
 - CSS uses Tailwind utility classes with dark mode variants
 - Layout themes are client components with context providers
 - Use `cn()` utility from `@/lib/utils` for conditional class names
+- **Git commits MUST be written in Vietnamese** (see Git Commit Guidelines above)
