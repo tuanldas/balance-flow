@@ -13,3 +13,5 @@ dist-ssr
 
 .next
 .env.production
+.idea
+_chat.md
