@@ -1,8 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
-  images: {},
-  output: 'standalone',
+    // For local development, basePath is '/'
+    // This file will be overwritten during deployment with the appropriate basePath
+    images: {},
+    output: 'standalone',
 };
 
 export default nextConfig;
