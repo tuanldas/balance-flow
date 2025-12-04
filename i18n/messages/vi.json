@@ -1,55 +1,55 @@
 {
-  "common": {
-    "buttons": {
-      "save": "Lưu",
-      "cancel": "Hủy",
-      "delete": "Xóa",
-      "edit": "Sửa",
-      "add": "Thêm",
-      "remove": "Gỡ bỏ",
-      "submit": "Gửi",
-      "close": "Đóng"
+    "common": {
+        "buttons": {
+            "save": "Lưu",
+            "cancel": "Hủy",
+            "delete": "Xóa",
+            "edit": "Sửa",
+            "add": "Thêm",
+            "remove": "Gỡ bỏ",
+            "submit": "Gửi",
+            "close": "Đóng"
+        },
+        "labels": {
+            "name": "Tên",
+            "email": "Email",
+            "password": "Mật khẩu",
+            "username": "Tên đăng nhập",
+            "phone": "Số điện thoại",
+            "address": "Địa chỉ"
+        },
+        "messages": {
+            "welcome": "Chào mừng",
+            "loading": "Đang tải...",
+            "error": "Đã xảy ra lỗi",
+            "success": "Thao tác hoàn thành thành công",
+            "confirm": "Bạn có chắc chắn không?"
+        }
     },
-    "labels": {
-      "name": "Tên",
-      "email": "Email",
-      "password": "Mật khẩu",
-      "username": "Tên đăng nhập",
-      "phone": "Số điện thoại",
-      "address": "Địa chỉ"
+    "pages": {
+        "home": {
+            "title": "Chào mừng",
+            "description": "Chào mừng bạn đến với ứng dụng của chúng tôi"
+        },
+        "account": {
+            "title": "Cài đặt tài khoản",
+            "notifications": {
+                "title": "Thông báo",
+                "description": "Quản lý tùy chọn thông báo của bạn"
+            }
+        }
+    },
+    "navigation": {
+        "home": "Trang chủ",
+        "dashboard": "Bảng điều khiển",
+        "settings": "Cài đặt",
+        "profile": "Hồ sơ"
     },
     "messages": {
-      "welcome": "Chào mừng",
-      "loading": "Đang tải...",
-      "error": "Đã xảy ra lỗi",
-      "success": "Thao tác hoàn thành thành công",
-      "confirm": "Bạn có chắc chắn không?"
+        "unauthorized": "Truy cập không được phép.",
+        "system_error": "Rất tiếc! Có lỗi xảy ra. Vui lòng thử lại sau.",
+        "invalid_input": "Dữ liệu không hợp lệ. Vui lòng kiểm tra và thử lại.",
+        "data_not_found": "Không tìm thấy dữ liệu yêu cầu.",
+        "delete_restricted_error": "Không thể xóa bản ghi này vì nó đang được liên kết với các bản ghi khác."
     }
-  },
-  "pages": {
-    "home": {
-      "title": "Chào mừng",
-      "description": "Chào mừng bạn đến với ứng dụng của chúng tôi"
-    },
-    "account": {
-      "title": "Cài đặt tài khoản",
-      "notifications": {
-        "title": "Thông báo",
-        "description": "Quản lý tùy chọn thông báo của bạn"
-      }
-    }
-  },
-  "navigation": {
-    "home": "Trang chủ",
-    "dashboard": "Bảng điều khiển",
-    "settings": "Cài đặt",
-    "profile": "Hồ sơ"
-  },
-  "messages": {
-    "unauthorized": "Truy cập không được phép.",
-    "system_error": "Rất tiếc! Có lỗi xảy ra. Vui lòng thử lại sau.",
-    "invalid_input": "Dữ liệu không hợp lệ. Vui lòng kiểm tra và thử lại.",
-    "data_not_found": "Không tìm thấy dữ liệu yêu cầu.",
-    "delete_restricted_error": "Không thể xóa bản ghi này vì nó đang được liên kết với các bản ghi khác."
-  }
 }

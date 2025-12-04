@@ -31,7 +31,7 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
                             </I18nProvider>
                         </ThemeProvider>
                     </SettingsProvider>
-                    </QueryProvider>
+                </QueryProvider>
             </body>
         </html>
     );
