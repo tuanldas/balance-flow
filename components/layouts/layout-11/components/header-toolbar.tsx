@@ -1,4 +1,4 @@
-import { Settings, Clock, User, Bell, Keyboard, Gift, HelpCircle, LogOut, VolumeX, Download, ExternalLink, Sun, Moon } from "lucide-react";
+import { LogOut, Sun, Moon } from "lucide-react";
 import { toAbsoluteUrl } from "@/lib/helpers";
 import {
   Avatar,
@@ -12,13 +12,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuSub,  
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useTheme } from "next-themes";
 
 export function HeaderToolbar() {
@@ -55,44 +50,6 @@ export function HeaderToolbar() {
               <span className="text-xs text-muted-foreground">Online</span>
             </div>
           </div>
-          
-          <DropdownMenuItem className="cursor-pointer py-1 rounded-md border border-border hover:bg-muted">
-            <Clock/>
-            <span>Set status</span>
-          </DropdownMenuItem>
-
-          <DropdownMenuSeparator />
-
-          {/* Notification and Settings Section */}
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>
-              <VolumeX/>
-              <span>Mute notifications</span>
-            </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent className="w-48">
-              <DropdownMenuItem>For 30 minutes</DropdownMenuItem>
-              <DropdownMenuItem>For 1 hour</DropdownMenuItem>
-              <DropdownMenuItem>For 4 hours</DropdownMenuItem>
-              <DropdownMenuItem>Until tomorrow</DropdownMenuItem>
-              <DropdownMenuItem>Until next week</DropdownMenuItem>
-              <DropdownMenuItem>Custom date and time</DropdownMenuItem>
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
-
-          <DropdownMenuItem>
-            <User/>
-            <span>Profile</span>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem>
-            <Settings/>
-            <span>Settings</span>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem>
-            <Bell/>
-            <span>Notification settings</span>
-          </DropdownMenuItem>
 
           <DropdownMenuSeparator />
 
@@ -100,32 +57,6 @@ export function HeaderToolbar() {
           <DropdownMenuItem onClick={toggleTheme}>
             {theme === "light" ? <Moon className="size-4" /> : <Sun className="size-4" />}
             <span>{theme === "light" ? "Dark mode" : "Light mode"}</span>
-          </DropdownMenuItem>
-
-          <DropdownMenuSeparator />
-
-          {/* Business-Focused Application Section */}
-          <DropdownMenuItem>
-            <Keyboard/>
-            <span>Keyboard shortcuts</span>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem>
-            <Gift/>
-            <span>Referrals</span>
-            <Badge variant="info" appearance="light" className="ms-auto">New</Badge>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem >
-            <Download/>
-            <span>Download apps</span>
-            <ExternalLink className="size-3 ms-auto" />
-          </DropdownMenuItem>
-
-          <DropdownMenuItem>
-            <HelpCircle/>
-            <span>Help</span>
-            <ExternalLink className="size-3 ms-auto" />
           </DropdownMenuItem>
 
           <DropdownMenuSeparator />
