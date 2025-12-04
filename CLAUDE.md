@@ -261,6 +261,13 @@ Co-Authored-By: Claude <noreply@anthropic.com>
     - Suggest appropriate branch type based on the work (feature/, bugfix/, hotfix/)
     - Wait for user confirmation before proceeding with changes
 
+4. **Always run lint and format before committing**
+    - Before every commit, MUST run these commands in sequence:
+        1. `npm run lint` - Check code quality and fix any errors/warnings
+        2. `npm run format` - Format code according to Prettier rules
+    - Only proceed with commit after both commands complete successfully
+    - This ensures code quality and consistent formatting across the codebase
+
 ### Git Flow Commands
 
 ```bash
