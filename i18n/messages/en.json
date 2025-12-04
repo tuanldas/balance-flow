@@ -35,6 +35,16 @@
             "offline": "Offline",
             "away": "Away",
             "busy": "Busy"
+        },
+        "errors": {
+            "query": {
+                "default": "Something went wrong. Please try again.",
+                "network": "Network error. Please check your connection.",
+                "timeout": "Request timeout. Please try again.",
+                "unauthorized": "You are not authorized. Please login again.",
+                "notFound": "Data not found.",
+                "server": "Server error. Please try again later."
+            }
         }
     }
 }

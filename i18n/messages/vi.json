@@ -35,6 +35,16 @@
             "offline": "Ngoại tuyến",
             "away": "Vắng mặt",
             "busy": "Bận"
+        },
+        "errors": {
+            "query": {
+                "default": "Đã xảy ra lỗi. Vui lòng thử lại.",
+                "network": "Lỗi kết nối mạng. Vui lòng kiểm tra kết nối của bạn.",
+                "timeout": "Yêu cầu hết thời gian chờ. Vui lòng thử lại.",
+                "unauthorized": "Bạn không có quyền truy cập. Vui lòng đăng nhập lại.",
+                "notFound": "Không tìm thấy dữ liệu.",
+                "server": "Lỗi máy chủ. Vui lòng thử lại sau."
+            }
         }
     }
 }
