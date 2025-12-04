@@ -5,7 +5,7 @@ import { ReactNode, useEffect, useState } from 'react';
 
 import { ScreenLoader } from '@/components/screen-loader';
 
-export default function Layout({children}: {children: ReactNode}) {
+export default function ProtectedLayout({children}: {children: ReactNode}) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export default function Layout({children}: {children: ReactNode}) {
   if (isLoading) {
     return <ScreenLoader />;
   }
-  
+
   return (
     <Layout11>
       {children}
