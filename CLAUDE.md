@@ -9,6 +9,7 @@ Balance Flow is a Next.js 16 application showcasing multiple dashboard layout co
 ## Development Commands
 
 **Development:**
+
 ```bash
 npm run dev          # Start development server (http://localhost:3000)
 npm run build        # Production build
@@ -17,6 +18,7 @@ npm run build:staging # Build with staging environment (.env.staging → .env.lo
 ```
 
 **Code Quality:**
+
 ```bash
 npm run lint         # Run ESLint
 npm run format       # Format code with Prettier
@@ -36,6 +38,7 @@ The application uses a unique multi-layout architecture where 38 different layou
 ### Layout Component Structure
 
 Each layout follows this pattern:
+
 ```
 components/layouts/layout-{N}/
 ├── index.tsx              # Main layout export with LayoutProvider
@@ -63,6 +66,38 @@ Each route's `app/(layouts)/layout-{N}/layout.tsx` imports the corresponding lay
 - **Context API:** Layout-specific state via context providers (`components/layouts/layout-{N}/components/context.tsx`)
 - **Custom Hooks:** Common hooks in `hooks/` directory (menu, mobile detection, scroll position, viewport, etc.)
 
+### Internationalization (i18n)
+
+- **i18next:** Used for internationalization with `react-i18next` integration
+- **Supported Languages:** Vietnamese (vi) and English (en)
+- **Default Language:** Vietnamese (vi)
+- **Translation Files:** Located in `i18n/messages/` directory
+  - `vi.json` - Vietnamese translations
+  - `en.json` - English translations
+- **Configuration:** `i18n/config.ts` defines available languages and their properties
+- **Provider:** `I18nProvider` in `providers/i18n-provider.tsx` initializes i18next
+- **Usage Pattern:** Import `useTranslation` hook in components:
+  ```tsx
+  import { useTranslation } from 'react-i18next';
+
+  export function Component() {
+      const { t } = useTranslation();
+      return <div>{t('common.buttons.save')}</div>;
+  }
+  ```
+- **Translation Structure:** All translations are organized under the `common` namespace with sections for:
+  - `common.buttons` - Button labels (save, cancel, delete, edit, add, remove, submit, close, logout)
+  - `common.labels` - Form labels (name, email, password, username, phone, address)
+  - `common.messages` - System messages (welcome, loading, error, success, confirm)
+  - `common.theme` - Theme toggle labels (light, dark)
+  - `common.status` - User status labels (online, offline, away, busy)
+- **Formatting Utilities:** `i18n/format.ts` provides locale-aware formatting functions:
+  - `formatDate()` - Format dates
+  - `formatDateTime()` - Format dates with time
+  - `formatTime()` - Format time only
+  - `formatMoney()` - Format currency amounts
+- **Timezone Helper:** `i18n/timezones.ts` provides `getTimeZones()` function to get all available timezones with formatted labels
+
 ### Styling & UI
 
 - **Tailwind CSS 4:** Primary styling system with custom configuration
@@ -83,6 +118,7 @@ Each route's `app/(layouts)/layout-{N}/layout.tsx` imports the corresponding lay
 ## Import Order Convention
 
 Prettier is configured with strict import ordering (see `.prettierrc`):
+
 1. Built-in Node modules
 2. React imports
 3. Next.js imports
@@ -101,6 +137,7 @@ Prettier is configured with strict import ordering (see `.prettierrc`):
 ## Path Aliases
 
 TypeScript paths are configured in `tsconfig.json`:
+
 - `@/*` → Root directory and `app/components/*`
 
 ## Code Style
@@ -128,6 +165,7 @@ This project follows Git Flow branching model with the following configuration:
 **IMPORTANT:** All commit messages MUST be written in Vietnamese.
 
 **DO NOT include the following text in commit messages:**
+
 ```
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 Co-Authored-By: Claude <noreply@anthropic.com>
@@ -138,14 +176,14 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 **CRITICAL RULES - MUST FOLLOW:**
 
 1. **Never commit without explicit user request**
-   - DO NOT create commits automatically after making changes
-   - ALWAYS ask the user before committing
-   - Only commit when the user explicitly says to commit
+    - DO NOT create commits automatically after making changes
+    - ALWAYS ask the user before committing
+    - Only commit when the user explicitly says to commit
 
 2. **Always ask about branching before making changes**
-   - When adding new features or making modifications, ALWAYS ask: "Bạn có muốn tạo nhánh mới để xử lý không?"
-   - Suggest appropriate branch type based on the work (feature/, bugfix/, hotfix/)
-   - Wait for user confirmation before proceeding with changes
+    - When adding new features or making modifications, ALWAYS ask: "Bạn có muốn tạo nhánh mới để xử lý không?"
+    - Suggest appropriate branch type based on the work (feature/, bugfix/, hotfix/)
+    - Wait for user confirmation before proceeding with changes
 
 ### Git Flow Commands
 
@@ -177,6 +215,7 @@ git flow hotfix finish <version>
 **IMPORTANT:** Always use `--no-ff` (no fast-forward) when finishing features to preserve branch history.
 
 **Why use `--no-ff`:**
+
 - Keeps a clear visual history of feature branches in the git tree
 - Makes it easy to see when features were merged
 - Allows reverting entire features by reverting the merge commit
@@ -185,11 +224,13 @@ git flow hotfix finish <version>
 **How to merge with `--no-ff`:**
 
 **Option 1: Using git flow (recommended)**
+
 ```bash
 git flow feature finish --no-ff <feature-name>
 ```
 
 **Option 2: Manual merge**
+
 ```bash
 git checkout dev
 git merge --no-ff feature/<feature-name> -m "Merge feature/<feature-name>: Brief description"
@@ -197,6 +238,7 @@ git branch -d feature/<feature-name>
 ```
 
 **Without `--no-ff`:**
+
 ```
 * commit 3
 * commit 2  (feature merged, but looks linear)
@@ -204,6 +246,7 @@ git branch -d feature/<feature-name>
 ```
 
 **With `--no-ff`:**
+
 ```
 *   merge commit (clear merge point)
 |\
@@ -215,6 +258,7 @@ git branch -d feature/<feature-name>
 ## Working with Layouts
 
 When adding or modifying layouts:
+
 1. Create/modify route in `app/(layouts)/layout-{N}/`
 2. Create/modify component in `components/layouts/layout-{N}/`
 3. Create/modify config in `config/layout-{N}.config.tsx`

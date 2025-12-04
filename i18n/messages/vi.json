@@ -1,0 +1,50 @@
+{
+    "common": {
+        "buttons": {
+            "save": "Lưu",
+            "cancel": "Hủy",
+            "delete": "Xóa",
+            "edit": "Sửa",
+            "add": "Thêm",
+            "remove": "Gỡ bỏ",
+            "submit": "Gửi",
+            "close": "Đóng",
+            "logout": "Đăng xuất"
+        },
+        "labels": {
+            "name": "Tên",
+            "email": "Email",
+            "password": "Mật khẩu",
+            "username": "Tên đăng nhập",
+            "phone": "Số điện thoại",
+            "address": "Địa chỉ"
+        },
+        "messages": {
+            "welcome": "Chào mừng",
+            "loading": "Đang tải...",
+            "error": "Đã xảy ra lỗi",
+            "success": "Thao tác hoàn thành thành công",
+            "confirm": "Bạn có chắc chắn không?"
+        },
+        "theme": {
+            "light": "Chế độ sáng",
+            "dark": "Chế độ tối"
+        },
+        "status": {
+            "online": "Trực tuyến",
+            "offline": "Ngoại tuyến",
+            "away": "Vắng mặt",
+            "busy": "Bận"
+        },
+        "errors": {
+            "query": {
+                "default": "Đã xảy ra lỗi. Vui lòng thử lại.",
+                "network": "Lỗi kết nối mạng. Vui lòng kiểm tra kết nối của bạn.",
+                "timeout": "Yêu cầu hết thời gian chờ. Vui lòng thử lại.",
+                "unauthorized": "Bạn không có quyền truy cập. Vui lòng đăng nhập lại.",
+                "notFound": "Không tìm thấy dữ liệu.",
+                "server": "Lỗi máy chủ. Vui lòng thử lại sau."
+            }
+        }
+    }
+}
