@@ -1,7 +1,6 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
-
 import { toAbsoluteUrl } from '@/lib/helpers';
 
 export function ScreenLoader() {

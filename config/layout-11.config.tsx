@@ -13,4 +13,3 @@ export const MENU_SIDEBAR: MenuConfig = [
         ],
     },
 ];
-

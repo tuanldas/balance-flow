@@ -1,7 +1,6 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-
 import { useRouter } from 'next/navigation';
 
 // Types
@@ -24,11 +23,7 @@ interface AuthContextType {
     logout: () => Promise<void>;
     logoutAll: () => Promise<void>;
     updateProfile: (data: { name?: string; email?: string }) => Promise<void>;
-    changePassword: (
-        currentPassword: string,
-        newPassword: string,
-        newPasswordConfirmation: string,
-    ) => Promise<void>;
+    changePassword: (currentPassword: string, newPassword: string, newPasswordConfirmation: string) => Promise<void>;
     refreshUser: () => Promise<void>;
 }
 
@@ -248,11 +243,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     };
 
     // Change password
-    const changePassword = async (
-        currentPassword: string,
-        newPassword: string,
-        newPasswordConfirmation: string,
-    ) => {
+    const changePassword = async (currentPassword: string, newPassword: string, newPasswordConfirmation: string) => {
         try {
             await apiCall('/api/auth/password', {
                 method: 'PUT',
