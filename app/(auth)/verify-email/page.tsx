@@ -1,64 +1,62 @@
 'use client';
 
 import { Suspense, useCallback, useEffect, useState } from 'react';
-import Link from 'next/dist/client/link';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { AlertCircle, LoaderCircleIcon } from 'lucide-react';
-import { apiFetch } from '@/lib/api';
+import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/providers/auth-provider';
 import { Alert, AlertIcon, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 
 export default function Page() {
+    const { t } = useTranslation();
     const searchParams = useSearchParams();
     const router = useRouter();
-    const [message, setMessage] = useState<string | null>('Verifying...');
+    const { verifyEmail } = useAuth();
+    const [message, setMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [isVerifying, setIsVerifying] = useState(true);
 
     const verify = useCallback(
-        async (token: string) => {
+        async (id: string, hash: string) => {
             try {
-                const res = await apiFetch('/api/auth/verify-email', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ token }),
-                });
+                setIsVerifying(true);
+                await verifyEmail(id, hash);
 
-                const data = await res.json();
-
-                if (res.status === 200) {
-                    setError(null);
-                    setMessage('Your email has been successfully verified!');
-                    setTimeout(() => {
-                        router.push('/signin'); // Redirect to sign-in page or another page
-                    }, 2000);
-                } else {
-                    setMessage(null);
-                    setError(data.message || 'Verification failed.');
-                }
-            } catch {
+                setError(null);
+                setMessage(t('auth.verifyEmail.successMessage'));
+                setTimeout(() => {
+                    router.push('/signin');
+                }, 2000);
+            } catch (err) {
                 setMessage(null);
-                setError('An error occurred during verification.');
+                setError(err instanceof Error ? err.message : t('auth.verifyEmail.verifyError'));
+            } finally {
+                setIsVerifying(false);
             }
         },
-        [router],
+        [router, verifyEmail, t],
     );
 
     useEffect(() => {
-        const token = searchParams?.get('token');
+        const id = searchParams?.get('id');
+        const hash = searchParams?.get('hash');
 
-        if (!token) {
+        if (!id || !hash) {
             setMessage(null);
-            setError('Invalid or missing token.');
+            setError(t('auth.verifyEmail.noToken'));
+            setIsVerifying(false);
             return;
         }
 
-        verify(token);
-    }, [searchParams, verify]);
+        verify(id, hash);
+    }, [searchParams, verify, t]);
 
     return (
         <Suspense>
             <div className="w-full space-y-6">
-                <h1 className="text-2x font-semibold">Email Verification</h1>
+                <h1 className="text-2xl font-semibold">{t('auth.verifyEmail.title')}</h1>
                 {error && (
                     <>
                         <Alert variant="destructive">
@@ -70,13 +68,22 @@ export default function Page() {
 
                         <Button asChild>
                             <Link href="/signin" className="text-primary">
-                                Go back to Login
+                                {t('auth.verifyEmail.backToLogin')}
                             </Link>
                         </Button>
                     </>
                 )}
 
-                {message && (
+                {isVerifying && !error && (
+                    <Alert>
+                        <AlertIcon>
+                            <LoaderCircleIcon className="size-4 animate-spin stroke-muted-foreground" />
+                        </AlertIcon>
+                        <AlertTitle>{t('auth.verifyEmail.verifying')}</AlertTitle>
+                    </Alert>
+                )}
+
+                {message && !isVerifying && (
                     <Alert>
                         <AlertIcon>
                             <LoaderCircleIcon className="size-4 animate-spin stroke-muted-foreground" />

@@ -24,6 +24,10 @@ interface AuthContextType {
     logoutAll: () => Promise<void>;
     updateProfile: (data: { name?: string; email?: string }) => Promise<void>;
     changePassword: (currentPassword: string, newPassword: string, newPasswordConfirmation: string) => Promise<void>;
+    requestPasswordReset: (email: string) => Promise<void>;
+    resetPassword: (token: string, email: string, password: string, passwordConfirmation: string) => Promise<void>;
+    verifyEmail: (id: string, hash: string) => Promise<void>;
+    resendVerificationEmail: () => Promise<void>;
     refreshUser: () => Promise<void>;
 }
 
@@ -264,6 +268,70 @@ export function AuthProvider({ children }: AuthProviderProps) {
         }
     };
 
+    // Request password reset
+    const requestPasswordReset = async (email: string) => {
+        try {
+            await apiCall(
+                '/api/auth/forgot-password',
+                {
+                    method: 'POST',
+                    body: JSON.stringify({ email }),
+                },
+                false,
+            );
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    // Reset password with token
+    const resetPassword = async (token: string, email: string, password: string, passwordConfirmation: string) => {
+        try {
+            await apiCall(
+                '/api/auth/reset-password',
+                {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        token,
+                        email,
+                        password,
+                        password_confirmation: passwordConfirmation,
+                    }),
+                },
+                false,
+            );
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    // Verify email
+    const verifyEmail = async (id: string, hash: string) => {
+        try {
+            await apiCall(
+                '/api/auth/verify-email',
+                {
+                    method: 'POST',
+                    body: JSON.stringify({ id, hash }),
+                },
+                false,
+            );
+        } catch (error) {
+            throw error;
+        }
+    };
+
+    // Resend verification email
+    const resendVerificationEmail = async () => {
+        try {
+            await apiCall('/api/auth/resend-verification-email', {
+                method: 'POST',
+            });
+        } catch (error) {
+            throw error;
+        }
+    };
+
     // Refresh user data
     const refreshUser = async () => {
         if (accessToken) {
@@ -282,6 +350,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
         logoutAll,
         updateProfile,
         changePassword,
+        requestPasswordReset,
+        resetPassword,
+        verifyEmail,
+        resendVerificationEmail,
         refreshUser,
     };
 

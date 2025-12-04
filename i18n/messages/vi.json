@@ -91,6 +91,48 @@
             "successMessage": "Bạn đã đăng ký thành công! Vui lòng kiểm tra email để xác minh tài khoản và sau đó",
             "loginLink": "Đăng nhập"
         },
+        "resetPassword": {
+            "title": "Đặt lại mật khẩu",
+            "description": "Nhập email của bạn để nhận liên kết đặt lại mật khẩu.",
+            "emailLabel": "Email",
+            "emailPlaceholder": "Nhập địa chỉ email của bạn",
+            "submitButton": "Gửi",
+            "backButton": "Quay lại",
+            "successMessage": "Chúng tôi đã gửi liên kết đặt lại mật khẩu đến email của bạn. Vui lòng kiểm tra hộp thư của bạn."
+        },
+        "resetPasswordConfirm": {
+            "title": "Tạo mật khẩu mới",
+            "description": "Nhập mật khẩu mới của bạn bên dưới.",
+            "passwordLabel": "Mật khẩu mới",
+            "passwordPlaceholder": "Nhập mật khẩu mới",
+            "confirmPasswordLabel": "Xác nhận mật khẩu mới",
+            "confirmPasswordPlaceholder": "Xác nhận mật khẩu mới",
+            "submitButton": "Đặt lại mật khẩu",
+            "backButton": "Quay lại",
+            "invalidLink": "Liên kết không hợp lệ hoặc đã hết hạn.",
+            "requestNewLink": "Yêu cầu liên kết mới",
+            "successMessage": "Đặt lại mật khẩu thành công! Đang chuyển hướng đến trang đăng nhập..."
+        },
+        "changePassword": {
+            "title": "Đổi mật khẩu",
+            "description": "Nhập mật khẩu hiện tại và mật khẩu mới của bạn.",
+            "currentPasswordLabel": "Mật khẩu hiện tại",
+            "currentPasswordPlaceholder": "Nhập mật khẩu hiện tại",
+            "newPasswordLabel": "Mật khẩu mới",
+            "newPasswordPlaceholder": "Nhập mật khẩu mới",
+            "confirmPasswordLabel": "Xác nhận mật khẩu mới",
+            "confirmPasswordPlaceholder": "Xác nhận mật khẩu mới",
+            "submitButton": "Đổi mật khẩu",
+            "successMessage": "Đổi mật khẩu thành công! Bạn sẽ được đăng xuất và yêu cầu đăng nhập lại."
+        },
+        "verifyEmail": {
+            "title": "Xác minh Email",
+            "verifying": "Đang xác minh...",
+            "noToken": "Token không hợp lệ hoặc bị thiếu.",
+            "verifyError": "Đã xảy ra lỗi trong quá trình xác minh.",
+            "successMessage": "Email của bạn đã được xác minh thành công!",
+            "backToLogin": "Quay lại đăng nhập"
+        },
         "errors": {
             "invalidCredentials": "Email hoặc mật khẩu không đúng",
             "unexpected": "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại."

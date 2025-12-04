@@ -91,6 +91,48 @@
             "successMessage": "You have successfully signed up! Please check your email to verify your account and then",
             "loginLink": "Log in"
         },
+        "resetPassword": {
+            "title": "Reset Password",
+            "description": "Enter your email to receive a password reset link.",
+            "emailLabel": "Email",
+            "emailPlaceholder": "Enter your email address",
+            "submitButton": "Submit",
+            "backButton": "Back",
+            "successMessage": "We have sent a password reset link to your email. Please check your inbox."
+        },
+        "resetPasswordConfirm": {
+            "title": "Create New Password",
+            "description": "Enter your new password below.",
+            "passwordLabel": "New Password",
+            "passwordPlaceholder": "Enter new password",
+            "confirmPasswordLabel": "Confirm New Password",
+            "confirmPasswordPlaceholder": "Confirm new password",
+            "submitButton": "Reset Password",
+            "backButton": "Back",
+            "invalidLink": "Invalid or expired link.",
+            "requestNewLink": "Request a new link",
+            "successMessage": "Password reset successful! Redirecting to login..."
+        },
+        "changePassword": {
+            "title": "Change Password",
+            "description": "Enter your current password and your new password.",
+            "currentPasswordLabel": "Current Password",
+            "currentPasswordPlaceholder": "Enter current password",
+            "newPasswordLabel": "New Password",
+            "newPasswordPlaceholder": "Enter new password",
+            "confirmPasswordLabel": "Confirm New Password",
+            "confirmPasswordPlaceholder": "Confirm new password",
+            "submitButton": "Change Password",
+            "successMessage": "Password changed successfully! You will be logged out and required to log in again."
+        },
+        "verifyEmail": {
+            "title": "Email Verification",
+            "verifying": "Verifying...",
+            "noToken": "Invalid or missing token.",
+            "verifyError": "An error occurred during verification.",
+            "successMessage": "Your email has been successfully verified!",
+            "backToLogin": "Go back to Login"
+        },
         "errors": {
             "invalidCredentials": "Invalid email or password",
             "unexpected": "An unexpected error occurred. Please try again."
