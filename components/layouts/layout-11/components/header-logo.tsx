@@ -6,7 +6,6 @@ import { toAbsoluteUrl } from '@/lib/helpers';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetBody, SheetContent, SheetHeader, SheetTrigger } from '@/components/ui/sheet';
 import { useLayout } from './context';
-import { HeaderMenuMobile } from './header-menu-mobile';
 import { SidebarMenu } from './sidebar-menu';
 
 export function HeaderLogo() {
@@ -31,7 +30,6 @@ export function HeaderLogo() {
                     <SheetContent className="p-0 gap-0 w-[225px] lg:w-(--sidebar-width)" side="left" close={false}>
                         <SheetHeader className="p-0 space-y-0" />
                         <SheetBody className="flex flex-col grow p-0">
-                            <HeaderMenuMobile />
                             <SidebarMenu />
                         </SheetBody>
                     </SheetContent>

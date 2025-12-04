@@ -45,6 +45,15 @@
                 "notFound": "Không tìm thấy dữ liệu.",
                 "server": "Lỗi máy chủ. Vui lòng thử lại sau."
             }
+        },
+        "menu": {
+            "main": "Chính",
+            "dashboard": "Bảng điều khiển",
+            "dashboards": "Bảng điều khiển",
+            "publicProfile": "Hồ sơ công khai",
+            "accountSettings": "Cài đặt tài khoản",
+            "network": "Mạng",
+            "authentication": "Xác thực"
         }
     }
 }
