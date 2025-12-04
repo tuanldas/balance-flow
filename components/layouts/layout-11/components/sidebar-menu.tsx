@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import { MENU_SIDEBAR } from '@/config/layout-11.config';
 import {
     AccordionMenu,
@@ -12,6 +13,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 
 export function SidebarMenu() {
     const pathname = usePathname();
+    const { t } = useTranslation();
 
     // Memoize matchPath to prevent unnecessary re-renders
     const matchPath = useCallback(
@@ -37,13 +39,13 @@ export function SidebarMenu() {
                 {MENU_SIDEBAR.map((item, index) => {
                     return (
                         <AccordionMenuGroup key={index}>
-                            <AccordionMenuLabel>{item.title}</AccordionMenuLabel>
+                            <AccordionMenuLabel>{t(`common.menu.${item.titleKey}`)}</AccordionMenuLabel>
                             {item.children?.map((child, index) => {
                                 return (
                                     <AccordionMenuItem key={index} value={child.path || '#'}>
                                         <Link href={child.path || '#'}>
                                             {child.icon && <child.icon />}
-                                            <span>{child.title}</span>
+                                            <span>{t(`common.menu.${child.titleKey}`)}</span>
                                         </Link>
                                     </AccordionMenuItem>
                                 );

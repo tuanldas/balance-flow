@@ -45,6 +45,15 @@
                 "notFound": "Data not found.",
                 "server": "Server error. Please try again later."
             }
+        },
+        "menu": {
+            "main": "Main",
+            "dashboard": "Dashboard",
+            "dashboards": "Dashboards",
+            "publicProfile": "Public Profile",
+            "accountSettings": "Account Settings",
+            "network": "Network",
+            "authentication": "Authentication"
         }
     }
 }
