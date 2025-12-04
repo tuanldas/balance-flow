@@ -8,7 +8,8 @@
             "add": "Thêm",
             "remove": "Gỡ bỏ",
             "submit": "Gửi",
-            "close": "Đóng"
+            "close": "Đóng",
+            "logout": "Đăng xuất"
         },
         "labels": {
             "name": "Tên",
@@ -24,6 +25,16 @@
             "error": "Đã xảy ra lỗi",
             "success": "Thao tác hoàn thành thành công",
             "confirm": "Bạn có chắc chắn không?"
+        },
+        "theme": {
+            "light": "Chế độ sáng",
+            "dark": "Chế độ tối"
+        },
+        "status": {
+            "online": "Trực tuyến",
+            "offline": "Ngoại tuyến",
+            "away": "Vắng mặt",
+            "busy": "Bận"
         }
     }
 }

@@ -66,6 +66,38 @@ Each route's `app/(layouts)/layout-{N}/layout.tsx` imports the corresponding lay
 - **Context API:** Layout-specific state via context providers (`components/layouts/layout-{N}/components/context.tsx`)
 - **Custom Hooks:** Common hooks in `hooks/` directory (menu, mobile detection, scroll position, viewport, etc.)
 
+### Internationalization (i18n)
+
+- **i18next:** Used for internationalization with `react-i18next` integration
+- **Supported Languages:** Vietnamese (vi) and English (en)
+- **Default Language:** Vietnamese (vi)
+- **Translation Files:** Located in `i18n/messages/` directory
+  - `vi.json` - Vietnamese translations
+  - `en.json` - English translations
+- **Configuration:** `i18n/config.ts` defines available languages and their properties
+- **Provider:** `I18nProvider` in `providers/i18n-provider.tsx` initializes i18next
+- **Usage Pattern:** Import `useTranslation` hook in components:
+  ```tsx
+  import { useTranslation } from 'react-i18next';
+
+  export function Component() {
+      const { t } = useTranslation();
+      return <div>{t('common.buttons.save')}</div>;
+  }
+  ```
+- **Translation Structure:** All translations are organized under the `common` namespace with sections for:
+  - `common.buttons` - Button labels (save, cancel, delete, edit, add, remove, submit, close, logout)
+  - `common.labels` - Form labels (name, email, password, username, phone, address)
+  - `common.messages` - System messages (welcome, loading, error, success, confirm)
+  - `common.theme` - Theme toggle labels (light, dark)
+  - `common.status` - User status labels (online, offline, away, busy)
+- **Formatting Utilities:** `i18n/format.ts` provides locale-aware formatting functions:
+  - `formatDate()` - Format dates
+  - `formatDateTime()` - Format dates with time
+  - `formatTime()` - Format time only
+  - `formatMoney()` - Format currency amounts
+- **Timezone Helper:** `i18n/timezones.ts` provides `getTimeZones()` function to get all available timezones with formatted labels
+
 ### Styling & UI
 
 - **Tailwind CSS 4:** Primary styling system with custom configuration

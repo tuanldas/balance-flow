@@ -1,5 +1,6 @@
 import { LogOut, Moon, Sun } from 'lucide-react';
 import { useTheme } from 'next-themes';
+import { useTranslation } from 'react-i18next';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { Avatar, AvatarFallback, AvatarImage, AvatarIndicator, AvatarStatus } from '@/components/ui/avatar';
 import {
@@ -12,6 +13,7 @@ import {
 
 export function HeaderToolbar() {
     const { theme, setTheme } = useTheme();
+    const { t } = useTranslation();
 
     const toggleTheme = () => {
         setTheme(theme === 'light' ? 'dark' : 'light');
@@ -41,7 +43,7 @@ export function HeaderToolbar() {
                         </Avatar>
                         <div className="flex flex-col">
                             <span className="text-sm font-semibold text-foreground">Sean</span>
-                            <span className="text-xs text-muted-foreground">Online</span>
+                            <span className="text-xs text-muted-foreground">{t('common.status.online')}</span>
                         </div>
                     </div>
 
@@ -50,7 +52,7 @@ export function HeaderToolbar() {
                     {/* Theme Toggle */}
                     <DropdownMenuItem onClick={toggleTheme}>
                         {theme === 'light' ? <Moon className="size-4" /> : <Sun className="size-4" />}
-                        <span>{theme === 'light' ? 'Dark mode' : 'Light mode'}</span>
+                        <span>{theme === 'light' ? t('common.theme.dark') : t('common.theme.light')}</span>
                     </DropdownMenuItem>
 
                     <DropdownMenuSeparator />
@@ -58,7 +60,7 @@ export function HeaderToolbar() {
                     {/* Action Items */}
                     <DropdownMenuItem>
                         <LogOut />
-                        <span>Log out</span>
+                        <span>{t('common.buttons.logout')}</span>
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
