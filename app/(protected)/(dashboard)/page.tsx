@@ -1,14 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-    Toolbar,
-    ToolbarActions,
-    ToolbarDescription,
-    ToolbarHeading,
-    ToolbarPageTitle,
-} from '@/components/layouts/protected/components/toolbar';
+import { Toolbar, ToolbarHeading, ToolbarPageTitle } from '@/components/layouts/protected/components/toolbar';
 
 export default function Page() {
     return (
