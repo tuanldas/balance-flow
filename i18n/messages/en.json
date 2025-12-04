@@ -55,5 +55,24 @@
             "network": "Network",
             "authentication": "Authentication"
         }
+    },
+    "auth": {
+        "signin": {
+            "title": "Sign in to Metronic",
+            "emailLabel": "Email",
+            "emailPlaceholder": "Your email",
+            "passwordLabel": "Password",
+            "passwordPlaceholder": "Your password",
+            "forgotPassword": "Forgot Password?",
+            "continueButton": "Continue",
+            "noAccount": "Don't have an account?",
+            "signupLink": "Sign Up",
+            "showPassword": "Show password",
+            "hidePassword": "Hide password"
+        },
+        "errors": {
+            "invalidCredentials": "Invalid email or password",
+            "unexpected": "An unexpected error occurred. Please try again."
+        }
     }
 }

@@ -55,5 +55,24 @@
             "network": "Mạng",
             "authentication": "Xác thực"
         }
+    },
+    "auth": {
+        "signin": {
+            "title": "Đăng nhập vào Metronic",
+            "emailLabel": "Email",
+            "emailPlaceholder": "Email của bạn",
+            "passwordLabel": "Mật khẩu",
+            "passwordPlaceholder": "Mật khẩu của bạn",
+            "forgotPassword": "Quên mật khẩu?",
+            "continueButton": "Tiếp tục",
+            "noAccount": "Chưa có tài khoản?",
+            "signupLink": "Đăng ký",
+            "showPassword": "Hiện mật khẩu",
+            "hidePassword": "Ẩn mật khẩu"
+        },
+        "errors": {
+            "invalidCredentials": "Email hoặc mật khẩu không đúng",
+            "unexpected": "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại."
+        }
     }
 }
