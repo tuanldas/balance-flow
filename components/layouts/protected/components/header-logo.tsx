@@ -5,7 +5,7 @@ import { Menu } from 'lucide-react';
 import { toAbsoluteUrl } from '@/lib/helpers';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetBody, SheetContent, SheetHeader, SheetTrigger } from '@/components/ui/sheet';
-import { SidebarMenu } from '@/components/layouts/layout-11/components/sidebar-menu';
+import { SidebarMenu } from '@/components/layouts/protected/components/sidebar-menu';
 import { useLayout } from './context';
 
 export function HeaderLogo() {
@@ -35,7 +35,7 @@ export function HeaderLogo() {
                     </SheetContent>
                 </Sheet>
             )}
-            <Link href="/layout-11">
+            <Link href="/">
                 <img src={toAbsoluteUrl('/media/app/mini-logo-gray.svg')} className="dark:hidden size-6" alt="image" />
                 <img
                     src={toAbsoluteUrl('/media/app/mini-logo-gray-dark.svg')}

@@ -8,7 +8,7 @@ import {
     ToolbarDescription,
     ToolbarHeading,
     ToolbarPageTitle,
-} from '@/components/layouts/layout-11/components/toolbar';
+} from '@/components/layouts/protected/components/toolbar';
 
 export default function Page() {
     return (

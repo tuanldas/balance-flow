@@ -3,10 +3,10 @@
 import { ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/auth-provider';
-import { Layout11 } from '@/components/layouts/layout-11';
+import { ProtectedLayout } from '@/components/layouts/protected';
 import { ScreenLoader } from '@/components/screen-loader';
 
-export default function ProtectedLayout({ children }: { children: ReactNode }) {
+export default function AppProtectedLayout({ children }: { children: ReactNode }) {
     const router = useRouter();
     const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
     const [isLoading, setIsLoading] = useState(true);
@@ -37,5 +37,5 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
         return <ScreenLoader />;
     }
 
-    return <Layout11>{children}</Layout11>;
+    return <ProtectedLayout>{children}</ProtectedLayout>;
 }
