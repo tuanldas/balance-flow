@@ -110,6 +110,55 @@ TypeScript paths are configured in `tsconfig.json`:
 - **ESLint:** Next.js recommended config + React Hooks rules, extends Prettier config
 - **TypeScript:** Strict mode enabled, React JSX transform
 
+## Git Workflow
+
+This project follows Git Flow branching model with the following configuration:
+
+### Branch Structure
+
+- **Production branch:** `main`
+- **Development branch:** `dev`
+- **Feature branches:** `feature/`
+- **Release branches:** `release/`
+- **Hotfix branches:** `hotfix/`
+- **Support branches:** `support/`
+- **Bugfix branches:** `bugfix/`
+
+### Commit Message Rules
+
+**IMPORTANT:** All commit messages MUST be written in Vietnamese.
+
+**DO NOT include the following text in commit messages:**
+```
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+Co-Authored-By: Claude <noreply@anthropic.com>
+```
+
+### Git Flow Commands
+
+```bash
+# Initialize git flow (if not already done)
+git flow init
+
+# Start a new feature
+git flow feature start <feature-name>
+
+# Finish a feature
+git flow feature finish <feature-name>
+
+# Start a release
+git flow release start <version>
+
+# Finish a release
+git flow release finish <version>
+
+# Start a hotfix
+git flow hotfix start <version>
+
+# Finish a hotfix
+git flow hotfix finish <version>
+```
+
 ## Working with Layouts
 
 When adding or modifying layouts:
