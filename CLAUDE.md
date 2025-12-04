@@ -157,8 +157,8 @@ git flow init
 # Start a new feature
 git flow feature start <feature-name>
 
-# Finish a feature
-git flow feature finish <feature-name>
+# Finish a feature with --no-ff to preserve branch history
+git flow feature finish --no-ff <feature-name>
 
 # Start a release
 git flow release start <version>
@@ -171,6 +171,46 @@ git flow hotfix start <version>
 
 # Finish a hotfix
 git flow hotfix finish <version>
+```
+
+### Merge Strategy
+
+**IMPORTANT:** Always use `--no-ff` (no fast-forward) when finishing features to preserve branch history.
+
+**Why use `--no-ff`:**
+- Keeps a clear visual history of feature branches in the git tree
+- Makes it easy to see when features were merged
+- Allows reverting entire features by reverting the merge commit
+- Shows the project's development timeline more clearly
+
+**How to merge with `--no-ff`:**
+
+**Option 1: Using git flow (recommended)**
+```bash
+git flow feature finish --no-ff <feature-name>
+```
+
+**Option 2: Manual merge**
+```bash
+git checkout dev
+git merge --no-ff feature/<feature-name> -m "Merge feature/<feature-name>: Brief description"
+git branch -d feature/<feature-name>
+```
+
+**Without `--no-ff`:**
+```
+* commit 3
+* commit 2  (feature merged, but looks linear)
+* commit 1
+```
+
+**With `--no-ff`:**
+```
+*   merge commit (clear merge point)
+|\
+| * commit 2  (feature branch visible)
+|/
+* commit 1
 ```
 
 ## Working with Layouts
