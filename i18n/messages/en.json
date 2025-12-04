@@ -58,7 +58,7 @@
     },
     "auth": {
         "signin": {
-            "title": "Sign in to Metronic",
+            "title": "Sign in to Balance Flow",
             "emailLabel": "Email",
             "emailPlaceholder": "Your email",
             "passwordLabel": "Password",

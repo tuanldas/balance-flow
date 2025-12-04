@@ -58,7 +58,7 @@
     },
     "auth": {
         "signin": {
-            "title": "Đăng nhập vào Metronic",
+            "title": "Đăng nhập vào Balance Flow",
             "emailLabel": "Email",
             "emailPlaceholder": "Email của bạn",
             "passwordLabel": "Mật khẩu",
