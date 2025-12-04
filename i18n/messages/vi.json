@@ -70,9 +70,44 @@
             "showPassword": "Hiện mật khẩu",
             "hidePassword": "Ẩn mật khẩu"
         },
+        "signup": {
+            "title": "Đăng ký tài khoản Balance Flow",
+            "nameLabel": "Tên",
+            "namePlaceholder": "Tên của bạn",
+            "emailLabel": "Email",
+            "emailPlaceholder": "Email của bạn",
+            "passwordLabel": "Mật khẩu",
+            "passwordPlaceholder": "Mật khẩu của bạn",
+            "confirmPasswordLabel": "Xác nhận mật khẩu",
+            "confirmPasswordPlaceholder": "Xác nhận mật khẩu của bạn",
+            "continueButton": "Tiếp tục",
+            "haveAccount": "Đã có tài khoản?",
+            "signinLink": "Đăng nhập",
+            "showPassword": "Hiện mật khẩu",
+            "hidePassword": "Ẩn mật khẩu",
+            "showConfirmPassword": "Hiện xác nhận mật khẩu",
+            "hideConfirmPassword": "Ẩn xác nhận mật khẩu",
+            "successTitle": "Đăng ký thành công!",
+            "successMessage": "Bạn đã đăng ký thành công! Vui lòng kiểm tra email để xác minh tài khoản và sau đó",
+            "loginLink": "Đăng nhập"
+        },
         "errors": {
             "invalidCredentials": "Email hoặc mật khẩu không đúng",
             "unexpected": "Đã xảy ra lỗi không mong muốn. Vui lòng thử lại."
+        },
+        "validation": {
+            "nameRequired": "Tên là bắt buộc.",
+            "nameMinLength": "Tên phải có ít nhất 2 ký tự.",
+            "emailRequired": "Email là bắt buộc.",
+            "emailInvalid": "Vui lòng nhập địa chỉ email hợp lệ.",
+            "passwordRequired": "Mật khẩu là bắt buộc.",
+            "passwordMinLength": "Mật khẩu phải có ít nhất {{minLength}} ký tự.",
+            "passwordUppercase": "Mật khẩu phải chứa ít nhất một chữ hoa.",
+            "passwordLowercase": "Mật khẩu phải chứa ít nhất một chữ thường.",
+            "passwordNumber": "Mật khẩu phải chứa ít nhất một chữ số.",
+            "passwordSpecialChar": "Mật khẩu phải chứa ít nhất một ký tự đặc biệt.",
+            "confirmPasswordRequired": "Xác nhận mật khẩu là bắt buộc.",
+            "passwordsNotMatch": "Mật khẩu không khớp."
         }
     }
 }

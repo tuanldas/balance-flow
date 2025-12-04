@@ -70,9 +70,44 @@
             "showPassword": "Show password",
             "hidePassword": "Hide password"
         },
+        "signup": {
+            "title": "Sign Up to Balance Flow",
+            "nameLabel": "Name",
+            "namePlaceholder": "Your Name",
+            "emailLabel": "Email",
+            "emailPlaceholder": "Your email",
+            "passwordLabel": "Password",
+            "passwordPlaceholder": "Your password",
+            "confirmPasswordLabel": "Confirm Password",
+            "confirmPasswordPlaceholder": "Confirm your password",
+            "continueButton": "Continue",
+            "haveAccount": "Already have an account?",
+            "signinLink": "Sign In",
+            "showPassword": "Show password",
+            "hidePassword": "Hide password",
+            "showConfirmPassword": "Show password confirmation",
+            "hideConfirmPassword": "Hide password confirmation",
+            "successTitle": "Sign up successful!",
+            "successMessage": "You have successfully signed up! Please check your email to verify your account and then",
+            "loginLink": "Log in"
+        },
         "errors": {
             "invalidCredentials": "Invalid email or password",
             "unexpected": "An unexpected error occurred. Please try again."
+        },
+        "validation": {
+            "nameRequired": "Name is required.",
+            "nameMinLength": "Name must be at least 2 characters long.",
+            "emailRequired": "Email is required.",
+            "emailInvalid": "Please enter a valid email address.",
+            "passwordRequired": "Password is required.",
+            "passwordMinLength": "Password must be at least {{minLength}} characters long.",
+            "passwordUppercase": "Password must contain at least one uppercase letter.",
+            "passwordLowercase": "Password must contain at least one lowercase letter.",
+            "passwordNumber": "Password must contain at least one number.",
+            "passwordSpecialChar": "Password must contain at least one special character.",
+            "confirmPasswordRequired": "Password confirmation is required.",
+            "passwordsNotMatch": "Passwords do not match."
         }
     }
 }
