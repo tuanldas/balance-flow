@@ -23,18 +23,18 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
     return (
         <html className="h-full" suppressHydrationWarning>
             <body className={cn('antialiased flex h-full text-base text-foreground bg-background', inter.className)}>
-                <QueryProvider>
-                    <AuthProvider>
-                        <SettingsProvider>
-                            <ThemeProvider>
-                                <I18nProvider>
+                <I18nProvider>
+                    <QueryProvider>
+                        <AuthProvider>
+                            <SettingsProvider>
+                                <ThemeProvider>
                                     <Suspense>{children}</Suspense>
                                     <Toaster />
-                                </I18nProvider>
-                            </ThemeProvider>
-                        </SettingsProvider>
-                    </AuthProvider>
-                </QueryProvider>
+                                </ThemeProvider>
+                            </SettingsProvider>
+                        </AuthProvider>
+                    </QueryProvider>
+                </I18nProvider>
             </body>
         </html>
     );
