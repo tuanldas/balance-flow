@@ -30,6 +30,9 @@
             "light": "Chế độ sáng",
             "dark": "Chế độ tối"
         },
+        "language": {
+            "title": "Ngôn ngữ"
+        },
         "status": {
             "online": "Trực tuyến",
             "offline": "Ngoại tuyến",

@@ -30,6 +30,9 @@
             "light": "Light mode",
             "dark": "Dark mode"
         },
+        "language": {
+            "title": "Language"
+        },
         "status": {
             "online": "Online",
             "offline": "Offline",

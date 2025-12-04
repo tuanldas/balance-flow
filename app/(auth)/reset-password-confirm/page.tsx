@@ -93,9 +93,7 @@ function ResetPasswordConfirmContent() {
         return (
             <div className="w-full space-y-5">
                 <div className="text-center space-y-1 pb-3">
-                    <h1 className="text-2xl font-semibold tracking-tight">
-                        {t('auth.resetPasswordConfirm.title')}
-                    </h1>
+                    <h1 className="text-2xl font-semibold tracking-tight">{t('auth.resetPasswordConfirm.title')}</h1>
                 </div>
 
                 <Alert variant="destructive">
