@@ -87,6 +87,10 @@ Each route's `app/(layouts)/layout-{N}/layout.tsx` imports the corresponding lay
         // - logoutAll()
         // - updateProfile({ name?, email? })
         // - changePassword(currentPassword, newPassword, newPasswordConfirmation)
+        // - requestPasswordReset(email)
+        // - resetPassword(token, email, password, passwordConfirmation)
+        // - verifyEmail(id, hash)
+        // - resendVerificationEmail()
         // - refreshUser()
 
         // Available state:
@@ -103,6 +107,31 @@ Each route's `app/(layouts)/layout-{N}/layout.tsx` imports the corresponding lay
     - `Authorization: Bearer {token}` header (when authenticated)
     - `Accept-Language` header based on current i18n locale
     - Standard response format: `{ success: boolean, message: string, data?: T }`
+
+- **Authentication Pages:**
+    - `/signin` - Login page
+    - `/signup` - Registration page (sends verification email)
+    - `/reset-password` - Request password reset (forgot password)
+    - `/reset-password-confirm` - Reset password form from email link (requires `token` and `email` params)
+    - `/change-password` - Change password for authenticated users (requires current password)
+    - `/verify-email` - Email verification from email link (requires `id` and `hash` params)
+
+- **API Endpoints:** (Backend: Laravel)
+    - `POST /api/auth/register` - Register new user
+    - `POST /api/auth/login` - Login user
+    - `GET /api/auth/me` - Get current user
+    - `PUT /api/auth/profile` - Update profile
+    - `PUT /api/auth/password` - Change password (requires authentication)
+    - `POST /api/auth/logout` - Logout current device
+    - `POST /api/auth/logout-all` - Logout all devices
+    - `POST /api/auth/forgot-password` - Request password reset email
+    - `POST /api/auth/reset-password` - Reset password with token (body: `{ token, email, password, password_confirmation }`)
+    - `POST /api/auth/verify-email` - Verify email (body: `{ id, hash }`)
+    - `POST /api/auth/resend-verification-email` - Resend verification email
+
+- **Email Links Configuration:** Backend should send email links pointing to frontend:
+    - Password reset: `FRONTEND_URL/reset-password-confirm?token={token}&email={email}`
+    - Email verification: `FRONTEND_URL/verify-email?id={user_id}&hash={hash}`
 
 ### Internationalization (i18n)
 
