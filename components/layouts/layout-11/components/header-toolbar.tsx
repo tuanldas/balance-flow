@@ -1,4 +1,4 @@
-import { BellDot, Settings, Users, Clock, User, Bell, Keyboard, Gift, HelpCircle, LogOut, VolumeX, Download, ExternalLink, Sun, Moon } from "lucide-react";
+import { Settings, Clock, User, Bell, Keyboard, Gift, HelpCircle, LogOut, VolumeX, Download, ExternalLink, Sun, Moon } from "lucide-react";
 import { toAbsoluteUrl } from "@/lib/helpers";
 import {
   Avatar,
@@ -30,18 +30,6 @@ export function HeaderToolbar() {
 
   return (
     <nav className="flex items-center gap-2.5">
-      <Button variant="outline" className="hover:bg-background hover:text-foreground">
-        <Users />
-        <span>Add Team</span>
-      </Button>
-      <div className="flex items-center gap-1">
-        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
-          <BellDot className="opacity-100" />
-        </Button>
-        <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
-          <Settings className="opacity-100" />
-        </Button>
-      </div>
       <DropdownMenu>
         <DropdownMenuTrigger className="cursor-pointer">
           <Avatar className="size-7">
