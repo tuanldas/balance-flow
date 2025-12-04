@@ -78,9 +78,9 @@ function I18nProvider({ children }: I18nProviderProps) {
     // Get current language for direction
     const currentLanguage = I18N_LANGUAGES.find((lang) => lang.code === (i18n.language || 'vi')) || I18N_LANGUAGES[0];
 
-    // Don't render until i18n is initialized
+    // Don't render children until i18n is fully initialized
     if (!isI18nInitialized) {
-        return <RadixDirectionProvider dir="ltr">{children}</RadixDirectionProvider>;
+        return null;
     }
 
     return (
