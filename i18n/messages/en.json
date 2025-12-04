@@ -30,6 +30,9 @@
             "light": "Light mode",
             "dark": "Dark mode"
         },
+        "language": {
+            "title": "Language"
+        },
         "status": {
             "online": "Online",
             "offline": "Offline",
@@ -70,9 +73,86 @@
             "showPassword": "Show password",
             "hidePassword": "Hide password"
         },
+        "signup": {
+            "title": "Sign Up to Balance Flow",
+            "nameLabel": "Name",
+            "namePlaceholder": "Your Name",
+            "emailLabel": "Email",
+            "emailPlaceholder": "Your email",
+            "passwordLabel": "Password",
+            "passwordPlaceholder": "Your password",
+            "confirmPasswordLabel": "Confirm Password",
+            "confirmPasswordPlaceholder": "Confirm your password",
+            "continueButton": "Continue",
+            "haveAccount": "Already have an account?",
+            "signinLink": "Sign In",
+            "showPassword": "Show password",
+            "hidePassword": "Hide password",
+            "showConfirmPassword": "Show password confirmation",
+            "hideConfirmPassword": "Hide password confirmation",
+            "successTitle": "Sign up successful!",
+            "successMessage": "You have successfully signed up! Please check your email to verify your account and then",
+            "loginLink": "Log in"
+        },
+        "resetPassword": {
+            "title": "Reset Password",
+            "description": "Enter your email to receive a password reset link.",
+            "emailLabel": "Email",
+            "emailPlaceholder": "Enter your email address",
+            "submitButton": "Submit",
+            "backButton": "Back",
+            "successMessage": "We have sent a password reset link to your email. Please check your inbox."
+        },
+        "resetPasswordConfirm": {
+            "title": "Create New Password",
+            "description": "Enter your new password below.",
+            "passwordLabel": "New Password",
+            "passwordPlaceholder": "Enter new password",
+            "confirmPasswordLabel": "Confirm New Password",
+            "confirmPasswordPlaceholder": "Confirm new password",
+            "submitButton": "Reset Password",
+            "backButton": "Back",
+            "invalidLink": "Invalid or expired link.",
+            "requestNewLink": "Request a new link",
+            "successMessage": "Password reset successful! Redirecting to login..."
+        },
+        "changePassword": {
+            "title": "Change Password",
+            "description": "Enter your current password and your new password.",
+            "currentPasswordLabel": "Current Password",
+            "currentPasswordPlaceholder": "Enter current password",
+            "newPasswordLabel": "New Password",
+            "newPasswordPlaceholder": "Enter new password",
+            "confirmPasswordLabel": "Confirm New Password",
+            "confirmPasswordPlaceholder": "Confirm new password",
+            "submitButton": "Change Password",
+            "successMessage": "Password changed successfully! You will be logged out and required to log in again."
+        },
+        "verifyEmail": {
+            "title": "Email Verification",
+            "verifying": "Verifying...",
+            "noToken": "Invalid or missing token.",
+            "verifyError": "An error occurred during verification.",
+            "successMessage": "Your email has been successfully verified!",
+            "backToLogin": "Go back to Login"
+        },
         "errors": {
             "invalidCredentials": "Invalid email or password",
             "unexpected": "An unexpected error occurred. Please try again."
+        },
+        "validation": {
+            "nameRequired": "Name is required.",
+            "nameMinLength": "Name must be at least 2 characters long.",
+            "emailRequired": "Email is required.",
+            "emailInvalid": "Please enter a valid email address.",
+            "passwordRequired": "Password is required.",
+            "passwordMinLength": "Password must be at least {{minLength}} characters long.",
+            "passwordUppercase": "Password must contain at least one uppercase letter.",
+            "passwordLowercase": "Password must contain at least one lowercase letter.",
+            "passwordNumber": "Password must contain at least one number.",
+            "passwordSpecialChar": "Password must contain at least one special character.",
+            "confirmPasswordRequired": "Password confirmation is required.",
+            "passwordsNotMatch": "Passwords do not match."
         }
     }
 }

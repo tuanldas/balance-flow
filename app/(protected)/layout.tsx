@@ -2,9 +2,9 @@
 
 import { ReactNode, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/providers/auth-provider';
 import { Layout11 } from '@/components/layouts/layout-11';
 import { ScreenLoader } from '@/components/screen-loader';
-import { useAuth } from '@/providers/auth-provider';
 
 export default function ProtectedLayout({ children }: { children: ReactNode }) {
     const router = useRouter();

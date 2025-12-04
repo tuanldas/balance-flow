@@ -1,21 +1,25 @@
+import i18n from 'i18next';
 import { z } from 'zod';
 
 export const getPasswordSchema = (minLength = 8) => {
-  return z
-    .string()
-    .min(minLength, {
-      message: `Password must be at least ${minLength} characters long.`,
-    })
-    .regex(/[A-Z]/, {
-      message: 'Password must contain at least one uppercase letter.',
-    })
-    .regex(/[a-z]/, {
-      message: 'Password must contain at least one lowercase letter.',
-    })
-    .regex(/\d/, {
-      message: 'Password must contain at least one number.',
-    })
-    .regex(/[!@#$%^&*(),.?":{}|<>]/, {
-      message: 'Password must contain at least one special character.',
-    });
+    return z
+        .string()
+        .min(1, {
+            message: i18n.t('auth.validation.passwordRequired'),
+        })
+        .min(minLength, {
+            message: i18n.t('auth.validation.passwordMinLength', { minLength }),
+        })
+        .regex(/[A-Z]/, {
+            message: i18n.t('auth.validation.passwordUppercase'),
+        })
+        .regex(/[a-z]/, {
+            message: i18n.t('auth.validation.passwordLowercase'),
+        })
+        .regex(/\d/, {
+            message: i18n.t('auth.validation.passwordNumber'),
+        })
+        .regex(/[!@#$%^&*(),.?":{}|<>]/, {
+            message: i18n.t('auth.validation.passwordSpecialChar'),
+        });
 };

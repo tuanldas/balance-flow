@@ -1,29 +1,27 @@
+import i18n from 'i18next';
 import { z } from 'zod';
 import { getPasswordSchema } from './password-schema';
 
 export const getSignupSchema = () => {
-  return z
-    .object({
-      name: z
-        .string()
-        .min(2, { message: 'Name must be at least 2 characters long.' })
-        .min(1, { message: 'Name is required.' }),
-      email: z
-        .string()
-        .email({ message: 'Please enter a valid email address.' })
-        .min(1, { message: 'Email is required.' }),
-      password: getPasswordSchema(), // Uses the updated password schema with direct messages
-      passwordConfirmation: z.string().min(1, {
-        message: 'Password confirmation is required.',
-      }),
-      accept: z.boolean().refine((val) => val === true, {
-        message: 'You must accept the terms and conditions.',
-      }),
-    })
-    .refine((data) => data.password === data.passwordConfirmation, {
-      message: 'Passwords do not match.',
-      path: ['passwordConfirmation'],
-    });
+    return z
+        .object({
+            name: z
+                .string()
+                .min(1, { message: i18n.t('auth.validation.nameRequired') })
+                .min(2, { message: i18n.t('auth.validation.nameMinLength') }),
+            email: z
+                .string()
+                .min(1, { message: i18n.t('auth.validation.emailRequired') })
+                .email({ message: i18n.t('auth.validation.emailInvalid') }),
+            password: getPasswordSchema(),
+            passwordConfirmation: z.string().min(1, {
+                message: i18n.t('auth.validation.confirmPasswordRequired'),
+            }),
+        })
+        .refine((data) => data.password === data.passwordConfirmation, {
+            message: i18n.t('auth.validation.passwordsNotMatch'),
+            path: ['passwordConfirmation'],
+        });
 };
 
 export type SignupSchemaType = z.infer<ReturnType<typeof getSignupSchema>>;
