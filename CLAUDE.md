@@ -56,7 +56,6 @@ Each route's `app/(layouts)/layout-{N}/layout.tsx` imports the corresponding lay
 
 - **Menu Configuration:** Defined in `config/layout-{N}.config.tsx` files using `MenuConfig` type from `config/types.ts`
 - **Menu Items:** Support nested structures with icons (Lucide), paths, badges, collapsible sections, and separators
-- **General Settings:** `config/general.config.ts` contains global app settings (purchase links, docs, etc.)
 
 ### State Management & Data Fetching
 
