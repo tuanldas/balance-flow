@@ -15,12 +15,8 @@ export default function Page() {
         <div className="container-fluid">
             <Toolbar>
                 <ToolbarHeading>
-                    <ToolbarPageTitle>Team Settings</ToolbarPageTitle>
-                    <ToolbarDescription>Some info tells the story</ToolbarDescription>
+                    <ToolbarPageTitle>Dashboard</ToolbarPageTitle>
                 </ToolbarHeading>
-                <ToolbarActions>
-                    <Button variant="outline">View Profile</Button>
-                </ToolbarActions>
             </Toolbar>
             <Skeleton className="rounded-lg grow h-screen"></Skeleton>
         </div>
