@@ -134,6 +134,20 @@ This project follows Git Flow branching model with the following configuration:
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 
+### Workflow Rules
+
+**CRITICAL RULES - MUST FOLLOW:**
+
+1. **Never commit without explicit user request**
+   - DO NOT create commits automatically after making changes
+   - ALWAYS ask the user before committing
+   - Only commit when the user explicitly says to commit
+
+2. **Always ask about branching before making changes**
+   - When adding new features or making modifications, ALWAYS ask: "Bạn có muốn tạo nhánh mới để xử lý không?"
+   - Suggest appropriate branch type based on the work (feature/, bugfix/, hotfix/)
+   - Wait for user confirmation before proceeding with changes
+
 ### Git Flow Commands
 
 ```bash
