@@ -13,7 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
     };
 }
 
-export function Layout11({ children }: { children: React.ReactNode }) {
+export function ProtectedLayout({ children }: { children: React.ReactNode }) {
     return (
         <LayoutProvider
             bodyClassName="bg-muted overflow-hidden"

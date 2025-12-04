@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import { MENU_SIDEBAR } from '@/config/layout-11.config';
+import { MENU_SIDEBAR } from '@/config/menu.config';
 import {
     AccordionMenu,
     AccordionMenuGroup,
@@ -17,8 +17,7 @@ export function SidebarMenu() {
 
     // Memoize matchPath to prevent unnecessary re-renders
     const matchPath = useCallback(
-        (path: string): boolean =>
-            path === pathname || (path.length > 1 && pathname.startsWith(path) && path !== '/layout-11'),
+        (path: string): boolean => path === pathname || (path.length > 1 && pathname.startsWith(path)),
         [pathname],
     );
 
