@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/sonner';
 import '@/styles/globals.css';
+import { AuthProvider } from '@/providers/auth-provider';
 import { I18nProvider } from '@/providers/i18n-provider';
 import { QueryProvider } from '@/providers/query-provider';
 import { SettingsProvider } from '@/providers/settings-provider';
@@ -23,14 +24,16 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
         <html className="h-full" suppressHydrationWarning>
             <body className={cn('antialiased flex h-full text-base text-foreground bg-background', inter.className)}>
                 <QueryProvider>
-                    <SettingsProvider>
-                        <ThemeProvider>
-                            <I18nProvider>
-                                <Suspense>{children}</Suspense>
-                                <Toaster />
-                            </I18nProvider>
-                        </ThemeProvider>
-                    </SettingsProvider>
+                    <AuthProvider>
+                        <SettingsProvider>
+                            <ThemeProvider>
+                                <I18nProvider>
+                                    <Suspense>{children}</Suspense>
+                                    <Toaster />
+                                </I18nProvider>
+                            </ThemeProvider>
+                        </SettingsProvider>
+                    </AuthProvider>
                 </QueryProvider>
             </body>
         </html>

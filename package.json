@@ -6,7 +6,7 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "build:staging": "cp .env.staging .env.local && next build",
+        "build:staging": "cp .env.staging .env.example && next build",
         "lint": "eslint .",
         "format": "prettier --write ."
     },
@@ -23,6 +23,7 @@
         "@tanstack/react-query-devtools": "^5.85.5",
         "@tanstack/react-table": "^8.21.3",
         "apexcharts": "4.7.0",
+        "axios": "^1.13.2",
         "class-variance-authority": "^0.7.1",
         "clsx": "^2.1.1",
         "cmdk": "^1.1.1",
