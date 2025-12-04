@@ -1,22 +1,39 @@
 'use client';
 
 import { ReactNode, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Layout11 } from '@/components/layouts/layout-11';
 import { ScreenLoader } from '@/components/screen-loader';
+import { useAuth } from '@/providers/auth-provider';
 
 export default function ProtectedLayout({ children }: { children: ReactNode }) {
+    const router = useRouter();
+    const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        // Simulate short loading time
-        const timer = setTimeout(() => {
-            setIsLoading(false);
-        }, 1000); // 1 second loading time
+        // Check authentication status
+        if (!isAuthLoading) {
+            if (!isAuthenticated) {
+                // Redirect to signin page if not authenticated
+                router.push('/signin');
+            } else {
+                // Simulate short loading time for layout initialization
+                const timer = setTimeout(() => {
+                    setIsLoading(false);
+                }, 1000); // 1 second loading time
 
-        return () => clearTimeout(timer);
-    }, []);
+                return () => clearTimeout(timer);
+            }
+        }
+    }, [isAuthenticated, isAuthLoading, router]);
 
-    if (isLoading) {
+    if (isAuthLoading || isLoading) {
+        return <ScreenLoader />;
+    }
+
+    // Don't render layout if not authenticated
+    if (!isAuthenticated) {
         return <ScreenLoader />;
     }
 

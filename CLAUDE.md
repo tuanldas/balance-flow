@@ -14,7 +14,7 @@ Balance Flow is a Next.js 16 application showcasing multiple dashboard layout co
 npm run dev          # Start development server (http://localhost:3000)
 npm run build        # Production build
 npm run start        # Start production server
-npm run build:staging # Build with staging environment (.env.staging → .env.local)
+npm run build:staging # Build with staging environment (.env.staging → .env.example)
 ```
 
 **Code Quality:**
@@ -65,6 +65,42 @@ Each route's `app/(layouts)/layout-{N}/layout.tsx` imports the corresponding lay
 - **React Query:** Used for server state management (`@tanstack/react-query`)
 - **Context API:** Layout-specific state via context providers (`components/layouts/layout-{N}/components/context.tsx`)
 - **Custom Hooks:** Common hooks in `hooks/` directory (menu, mobile detection, scroll position, viewport, etc.)
+
+### Authentication
+
+- **AuthProvider:** Custom authentication provider in `providers/auth-provider.tsx` using React Context
+- **Backend API:** Laravel Sanctum token-based authentication
+- **API Base URL:** Configure `NEXT_PUBLIC_API_BASE_URL` in `.env.local` (default: `http://localhost:8080`)
+- **Token Storage:** Access tokens stored in localStorage
+- **Authentication Hook:** `useAuth()` hook provides authentication state and methods
+  ```tsx
+  import { useAuth } from '@/providers/auth-provider';
+
+  export function Component() {
+      const { user, isAuthenticated, login, logout } = useAuth();
+
+      // Available methods:
+      // - login(email, password)
+      // - register(name, email, password, passwordConfirmation)
+      // - logout()
+      // - logoutAll()
+      // - updateProfile({ name?, email? })
+      // - changePassword(currentPassword, newPassword, newPasswordConfirmation)
+      // - refreshUser()
+
+      // Available state:
+      // - user: User | null
+      // - accessToken: string | null
+      // - isLoading: boolean
+      // - isAuthenticated: boolean
+
+      return isAuthenticated ? <div>Hello, {user?.name}</div> : <LoginForm />;
+  }
+  ```
+- **API Integration:** All API calls automatically include:
+  - `Authorization: Bearer {token}` header (when authenticated)
+  - `Accept-Language` header based on current i18n locale
+  - Standard response format: `{ success: boolean, message: string, data?: T }`
 
 ### Internationalization (i18n)
 
