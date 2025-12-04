@@ -73,34 +73,36 @@ Each route's `app/(layouts)/layout-{N}/layout.tsx` imports the corresponding lay
 - **API Base URL:** Configure `NEXT_PUBLIC_API_BASE_URL` in `.env.local` (default: `http://localhost:8080`)
 - **Token Storage:** Access tokens stored in localStorage
 - **Authentication Hook:** `useAuth()` hook provides authentication state and methods
-  ```tsx
-  import { useAuth } from '@/providers/auth-provider';
 
-  export function Component() {
-      const { user, isAuthenticated, login, logout } = useAuth();
+    ```tsx
+    import { useAuth } from '@/providers/auth-provider';
 
-      // Available methods:
-      // - login(email, password)
-      // - register(name, email, password, passwordConfirmation)
-      // - logout()
-      // - logoutAll()
-      // - updateProfile({ name?, email? })
-      // - changePassword(currentPassword, newPassword, newPasswordConfirmation)
-      // - refreshUser()
+    export function Component() {
+        const { user, isAuthenticated, login, logout } = useAuth();
 
-      // Available state:
-      // - user: User | null
-      // - accessToken: string | null
-      // - isLoading: boolean
-      // - isAuthenticated: boolean
+        // Available methods:
+        // - login(email, password)
+        // - register(name, email, password, passwordConfirmation)
+        // - logout()
+        // - logoutAll()
+        // - updateProfile({ name?, email? })
+        // - changePassword(currentPassword, newPassword, newPasswordConfirmation)
+        // - refreshUser()
 
-      return isAuthenticated ? <div>Hello, {user?.name}</div> : <LoginForm />;
-  }
-  ```
+        // Available state:
+        // - user: User | null
+        // - accessToken: string | null
+        // - isLoading: boolean
+        // - isAuthenticated: boolean
+
+        return isAuthenticated ? <div>Hello, {user?.name}</div> : <LoginForm />;
+    }
+    ```
+
 - **API Integration:** All API calls automatically include:
-  - `Authorization: Bearer {token}` header (when authenticated)
-  - `Accept-Language` header based on current i18n locale
-  - Standard response format: `{ success: boolean, message: string, data?: T }`
+    - `Authorization: Bearer {token}` header (when authenticated)
+    - `Accept-Language` header based on current i18n locale
+    - Standard response format: `{ success: boolean, message: string, data?: T }`
 
 ### Internationalization (i18n)
 
@@ -108,30 +110,32 @@ Each route's `app/(layouts)/layout-{N}/layout.tsx` imports the corresponding lay
 - **Supported Languages:** Vietnamese (vi) and English (en)
 - **Default Language:** Vietnamese (vi)
 - **Translation Files:** Located in `i18n/messages/` directory
-  - `vi.json` - Vietnamese translations
-  - `en.json` - English translations
+    - `vi.json` - Vietnamese translations
+    - `en.json` - English translations
 - **Configuration:** `i18n/config.ts` defines available languages and their properties
 - **Provider:** `I18nProvider` in `providers/i18n-provider.tsx` initializes i18next
 - **Usage Pattern:** Import `useTranslation` hook in components:
-  ```tsx
-  import { useTranslation } from 'react-i18next';
 
-  export function Component() {
-      const { t } = useTranslation();
-      return <div>{t('common.buttons.save')}</div>;
-  }
-  ```
+    ```tsx
+    import { useTranslation } from 'react-i18next';
+
+    export function Component() {
+        const { t } = useTranslation();
+        return <div>{t('common.buttons.save')}</div>;
+    }
+    ```
+
 - **Translation Structure:** All translations are organized under the `common` namespace with sections for:
-  - `common.buttons` - Button labels (save, cancel, delete, edit, add, remove, submit, close, logout)
-  - `common.labels` - Form labels (name, email, password, username, phone, address)
-  - `common.messages` - System messages (welcome, loading, error, success, confirm)
-  - `common.theme` - Theme toggle labels (light, dark)
-  - `common.status` - User status labels (online, offline, away, busy)
+    - `common.buttons` - Button labels (save, cancel, delete, edit, add, remove, submit, close, logout)
+    - `common.labels` - Form labels (name, email, password, username, phone, address)
+    - `common.messages` - System messages (welcome, loading, error, success, confirm)
+    - `common.theme` - Theme toggle labels (light, dark)
+    - `common.status` - User status labels (online, offline, away, busy)
 - **Formatting Utilities:** `i18n/format.ts` provides locale-aware formatting functions:
-  - `formatDate()` - Format dates
-  - `formatDateTime()` - Format dates with time
-  - `formatTime()` - Format time only
-  - `formatMoney()` - Format currency amounts
+    - `formatDate()` - Format dates
+    - `formatDateTime()` - Format dates with time
+    - `formatTime()` - Format time only
+    - `formatMoney()` - Format currency amounts
 - **Timezone Helper:** `i18n/timezones.ts` provides `getTimeZones()` function to get all available timezones with formatted labels
 
 ### Styling & UI
@@ -211,12 +215,19 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 **CRITICAL RULES - MUST FOLLOW:**
 
-1. **Never commit without explicit user request**
+1. **Never work directly on dev or main branches**
+    - ALWAYS check current branch before making any code changes
+    - If current branch is `dev` or `main`, IMMEDIATELY stop and ask user to create a new branch
+    - DO NOT make any code modifications on `dev` or `main` branches
+    - Suggest creating appropriate branch type: feature/, bugfix/, or hotfix/
+    - Exception: Only documentation files (like CLAUDE.md, README.md) can be edited on dev/main
+
+2. **Never commit without explicit user request**
     - DO NOT create commits automatically after making changes
     - ALWAYS ask the user before committing
     - Only commit when the user explicitly says to commit
 
-2. **Always ask about branching before making changes**
+3. **Always ask about branching before making changes**
     - When adding new features or making modifications, ALWAYS ask: "Bạn có muốn tạo nhánh mới để xử lý không?"
     - Suggest appropriate branch type based on the work (feature/, bugfix/, hotfix/)
     - Wait for user confirmation before proceeding with changes
