@@ -154,5 +154,48 @@
             "confirmPasswordRequired": "Xác nhận mật khẩu là bắt buộc.",
             "passwordsNotMatch": "Mật khẩu không khớp."
         }
+    },
+    "categories": {
+        "title": "Quản lý danh mục",
+        "income": "Thu nhập",
+        "expense": "Chi tiêu",
+        "addCategory": "Thêm danh mục",
+        "addSubcategory": "Thêm danh mục con",
+        "editCategory": "Chỉnh sửa danh mục",
+        "deleteCategory": "Xóa danh mục",
+        "confirmDelete": "Bạn có chắc chắn muốn xóa danh mục \"{{name}}\"?",
+        "noCategories": "Chưa có danh mục nào",
+        "form": {
+            "name": "Tên danh mục",
+            "namePlaceholder": "Nhập tên danh mục",
+            "type": "Loại danh mục",
+            "typeIncome": "Thu nhập",
+            "typeExpense": "Chi tiêu",
+            "parentCategory": "Danh mục cha",
+            "selectParent": "Chọn danh mục cha",
+            "icon": "Biểu tượng",
+            "iconPlaceholder": "Chọn biểu tượng",
+            "color": "Màu sắc",
+            "colorPlaceholder": "Chọn màu sắc",
+            "createButton": "Tạo danh mục",
+            "updateButton": "Cập nhật",
+            "cancelButton": "Hủy"
+        },
+        "validation": {
+            "nameRequired": "Tên danh mục là bắt buộc.",
+            "nameMinLength": "Tên danh mục phải có ít nhất 2 ký tự.",
+            "typeRequired": "Loại danh mục là bắt buộc.",
+            "iconRequired": "Biểu tượng là bắt buộc.",
+            "colorRequired": "Màu sắc là bắt buộc.",
+            "colorInvalid": "Màu sắc phải là mã hex hợp lệ (ví dụ: #FF5722)."
+        },
+        "messages": {
+            "createSuccess": "Tạo danh mục thành công!",
+            "updateSuccess": "Cập nhật danh mục thành công!",
+            "deleteSuccess": "Xóa danh mục thành công!",
+            "createError": "Không thể tạo danh mục. Vui lòng thử lại.",
+            "updateError": "Không thể cập nhật danh mục. Vui lòng thử lại.",
+            "deleteError": "Không thể xóa danh mục. Vui lòng thử lại."
+        }
     }
 }
