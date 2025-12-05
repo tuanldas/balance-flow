@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { CATEGORY_COLORS, CATEGORY_ICONS } from '@/lib/constants/category-options';
+import { CATEGORY_COLORS } from '@/lib/constants/category-options';
 import type { Category, CategoryType } from '@/lib/types/category';
 import { useCreateCategory, useUpdateCategory } from '@/hooks/use-categories';
 import { Button } from '@/components/ui/button';
@@ -196,31 +196,44 @@ export function CategoryFormDialog({
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>{t('categories.form.icon')}</FormLabel>
-                                    <div className="grid grid-cols-8 gap-2 p-4 border rounded-lg max-h-40 overflow-y-auto">
-                                        {CATEGORY_ICONS.map((icon) => (
-                                            <button
-                                                key={icon.value}
-                                                type="button"
-                                                onClick={() => {
-                                                    field.onChange(icon.value);
-                                                    setSelectedIcon(icon.value);
-                                                }}
-                                                className={`flex h-10 w-10 items-center justify-center rounded-md border-2 transition-all hover:border-primary ${
-                                                    selectedIcon === icon.value
-                                                        ? 'border-primary bg-primary/10'
-                                                        : 'border-border'
-                                                }`}
-                                                title={icon.label}
+                                    <FormControl>
+                                        <Input
+                                            placeholder={t('categories.form.iconPlaceholder')}
+                                            {...field}
+                                            onChange={(e) => {
+                                                field.onChange(e);
+                                                setSelectedIcon(e.target.value);
+                                            }}
+                                        />
+                                    </FormControl>
+                                    <p className="text-xs text-muted-foreground">
+                                        Nhập URL icon SVG (ví dụ:
+                                        http://localhost:8081/storage/category-icons/salary.svg)
+                                    </p>
+                                    {selectedIcon && (
+                                        <div className="mt-2 flex items-center gap-2">
+                                            <span className="text-sm text-muted-foreground">Xem trước:</span>
+                                            <div
+                                                className="flex h-10 w-10 items-center justify-center rounded-lg border"
+                                                style={{ backgroundColor: selectedColor + '20' }}
                                             >
-                                                <span
-                                                    className="material-symbols-outlined"
-                                                    style={{ fontSize: '20px' }}
-                                                >
-                                                    {icon.value}
-                                                </span>
-                                            </button>
-                                        ))}
-                                    </div>
+                                                {selectedIcon.startsWith('http') ? (
+                                                    <img
+                                                        src={selectedIcon}
+                                                        alt="Icon preview"
+                                                        className="h-6 w-6 object-contain"
+                                                    />
+                                                ) : (
+                                                    <span
+                                                        className="material-symbols-outlined"
+                                                        style={{ fontSize: '20px' }}
+                                                    >
+                                                        {selectedIcon}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
                                     <FormMessage />
                                 </FormItem>
                             )}

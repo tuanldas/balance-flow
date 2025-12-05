@@ -51,12 +51,21 @@ export function CategoryItem({ category, level = 0, onEdit, onDelete, onAddSubca
 
                 {/* Icon */}
                 <div
-                    className="flex h-10 w-10 items-center justify-center rounded-lg text-xl"
+                    className="flex h-10 w-10 items-center justify-center rounded-lg"
                     style={{ backgroundColor: category.color + '20' }}
                 >
-                    <span className="material-symbols-outlined" style={{ fontSize: '24px', color: category.color }}>
-                        {category.icon}
-                    </span>
+                    {category.icon.startsWith('http') ? (
+                        <img
+                            src={category.icon}
+                            alt={category.name}
+                            className="h-6 w-6 object-contain"
+                            style={{ filter: `brightness(0) saturate(100%)`, color: category.color }}
+                        />
+                    ) : (
+                        <span className="material-symbols-outlined" style={{ fontSize: '24px', color: category.color }}>
+                            {category.icon}
+                        </span>
+                    )}
                 </div>
 
                 {/* Name */}
