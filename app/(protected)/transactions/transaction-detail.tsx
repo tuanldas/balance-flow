@@ -1,26 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import {
-    ArrowLeft,
-    Banknote,
-    Building2,
-    Calendar,
-    Car,
-    CreditCard,
-    Film,
-    Heart,
-    Laptop,
-    Receipt,
-    RefreshCw,
-    ShoppingBag,
-    ShoppingCart,
-    Split,
-    Tag,
-    Target,
-    TrendingUp,
-    Utensils,
-} from 'lucide-react';
+import { ArrowLeft, Building2, Calendar, CreditCard, RefreshCw, Split, Tag, Target } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { getSimilarTransactions } from '@/lib/data/mock-transactions';
 import type { Transaction } from '@/lib/types/transaction';
@@ -33,26 +14,13 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
+import { categoryIconMap, DefaultCategoryIcon } from './constants';
 
 interface TransactionDetailProps {
     transaction: Transaction | null;
     onBack?: () => void;
     isMobile?: boolean;
 }
-
-// Map category icon names to Lucide icons
-const categoryIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-    utensils: Utensils,
-    'shopping-bag': ShoppingBag,
-    car: Car,
-    film: Film,
-    'shopping-cart': ShoppingCart,
-    receipt: Receipt,
-    heart: Heart,
-    banknote: Banknote,
-    laptop: Laptop,
-    'trending-up': TrendingUp,
-};
 
 export function TransactionDetail({ transaction, onBack, isMobile = false }: TransactionDetailProps) {
     const { t } = useTranslation();
@@ -86,7 +54,7 @@ export function TransactionDetail({ transaction, onBack, isMobile = false }: Tra
     });
 
     const similarTransactions = getSimilarTransactions(transaction.merchant, transaction.id);
-    const CategoryIcon = categoryIconMap[transaction.category.icon] || ShoppingBag;
+    const CategoryIcon = categoryIconMap[transaction.category.icon] || DefaultCategoryIcon;
 
     return (
         <ScrollArea className="h-full">

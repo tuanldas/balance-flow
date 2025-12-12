@@ -1,42 +1,17 @@
 'use client';
 
 import { memo } from 'react';
-import {
-    Banknote,
-    Car,
-    Film,
-    Heart,
-    Laptop,
-    Receipt,
-    ShoppingBag,
-    ShoppingCart,
-    TrendingUp,
-    Utensils,
-} from 'lucide-react';
 import type { Transaction } from '@/lib/types/transaction';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { categoryIconMap, DefaultCategoryIcon } from './constants';
 
 interface TransactionRowProps {
     transaction: Transaction;
     isSelected: boolean;
     onClick: () => void;
 }
-
-// Map category icon names to Lucide icons
-const categoryIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-    utensils: Utensils,
-    'shopping-bag': ShoppingBag,
-    car: Car,
-    film: Film,
-    'shopping-cart': ShoppingCart,
-    receipt: Receipt,
-    heart: Heart,
-    banknote: Banknote,
-    laptop: Laptop,
-    'trending-up': TrendingUp,
-};
 
 function TransactionRowComponent({ transaction, isSelected, onClick }: TransactionRowProps) {
     const formattedAmount = new Intl.NumberFormat('en-US', {
@@ -51,7 +26,7 @@ function TransactionRowComponent({ transaction, isSelected, onClick }: Transacti
         hour12: true,
     });
 
-    const CategoryIcon = categoryIconMap[transaction.category.icon] || ShoppingBag;
+    const CategoryIcon = categoryIconMap[transaction.category.icon] || DefaultCategoryIcon;
 
     return (
         <div
