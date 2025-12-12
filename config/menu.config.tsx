@@ -1,4 +1,4 @@
-import { FolderTree, LayoutDashboard } from 'lucide-react';
+import { ArrowLeftRight, FolderTree, LayoutDashboard } from 'lucide-react';
 import { MenuConfig } from '@/config/types';
 
 export const MENU_SIDEBAR: MenuConfig = [
@@ -9,6 +9,11 @@ export const MENU_SIDEBAR: MenuConfig = [
                 titleKey: 'dashboard',
                 path: '/',
                 icon: LayoutDashboard,
+            },
+            {
+                titleKey: 'transactions',
+                path: '/transactions',
+                icon: ArrowLeftRight,
             },
             {
                 titleKey: 'categories',

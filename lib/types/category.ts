@@ -41,6 +41,7 @@ export interface CreateCategoryData {
     parent_id?: string | null;
     icon?: string;
     icon_file?: File;
+    color?: string;
 }
 
 export interface UpdateCategoryData {
@@ -49,6 +50,7 @@ export interface UpdateCategoryData {
     parent_id?: string | null;
     icon?: string;
     icon_file?: File;
+    color?: string;
 }
 
 export interface DeleteCategoryResponse {

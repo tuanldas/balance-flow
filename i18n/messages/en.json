@@ -9,7 +9,8 @@
             "remove": "Remove",
             "submit": "Submit",
             "close": "Close",
-            "logout": "Log out"
+            "logout": "Log out",
+            "back": "Back"
         },
         "labels": {
             "name": "Name",
@@ -54,6 +55,7 @@
             "dashboard": "Dashboard",
             "dashboards": "Dashboards",
             "categories": "Categories",
+            "transactions": "Transactions",
             "publicProfile": "Public Profile",
             "accountSettings": "Account Settings",
             "network": "Network",
@@ -228,6 +230,57 @@
             "searchPlaceholder": "Search...",
             "noSearchResults": "No matching icons found",
             "noIcons": "No icons available"
+        }
+    },
+    "transactions": {
+        "title": "Transactions",
+        "searchPlaceholder": "Search transactions...",
+        "filterButton": "Filter",
+        "filterBy": "Filter by",
+        "sortButton": "Sort",
+        "sortBy": "Sort by",
+        "noResults": "No transactions found",
+        "recurring": "Recurring",
+        "dateGroups": {
+            "today": "Today",
+            "yesterday": "Yesterday"
+        },
+        "sort": {
+            "date": "Date",
+            "amountHighToLow": "Amount (High to Low)",
+            "amountLowToHigh": "Amount (Low to High)"
+        },
+        "filter": {
+            "account": "Account",
+            "category": "Category",
+            "date": "Date",
+            "goals": "Goals",
+            "keywords": "Keywords",
+            "tags": "Tags"
+        },
+        "status": {
+            "completed": "Completed",
+            "pending": "Pending",
+            "cancelled": "Cancelled",
+            "toReview": "To Review"
+        },
+        "actions": {
+            "split": "Split",
+            "recurring": "Recurring",
+            "review": "Review"
+        },
+        "detail": {
+            "noSelection": "No transaction selected",
+            "selectPrompt": "Select a transaction to view details",
+            "category": "Category",
+            "account": "Account",
+            "goal": "Goal",
+            "goalPlaceholder": "Add a goal for this transaction",
+            "notes": "Notes",
+            "notesPlaceholder": "Add notes...",
+            "tags": "Tags",
+            "tagsPlaceholder": "Add tags (comma separated)",
+            "similarTransactions": "Similar Transactions"
         }
     }
 }
