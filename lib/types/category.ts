@@ -39,8 +39,8 @@ export interface CreateCategoryData {
     name: string;
     category_type: CategoryType;
     parent_id?: string | null;
-    icon: string;
-    color: string;
+    icon?: string;
+    icon_file?: File;
 }
 
 export interface UpdateCategoryData {
@@ -48,7 +48,7 @@ export interface UpdateCategoryData {
     category_type?: CategoryType;
     parent_id?: string | null;
     icon?: string;
-    color?: string;
+    icon_file?: File;
 }
 
 export interface DeleteCategoryResponse {

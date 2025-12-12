@@ -175,7 +175,7 @@ The application includes a complete Categories Management system for income and 
 - **API Layer:**
     - Types: `lib/types/category.ts` - TypeScript interfaces for Category API
     - API Service: `lib/api/categories.ts` - Full CRUD operations (getAll, getById, getSubcategories, create, update, patch, delete)
-    - Constants: `lib/constants/category-options.ts` - Predefined color palette options
+    - Icons API: `lib/api/category-icons.ts` - Fetch available category icons from backend
 - **React Query Hooks:** `hooks/use-categories.ts` - Custom hooks with cache management:
     - `useCategories(filters?)` - Fetch all categories with optional filters
     - `useCategory(id)` - Fetch single category
@@ -186,14 +186,15 @@ The application includes a complete Categories Management system for income and 
     - `useDeleteCategory()` - Delete category
 - **UI Components:**
     - `category-item.tsx` - Tree view component with expand/collapse for hierarchical display
-    - `category-form-dialog.tsx` - Dialog form with validation (Zod) and icon/color pickers
+    - `category-form-dialog-compact.tsx` - Dialog form with validation (Zod) and icon picker
+    - `icon-picker.tsx` - Icon picker component with default icons from API and custom upload support
     - `category-schema.ts` - Zod validation schema
 - **Features:**
     - Tree view with parent-child relationships
     - Tabs for Income/Expense separation
     - CRUD operations: Create, Edit, Delete, Add Subcategory
-    - Icon support: SVG URLs from backend (e.g., `http://localhost:8081/storage/category-icons/salary.svg`)
-    - Color picker with predefined palette
+    - Icon picker: Select from default icons or upload custom icon (SVG, PNG, JPG - max 512KB)
+    - Random icon selection when creating new category
     - Form validation with Zod
     - i18n support (Vietnamese & English)
     - Loading states & error handling
@@ -220,8 +221,8 @@ The application includes a complete Categories Management system for income and 
         "name": string,
         "category_type": "income" | "expense",
         "parent_id": string | null,
-        "icon": string,  // URL to SVG or icon name
-        "color": string,  // Hex color code
+        "icon": string,  // URL to SVG icon
+        "color": string,  // Hex color code (managed by backend, not editable in frontend)
         "is_system": boolean,
         "created_at": string,
         "updated_at": string,

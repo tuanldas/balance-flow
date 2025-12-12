@@ -74,29 +74,26 @@ export const CATEGORY_ICONS = [
     { value: 'category', label: 'Other', category: 'both' },
 ];
 
-// Predefined color palette for categories
+// Predefined color palette for categories - Pastel/Light colors for black icons
 export const CATEGORY_COLORS = [
-    // Green tones (income)
-    { value: '#4CAF50', label: 'Green', category: 'income' },
-    { value: '#8BC34A', label: 'Light Green', category: 'income' },
-    { value: '#009688', label: 'Teal', category: 'income' },
-    { value: '#00BCD4', label: 'Cyan', category: 'income' },
-    { value: '#03A9F4', label: 'Light Blue', category: 'income' },
+    // Row 1 - Warm tones (pastel)
+    { value: '#FFCDD2', label: 'Red' },
+    { value: '#FFCCBC', label: 'Deep Orange' },
+    { value: '#FFE0B2', label: 'Orange' },
+    { value: '#FFECB3', label: 'Amber' },
+    { value: '#FFF9C4', label: 'Yellow' },
 
-    // Red/Orange tones (expense)
-    { value: '#FF5722', label: 'Deep Orange', category: 'expense' },
-    { value: '#E91E63', label: 'Pink', category: 'expense' },
-    { value: '#9C27B0', label: 'Purple', category: 'expense' },
-    { value: '#673AB7', label: 'Deep Purple', category: 'expense' },
-    { value: '#3F51B5', label: 'Indigo', category: 'expense' },
-    { value: '#2196F3', label: 'Blue', category: 'expense' },
-    { value: '#F44336', label: 'Red', category: 'expense' },
-    { value: '#FF9800', label: 'Orange', category: 'expense' },
-    { value: '#FFC107', label: 'Amber', category: 'expense' },
-    { value: '#FFEB3B', label: 'Yellow', category: 'expense' },
+    // Row 2 - Green/Cyan tones (pastel)
+    { value: '#DCEDC8', label: 'Light Green' },
+    { value: '#C8E6C9', label: 'Green' },
+    { value: '#B2DFDB', label: 'Teal' },
+    { value: '#B2EBF2', label: 'Cyan' },
+    { value: '#B3E5FC', label: 'Light Blue' },
 
-    // Neutral
-    { value: '#9E9E9E', label: 'Grey', category: 'both' },
-    { value: '#607D8B', label: 'Blue Grey', category: 'both' },
-    { value: '#795548', label: 'Brown', category: 'both' },
+    // Row 3 - Blue/Purple tones (pastel)
+    { value: '#BBDEFB', label: 'Blue' },
+    { value: '#C5CAE9', label: 'Indigo' },
+    { value: '#D1C4E9', label: 'Deep Purple' },
+    { value: '#E1BEE7', label: 'Purple' },
+    { value: '#F8BBD9', label: 'Pink' },
 ];
