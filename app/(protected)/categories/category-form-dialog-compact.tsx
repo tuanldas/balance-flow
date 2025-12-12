@@ -204,11 +204,11 @@ export function CategoryFormDialogCompact({
                             <DialogTitle>{getDialogTitle()}</DialogTitle>
                             {mode === 'create-subcategory' && parentCategory ? (
                                 <DialogDescription>
-                                    Danh mục con của: <strong>{parentCategory.name}</strong>
+                                    {t('categories.form.subcategoryOf')} <strong>{parentCategory.name}</strong>
                                 </DialogDescription>
                             ) : (
                                 <DialogDescription className="truncate">
-                                    {watchedName || 'Nhập thông tin danh mục'}
+                                    {watchedName || t('categories.form.enterInfo')}
                                 </DialogDescription>
                             )}
                         </div>
