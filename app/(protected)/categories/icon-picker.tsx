@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { useCategoryIcons } from '@/hooks/use-category-icons';
 import { formatBytes, useFileUpload } from '@/hooks/use-file-upload';
+import { useSettings } from '@/providers/settings-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -24,6 +25,8 @@ const ACCEPTED_FILE_TYPES = '.svg,.png,.jpg,.jpeg,image/svg+xml,image/png,image/
 
 export function IconPicker({ value, uploadedFile, onSelectIcon, onUploadIcon, disabled = false }: IconPickerProps) {
     const { t } = useTranslation();
+    const { getOption } = useSettings();
+    const categoryIconBgColor = getOption<string>('categoryIconBgColor');
     const [searchQuery, setSearchQuery] = useState('');
     const { data: iconsData, isLoading, error } = useCategoryIcons();
 
@@ -168,7 +171,10 @@ export function IconPicker({ value, uploadedFile, onSelectIcon, onUploadIcon, di
                     {/* Selected Preview */}
                     {previewUrl && !uploadedFile && (
                         <div className="mt-3 flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                            <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-muted">
+                            <div
+                                className="w-10 h-10 rounded-lg flex items-center justify-center"
+                                style={{ backgroundColor: categoryIconBgColor }}
+                            >
                                 <img src={previewUrl} alt="Selected" className="w-6 h-6 object-contain" />
                             </div>
                             <span className="text-sm text-muted-foreground">
@@ -184,7 +190,10 @@ export function IconPicker({ value, uploadedFile, onSelectIcon, onUploadIcon, di
                         <div className="p-4 border rounded-lg bg-background">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted">
+                                    <div
+                                        className="flex h-12 w-12 items-center justify-center rounded-lg"
+                                        style={{ backgroundColor: categoryIconBgColor }}
+                                    >
                                         <img
                                             src={previewUrl || ''}
                                             alt="Uploaded icon"
