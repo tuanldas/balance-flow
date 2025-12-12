@@ -26,6 +26,7 @@ interface CategoryItemProps {
 export function CategoryItem({ category, level = 0, onEdit, onDelete, onAddSubcategory }: CategoryItemProps) {
     const { t } = useTranslation();
     const [isExpanded, setIsExpanded] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const { getOption } = useSettings();
     const categoryIconBgColor = getOption<string>('categoryIconBgColor');
     const hasChildren = category.children && category.children.length > 0;
@@ -86,29 +87,35 @@ export function CategoryItem({ category, level = 0, onEdit, onDelete, onAddSubca
                 </div>
 
                 {/* Actions */}
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                            <MoreVertical className="h-4 w-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => onEdit?.(category)}>
-                            <Pencil className="mr-2 h-4 w-4" />
-                            {t('categories.actions.edit')}
-                        </DropdownMenuItem>
-                        {level === 0 && (
-                            <DropdownMenuItem onClick={() => onAddSubcategory?.(category)}>
-                                <Plus className="mr-2 h-4 w-4" />
-                                {t('categories.addSubcategory')}
+                <DropdownMenu open={isDropdownOpen}>
+                    <div onMouseEnter={() => setIsDropdownOpen(true)} onMouseLeave={() => setIsDropdownOpen(false)}>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                                <MoreVertical className="h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                            align="end"
+                            onMouseEnter={() => setIsDropdownOpen(true)}
+                            onMouseLeave={() => setIsDropdownOpen(false)}
+                        >
+                            <DropdownMenuItem onClick={() => onEdit?.(category)}>
+                                <Pencil className="mr-2 h-4 w-4" />
+                                {t('categories.actions.edit')}
                             </DropdownMenuItem>
-                        )}
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem className="text-destructive" onClick={() => onDelete?.(category)}>
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            {t('categories.actions.delete')}
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
+                            {level === 0 && (
+                                <DropdownMenuItem onClick={() => onAddSubcategory?.(category)}>
+                                    <Plus className="mr-2 h-4 w-4" />
+                                    {t('categories.addSubcategory')}
+                                </DropdownMenuItem>
+                            )}
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem className="text-destructive" onClick={() => onDelete?.(category)}>
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                {t('categories.actions.delete')}
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </div>
                 </DropdownMenu>
             </div>
 
