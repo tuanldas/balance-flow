@@ -1,7 +1,6 @@
 import { ReactNode, Suspense } from 'react';
 import { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import Script from 'next/script';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@/components/ui/sonner';
 import '@/styles/globals.css';
@@ -23,13 +22,14 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: ReactNode }) {
     return (
         <html className="h-full" suppressHydrationWarning>
-            <body className={cn('antialiased flex h-full text-base text-foreground bg-background', inter.className)}>
+            <head>
                 {/* Load Material Symbols font */}
-                <Script
-                    strategy="beforeInteractive"
-                    src="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+                <link
+                    rel="stylesheet"
+                    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
                 />
-
+            </head>
+            <body className={cn('antialiased flex h-full text-base text-foreground bg-background', inter.className)}>
                 <I18nProvider>
                     <QueryProvider>
                         <AuthProvider>
