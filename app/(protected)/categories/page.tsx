@@ -7,19 +7,15 @@ import { DEFAULT_PER_PAGE } from '@/lib/constants/pagination';
 import type { Category, CategoryType } from '@/lib/types/category';
 import { useDeleteCategory, useInfiniteCategories } from '@/hooks/use-categories';
 import { Button } from '@/components/ui/button';
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardHeading,
-    CardTitle,
-    CardToolbar,
-} from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Toolbar, ToolbarHeading, ToolbarPageTitle } from '@/components/layouts/protected/components/toolbar';
-import { CategoryFormDialog } from './category-form-dialog';
+import {
+    Toolbar,
+    ToolbarActions,
+    ToolbarHeading,
+    ToolbarPageTitle,
+} from '@/components/layouts/protected/components/toolbar';
+import { CategoryFormDialogCompact } from './category-form-dialog-compact';
 import { CategoryItem } from './category-item';
 
 // Component to display category list with infinite scroll
@@ -200,56 +196,45 @@ export default function CategoriesPage() {
                 <ToolbarHeading>
                     <ToolbarPageTitle>Quản lý danh mục</ToolbarPageTitle>
                 </ToolbarHeading>
+                <ToolbarActions>
+                    <Button onClick={handleAddCategory}>
+                        <Plus className="mr-2 h-4 w-4" />
+                        Thêm danh mục
+                    </Button>
+                </ToolbarActions>
             </Toolbar>
 
-            <Card>
-                <CardHeader>
-                    <CardHeading>
-                        <CardTitle>Danh mục thu chi</CardTitle>
-                        <CardDescription>Quản lý danh mục thu nhập và chi tiêu của bạn</CardDescription>
-                    </CardHeading>
-                    <CardToolbar>
-                        <Button onClick={handleAddCategory}>
-                            <Plus className="mr-2 h-4 w-4" />
-                            Thêm danh mục
-                        </Button>
-                    </CardToolbar>
-                </CardHeader>
+            <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
+                <TabsList className="grid w-full max-w-md grid-cols-2">
+                    <TabsTrigger value="income" className="gap-2">
+                        Thu nhập ({incomeQuery.isLoading ? '...' : incomeCount})
+                    </TabsTrigger>
+                    <TabsTrigger value="expense" className="gap-2">
+                        Chi tiêu ({expenseQuery.isLoading ? '...' : expenseCount})
+                    </TabsTrigger>
+                </TabsList>
 
-                <CardContent>
-                    <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
-                        <TabsList className="grid w-full max-w-md grid-cols-2">
-                            <TabsTrigger value="income" className="gap-2">
-                                Thu nhập ({incomeQuery.isLoading ? '...' : incomeCount})
-                            </TabsTrigger>
-                            <TabsTrigger value="expense" className="gap-2">
-                                Chi tiêu ({expenseQuery.isLoading ? '...' : expenseCount})
-                            </TabsTrigger>
-                        </TabsList>
+                <TabsContent value="income" className="mt-6">
+                    <CategoryList
+                        type="income"
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                        onAddSubcategory={handleAddSubcategory}
+                    />
+                </TabsContent>
 
-                        <TabsContent value="income" className="mt-6">
-                            <CategoryList
-                                type="income"
-                                onEdit={handleEdit}
-                                onDelete={handleDelete}
-                                onAddSubcategory={handleAddSubcategory}
-                            />
-                        </TabsContent>
-
-                        <TabsContent value="expense" className="mt-6">
-                            <CategoryList
-                                type="expense"
-                                onEdit={handleEdit}
-                                onDelete={handleDelete}
-                                onAddSubcategory={handleAddSubcategory}
-                            />
-                        </TabsContent>
-                    </Tabs>
-                </CardContent>
-            </Card>
+                <TabsContent value="expense" className="mt-6">
+                    <CategoryList
+                        type="expense"
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                        onAddSubcategory={handleAddSubcategory}
+                    />
+                </TabsContent>
+            </Tabs>
 
             {/* Category Form Dialog */}
-            <CategoryFormDialog
+            <CategoryFormDialogCompact
                 open={isFormOpen}
                 onOpenChange={setIsFormOpen}
                 mode={formMode}

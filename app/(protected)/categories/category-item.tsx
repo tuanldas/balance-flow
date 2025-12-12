@@ -22,7 +22,7 @@ interface CategoryItemProps {
 }
 
 export function CategoryItem({ category, level = 0, onEdit, onDelete, onAddSubcategory }: CategoryItemProps) {
-    const [isExpanded, setIsExpanded] = useState(true);
+    const [isExpanded, setIsExpanded] = useState(false);
     const hasChildren = category.children && category.children.length > 0;
 
     return (
@@ -52,17 +52,12 @@ export function CategoryItem({ category, level = 0, onEdit, onDelete, onAddSubca
                 {/* Icon */}
                 <div
                     className="flex h-10 w-10 items-center justify-center rounded-lg"
-                    style={{ backgroundColor: category.color + '20' }}
+                    style={{ backgroundColor: category.color }}
                 >
                     {category.icon.startsWith('http') ? (
-                        <img
-                            src={category.icon}
-                            alt={category.name}
-                            className="h-6 w-6 object-contain"
-                            style={{ filter: `brightness(0) saturate(100%)`, color: category.color }}
-                        />
+                        <img src={category.icon} alt={category.name} className="h-6 w-6 object-contain" />
                     ) : (
-                        <span className="material-symbols-outlined" style={{ fontSize: '24px', color: category.color }}>
+                        <span className="material-symbols-outlined text-white" style={{ fontSize: '24px' }}>
                             {category.icon}
                         </span>
                     )}
@@ -88,7 +83,7 @@ export function CategoryItem({ category, level = 0, onEdit, onDelete, onAddSubca
                 {/* Actions */}
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="opacity-0 group-hover:opacity-100">
+                        <Button variant="ghost" size="icon">
                             <MoreVertical className="h-4 w-4" />
                         </Button>
                     </DropdownMenuTrigger>

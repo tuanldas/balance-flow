@@ -11,7 +11,7 @@ export const getCategorySchema = () => {
             message: i18n.t('categories.validation.typeRequired'),
         }),
         parent_id: z.string().nullable().optional(),
-        icon: z.string().min(1, { message: i18n.t('categories.validation.iconRequired') }),
+        icon: z.string(), // Can be empty when icon_file is provided
         color: z
             .string()
             .min(1, { message: i18n.t('categories.validation.colorRequired') })

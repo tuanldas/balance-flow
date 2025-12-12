@@ -197,6 +197,18 @@
             "createError": "Không thể tạo danh mục. Vui lòng thử lại.",
             "updateError": "Không thể cập nhật danh mục. Vui lòng thử lại.",
             "deleteError": "Không thể xóa danh mục. Vui lòng thử lại."
+        },
+        "iconPicker": {
+            "defaultIcons": "Biểu tượng mặc định",
+            "uploadCustom": "Tải lên",
+            "selectIcon": "Chọn biểu tượng",
+            "dropZone": "Kéo thả file vào đây hoặc click để chọn",
+            "acceptedFormats": "Chấp nhận: SVG, PNG, JPG (tối đa 512KB)",
+            "uploadedIcon": "Biểu tượng đã tải",
+            "removeIcon": "Xóa biểu tượng",
+            "noIconSelected": "Chưa chọn",
+            "loadingIcons": "Đang tải biểu tượng...",
+            "errorLoadingIcons": "Không thể tải danh sách biểu tượng"
         }
     }
 }

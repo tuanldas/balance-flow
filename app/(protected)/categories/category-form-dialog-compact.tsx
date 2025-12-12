@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { CATEGORY_COLORS } from '@/lib/constants/category-options';
 import type { Category, CategoryType } from '@/lib/types/category';
 import { useCreateCategory, useUpdateCategory } from '@/hooks/use-categories';
+import { useCategoryIcons } from '@/hooks/use-category-icons';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -18,10 +19,12 @@ import {
 } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getCategorySchema, type CategorySchemaType } from './category-schema';
+import { IconPicker } from './icon-picker';
 
-interface CategoryFormDialogProps {
+interface CategoryFormDialogCompactProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     mode: 'create' | 'edit' | 'create-subcategory';
@@ -31,7 +34,7 @@ interface CategoryFormDialogProps {
     onSuccess?: () => void;
 }
 
-export function CategoryFormDialog({
+export function CategoryFormDialogCompact({
     open,
     onOpenChange,
     mode,
@@ -39,13 +42,30 @@ export function CategoryFormDialog({
     parentCategory,
     defaultType = 'expense',
     onSuccess,
-}: CategoryFormDialogProps) {
+}: CategoryFormDialogCompactProps) {
     const { t } = useTranslation();
-    const [selectedIcon, setSelectedIcon] = useState<string>('');
-    const [selectedColor, setSelectedColor] = useState<string>('');
+    const [selectedColor, setSelectedColor] = useState<string>('#6366f1');
+    const [uploadedIconFile, setUploadedIconFile] = useState<File | null>(null);
+
+    const [isIconPopoverOpen, setIsIconPopoverOpen] = useState(false);
 
     const createMutation = useCreateCategory();
     const updateMutation = useUpdateCategory();
+    const { data: iconsData } = useCategoryIcons();
+
+    // Helper to get a random icon URL
+    const getRandomIconUrl = () => {
+        const icons = iconsData?.data || [];
+        if (icons.length === 0) return '';
+        const randomIndex = Math.floor(Math.random() * icons.length);
+        return icons[randomIndex].url;
+    };
+
+    // Helper to get a random color
+    const getRandomColor = () => {
+        const randomIndex = Math.floor(Math.random() * CATEGORY_COLORS.length);
+        return CATEGORY_COLORS[randomIndex].value;
+    };
 
     const form = useForm<CategorySchemaType>({
         resolver: zodResolver(getCategorySchema()),
@@ -54,13 +74,17 @@ export function CategoryFormDialog({
             category_type: 'expense' as CategoryType,
             parent_id: null,
             icon: '',
-            color: '',
+            color: '#6366f1',
         },
     });
+
+    const watchedName = form.watch('name');
+    const watchedIcon = form.watch('icon');
 
     // Reset form when dialog opens/closes or mode changes
     useEffect(() => {
         if (open) {
+            setUploadedIconFile(null);
             if (mode === 'edit' && category) {
                 form.reset({
                     name: category.name,
@@ -69,52 +93,54 @@ export function CategoryFormDialog({
                     icon: category.icon,
                     color: category.color,
                 });
-                setSelectedIcon(category.icon);
                 setSelectedColor(category.color);
             } else if (mode === 'create-subcategory' && parentCategory) {
+                const randomIcon = getRandomIconUrl();
+                const randomColor = getRandomColor();
                 form.reset({
                     name: '',
                     category_type: parentCategory.category_type,
                     parent_id: parentCategory.id,
-                    icon: '',
-                    color: parentCategory.color,
+                    icon: randomIcon,
+                    color: randomColor,
                 });
-                setSelectedIcon('');
-                setSelectedColor(parentCategory.color);
+                setSelectedColor(randomColor);
             } else {
+                const randomIcon = getRandomIconUrl();
+                const randomColor = getRandomColor();
                 form.reset({
                     name: '',
                     category_type: defaultType,
                     parent_id: null,
-                    icon: '',
-                    color: '',
+                    icon: randomIcon,
+                    color: randomColor,
                 });
-                setSelectedIcon('');
-                setSelectedColor('');
+                setSelectedColor(randomColor);
             }
         }
-    }, [open, mode, category, parentCategory, defaultType, form]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [open, mode, category, parentCategory, defaultType, form, iconsData]);
 
     const onSubmit = async (data: CategorySchemaType) => {
         try {
+            const submitData = {
+                name: data.name,
+                category_type: data.category_type,
+                parent_id: data.parent_id,
+                color: data.color,
+                icon: uploadedIconFile ? undefined : data.icon,
+                icon_file: uploadedIconFile || undefined,
+            };
+
             if (mode === 'edit' && category) {
                 await updateMutation.mutateAsync({
                     id: category.id,
-                    data: {
-                        name: data.name,
-                        category_type: data.category_type,
-                        parent_id: data.parent_id,
-                        icon: data.icon,
-                        color: data.color,
-                    },
+                    data: submitData,
                 });
             } else {
                 await createMutation.mutateAsync({
-                    name: data.name,
-                    category_type: data.category_type,
-                    parent_id: data.parent_id || null,
-                    icon: data.icon,
-                    color: data.color,
+                    ...submitData,
+                    parent_id: submitData.parent_id || null,
                 });
             }
 
@@ -133,21 +159,81 @@ export function CategoryFormDialog({
 
     const isLoading = createMutation.isPending || updateMutation.isPending;
 
+    // Get preview icon URL
+    const previewIconUrl = uploadedIconFile ? URL.createObjectURL(uploadedIconFile) : watchedIcon || null;
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+                {/* Header with Preview */}
                 <DialogHeader>
-                    <DialogTitle>{getDialogTitle()}</DialogTitle>
-                    {mode === 'create-subcategory' && parentCategory && (
-                        <DialogDescription>
-                            Danh mục con của: <strong>{parentCategory.name}</strong>
-                        </DialogDescription>
-                    )}
+                    <div className="flex items-start gap-4">
+                        {/* Icon Preview with Popover */}
+                        <FormField
+                            control={form.control}
+                            name="icon"
+                            render={({ field }) => (
+                                <Popover open={isIconPopoverOpen} onOpenChange={setIsIconPopoverOpen}>
+                                    <PopoverTrigger asChild>
+                                        <button
+                                            type="button"
+                                            className="w-16 h-16 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 cursor-pointer hover:ring-2 hover:ring-primary hover:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                            style={{ backgroundColor: selectedColor }}
+                                            title={t('categories.iconPicker.selectIcon')}
+                                            disabled={isLoading}
+                                        >
+                                            {previewIconUrl ? (
+                                                <img
+                                                    src={previewIconUrl}
+                                                    alt="Icon preview"
+                                                    className="w-8 h-8 object-contain"
+                                                />
+                                            ) : (
+                                                <span className="text-2xl font-bold text-white/70">
+                                                    {watchedName ? watchedName.charAt(0).toUpperCase() : '?'}
+                                                </span>
+                                            )}
+                                        </button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-80 p-3" align="start" sideOffset={8}>
+                                        <IconPicker
+                                            value={field.value}
+                                            uploadedFile={uploadedIconFile}
+                                            onSelectIcon={(iconUrl) => {
+                                                field.onChange(iconUrl || '');
+                                                setUploadedIconFile(null);
+                                            }}
+                                            onUploadIcon={(file) => {
+                                                setUploadedIconFile(file);
+                                                if (file) {
+                                                    field.onChange('');
+                                                }
+                                            }}
+                                            selectedColor={selectedColor}
+                                            disabled={isLoading}
+                                        />
+                                    </PopoverContent>
+                                </Popover>
+                            )}
+                        />
+                        <div className="flex-1 min-w-0">
+                            <DialogTitle>{getDialogTitle()}</DialogTitle>
+                            {mode === 'create-subcategory' && parentCategory ? (
+                                <DialogDescription>
+                                    Danh mục con của: <strong>{parentCategory.name}</strong>
+                                </DialogDescription>
+                            ) : (
+                                <DialogDescription className="truncate">
+                                    {watchedName || 'Nhập thông tin danh mục'}
+                                </DialogDescription>
+                            )}
+                        </div>
+                    </div>
                 </DialogHeader>
 
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                        {/* Name */}
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                        {/* Name - Always visible */}
                         <FormField
                             control={form.control}
                             name="name"
@@ -162,7 +248,7 @@ export function CategoryFormDialog({
                             )}
                         />
 
-                        {/* Category Type - only editable when creating root category */}
+                        {/* Category Type - Always visible when creating */}
                         {mode === 'create' && (
                             <FormField
                                 control={form.control}
@@ -191,64 +277,14 @@ export function CategoryFormDialog({
                             />
                         )}
 
-                        {/* Icon Selection */}
-                        <FormField
-                            control={form.control}
-                            name="icon"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t('categories.form.icon')}</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder={t('categories.form.iconPlaceholder')}
-                                            {...field}
-                                            onChange={(e) => {
-                                                field.onChange(e);
-                                                setSelectedIcon(e.target.value);
-                                            }}
-                                        />
-                                    </FormControl>
-                                    <p className="text-xs text-muted-foreground">
-                                        Nhập URL icon SVG (ví dụ:
-                                        http://localhost:8081/storage/category-icons/salary.svg)
-                                    </p>
-                                    {selectedIcon && (
-                                        <div className="mt-2 flex items-center gap-2">
-                                            <span className="text-sm text-muted-foreground">Xem trước:</span>
-                                            <div
-                                                className="flex h-10 w-10 items-center justify-center rounded-lg border"
-                                                style={{ backgroundColor: selectedColor + '20' }}
-                                            >
-                                                {selectedIcon.startsWith('http') ? (
-                                                    <img
-                                                        src={selectedIcon}
-                                                        alt="Icon preview"
-                                                        className="h-6 w-6 object-contain"
-                                                    />
-                                                ) : (
-                                                    <span
-                                                        className="material-symbols-outlined"
-                                                        style={{ fontSize: '20px' }}
-                                                    >
-                                                        {selectedIcon}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </div>
-                                    )}
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        {/* Color Selection */}
+                        {/* Color Section */}
                         <FormField
                             control={form.control}
                             name="color"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>{t('categories.form.color')}</FormLabel>
-                                    <div className="grid grid-cols-10 gap-2 p-4 border rounded-lg">
+                                    <div className="grid grid-cols-10 gap-2">
                                         {CATEGORY_COLORS.map((color) => (
                                             <button
                                                 key={color.value}
@@ -257,7 +293,7 @@ export function CategoryFormDialog({
                                                     field.onChange(color.value);
                                                     setSelectedColor(color.value);
                                                 }}
-                                                className={`h-10 w-10 rounded-md border-2 transition-all hover:scale-110 ${
+                                                className={`h-8 w-8 rounded-md border-2 transition-all hover:scale-110 ${
                                                     selectedColor === color.value
                                                         ? 'border-primary ring-2 ring-primary ring-offset-2'
                                                         : 'border-border'

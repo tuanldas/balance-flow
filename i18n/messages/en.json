@@ -197,6 +197,18 @@
             "createError": "Cannot create category. Please try again.",
             "updateError": "Cannot update category. Please try again.",
             "deleteError": "Cannot delete category. Please try again."
+        },
+        "iconPicker": {
+            "defaultIcons": "Default Icons",
+            "uploadCustom": "Upload",
+            "selectIcon": "Select Icon",
+            "dropZone": "Drag and drop file here or click to select",
+            "acceptedFormats": "Accepted: SVG, PNG, JPG (max 512KB)",
+            "uploadedIcon": "Uploaded Icon",
+            "removeIcon": "Remove Icon",
+            "noIconSelected": "Not selected",
+            "loadingIcons": "Loading icons...",
+            "errorLoadingIcons": "Cannot load icons list"
         }
     }
 }
