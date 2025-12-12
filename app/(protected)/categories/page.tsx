@@ -255,6 +255,7 @@ export default function CategoriesPage() {
                 mode={formMode}
                 category={selectedCategory}
                 parentCategory={formMode === 'create-subcategory' ? selectedCategory : undefined}
+                defaultType={activeTab}
             />
         </div>
     );

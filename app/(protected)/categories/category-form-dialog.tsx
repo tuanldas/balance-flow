@@ -27,6 +27,7 @@ interface CategoryFormDialogProps {
     mode: 'create' | 'edit' | 'create-subcategory';
     category?: Category | null;
     parentCategory?: Category | null;
+    defaultType?: CategoryType;
     onSuccess?: () => void;
 }
 
@@ -36,6 +37,7 @@ export function CategoryFormDialog({
     mode,
     category,
     parentCategory,
+    defaultType = 'expense',
     onSuccess,
 }: CategoryFormDialogProps) {
     const { t } = useTranslation();
@@ -82,7 +84,7 @@ export function CategoryFormDialog({
             } else {
                 form.reset({
                     name: '',
-                    category_type: 'expense',
+                    category_type: defaultType,
                     parent_id: null,
                     icon: '',
                     color: '',
@@ -91,7 +93,7 @@ export function CategoryFormDialog({
                 setSelectedColor('');
             }
         }
-    }, [open, mode, category, parentCategory, form]);
+    }, [open, mode, category, parentCategory, defaultType, form]);
 
     const onSubmit = async (data: CategorySchemaType) => {
         try {
