@@ -50,14 +50,11 @@ export function CategoryItem({ category, level = 0, onEdit, onDelete, onAddSubca
                 )}
 
                 {/* Icon */}
-                <div
-                    className="flex h-10 w-10 items-center justify-center rounded-lg"
-                    style={{ backgroundColor: category.color }}
-                >
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
                     {category.icon.startsWith('http') ? (
                         <img src={category.icon} alt={category.name} className="h-6 w-6 object-contain" />
                     ) : (
-                        <span className="material-symbols-outlined text-white" style={{ fontSize: '24px' }}>
+                        <span className="material-symbols-outlined text-foreground" style={{ fontSize: '24px' }}>
                             {category.icon}
                         </span>
                     )}

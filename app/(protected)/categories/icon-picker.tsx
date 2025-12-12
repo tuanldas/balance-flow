@@ -16,21 +16,13 @@ interface IconPickerProps {
     uploadedFile?: File | null; // Custom uploaded file
     onSelectIcon: (iconUrl: string | null) => void;
     onUploadIcon: (file: File | null) => void;
-    selectedColor?: string; // For preview background
     disabled?: boolean;
 }
 
 const MAX_FILE_SIZE = 512 * 1024; // 512KB
 const ACCEPTED_FILE_TYPES = '.svg,.png,.jpg,.jpeg,image/svg+xml,image/png,image/jpeg';
 
-export function IconPicker({
-    value,
-    uploadedFile,
-    onSelectIcon,
-    onUploadIcon,
-    selectedColor = '#6366f1',
-    disabled = false,
-}: IconPickerProps) {
+export function IconPicker({ value, uploadedFile, onSelectIcon, onUploadIcon, disabled = false }: IconPickerProps) {
     const { t } = useTranslation();
     const [searchQuery, setSearchQuery] = useState('');
     const { data: iconsData, isLoading, error } = useCategoryIcons();
@@ -176,10 +168,7 @@ export function IconPicker({
                     {/* Selected Preview */}
                     {previewUrl && !uploadedFile && (
                         <div className="mt-3 flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
-                            <div
-                                className="w-10 h-10 rounded-lg flex items-center justify-center"
-                                style={{ backgroundColor: selectedColor }}
-                            >
+                            <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-muted">
                                 <img src={previewUrl} alt="Selected" className="w-6 h-6 object-contain" />
                             </div>
                             <span className="text-sm text-muted-foreground">
@@ -195,10 +184,7 @@ export function IconPicker({
                         <div className="p-4 border rounded-lg bg-background">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div
-                                        className="flex h-12 w-12 items-center justify-center rounded-lg"
-                                        style={{ backgroundColor: selectedColor }}
-                                    >
+                                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-muted">
                                         <img
                                             src={previewUrl || ''}
                                             alt="Uploaded icon"

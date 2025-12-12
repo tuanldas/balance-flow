@@ -74,26 +74,26 @@ export const CATEGORY_ICONS = [
     { value: 'category', label: 'Other', category: 'both' },
 ];
 
-// Predefined color palette for categories - Material Design 500 colors (matching backend)
+// Predefined color palette for categories - Pastel/Light colors for black icons
 export const CATEGORY_COLORS = [
-    // Row 1 - Warm tones
-    { value: '#F44336', label: 'Red' },
-    { value: '#FF5722', label: 'Deep Orange' },
-    { value: '#FF9800', label: 'Orange' },
-    { value: '#FFC107', label: 'Amber' },
-    { value: '#FFEB3B', label: 'Yellow' },
+    // Row 1 - Warm tones (pastel)
+    { value: '#FFCDD2', label: 'Red' },
+    { value: '#FFCCBC', label: 'Deep Orange' },
+    { value: '#FFE0B2', label: 'Orange' },
+    { value: '#FFECB3', label: 'Amber' },
+    { value: '#FFF9C4', label: 'Yellow' },
 
-    // Row 2 - Green/Cyan tones
-    { value: '#8BC34A', label: 'Light Green' },
-    { value: '#4CAF50', label: 'Green' },
-    { value: '#009688', label: 'Teal' },
-    { value: '#00BCD4', label: 'Cyan' },
-    { value: '#03A9F4', label: 'Light Blue' },
+    // Row 2 - Green/Cyan tones (pastel)
+    { value: '#DCEDC8', label: 'Light Green' },
+    { value: '#C8E6C9', label: 'Green' },
+    { value: '#B2DFDB', label: 'Teal' },
+    { value: '#B2EBF2', label: 'Cyan' },
+    { value: '#B3E5FC', label: 'Light Blue' },
 
-    // Row 3 - Blue/Purple tones
-    { value: '#2196F3', label: 'Blue' },
-    { value: '#3F51B5', label: 'Indigo' },
-    { value: '#673AB7', label: 'Deep Purple' },
-    { value: '#9C27B0', label: 'Purple' },
-    { value: '#E91E63', label: 'Pink' },
+    // Row 3 - Blue/Purple tones (pastel)
+    { value: '#BBDEFB', label: 'Blue' },
+    { value: '#C5CAE9', label: 'Indigo' },
+    { value: '#D1C4E9', label: 'Deep Purple' },
+    { value: '#E1BEE7', label: 'Purple' },
+    { value: '#F8BBD9', label: 'Pink' },
 ];

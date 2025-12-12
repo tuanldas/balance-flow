@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { CATEGORY_COLORS } from '@/lib/constants/category-options';
 import type { Category, CategoryType } from '@/lib/types/category';
 import { useCreateCategory, useUpdateCategory } from '@/hooks/use-categories';
 import { useCategoryIcons } from '@/hooks/use-category-icons';
@@ -44,7 +43,6 @@ export function CategoryFormDialogCompact({
     onSuccess,
 }: CategoryFormDialogCompactProps) {
     const { t } = useTranslation();
-    const [selectedColor, setSelectedColor] = useState<string>('#6366f1');
     const [uploadedIconFile, setUploadedIconFile] = useState<File | null>(null);
 
     const [isIconPopoverOpen, setIsIconPopoverOpen] = useState(false);
@@ -61,12 +59,6 @@ export function CategoryFormDialogCompact({
         return icons[randomIndex].url;
     };
 
-    // Helper to get a random color
-    const getRandomColor = () => {
-        const randomIndex = Math.floor(Math.random() * CATEGORY_COLORS.length);
-        return CATEGORY_COLORS[randomIndex].value;
-    };
-
     const form = useForm<CategorySchemaType>({
         resolver: zodResolver(getCategorySchema()),
         defaultValues: {
@@ -74,7 +66,6 @@ export function CategoryFormDialogCompact({
             category_type: 'expense' as CategoryType,
             parent_id: null,
             icon: '',
-            color: '#6366f1',
         },
     });
 
@@ -91,31 +82,23 @@ export function CategoryFormDialogCompact({
                     category_type: category.category_type,
                     parent_id: category.parent_id,
                     icon: category.icon,
-                    color: category.color,
                 });
-                setSelectedColor(category.color);
             } else if (mode === 'create-subcategory' && parentCategory) {
                 const randomIcon = getRandomIconUrl();
-                const randomColor = getRandomColor();
                 form.reset({
                     name: '',
                     category_type: parentCategory.category_type,
                     parent_id: parentCategory.id,
                     icon: randomIcon,
-                    color: randomColor,
                 });
-                setSelectedColor(randomColor);
             } else {
                 const randomIcon = getRandomIconUrl();
-                const randomColor = getRandomColor();
                 form.reset({
                     name: '',
                     category_type: defaultType,
                     parent_id: null,
                     icon: randomIcon,
-                    color: randomColor,
                 });
-                setSelectedColor(randomColor);
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -127,7 +110,6 @@ export function CategoryFormDialogCompact({
                 name: data.name,
                 category_type: data.category_type,
                 parent_id: data.parent_id,
-                color: data.color,
                 icon: uploadedIconFile ? undefined : data.icon,
                 icon_file: uploadedIconFile || undefined,
             };
@@ -177,8 +159,7 @@ export function CategoryFormDialogCompact({
                                     <PopoverTrigger asChild>
                                         <button
                                             type="button"
-                                            className="w-16 h-16 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 cursor-pointer hover:ring-2 hover:ring-primary hover:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
-                                            style={{ backgroundColor: selectedColor }}
+                                            className="w-16 h-16 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 cursor-pointer hover:ring-2 hover:ring-primary hover:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 bg-muted"
                                             title={t('categories.iconPicker.selectIcon')}
                                             disabled={isLoading}
                                         >
@@ -189,7 +170,7 @@ export function CategoryFormDialogCompact({
                                                     className="w-8 h-8 object-contain"
                                                 />
                                             ) : (
-                                                <span className="text-2xl font-bold text-white/70">
+                                                <span className="text-2xl font-bold text-muted-foreground">
                                                     {watchedName ? watchedName.charAt(0).toUpperCase() : '?'}
                                                 </span>
                                             )}
@@ -209,7 +190,6 @@ export function CategoryFormDialogCompact({
                                                     field.onChange('');
                                                 }
                                             }}
-                                            selectedColor={selectedColor}
                                             disabled={isLoading}
                                         />
                                     </PopoverContent>
@@ -276,37 +256,6 @@ export function CategoryFormDialogCompact({
                                 )}
                             />
                         )}
-
-                        {/* Color Section */}
-                        <FormField
-                            control={form.control}
-                            name="color"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t('categories.form.color')}</FormLabel>
-                                    <div className="grid grid-cols-10 gap-2">
-                                        {CATEGORY_COLORS.map((color) => (
-                                            <button
-                                                key={color.value}
-                                                type="button"
-                                                onClick={() => {
-                                                    field.onChange(color.value);
-                                                    setSelectedColor(color.value);
-                                                }}
-                                                className={`h-8 w-8 rounded-md border-2 transition-all hover:scale-110 ${
-                                                    selectedColor === color.value
-                                                        ? 'border-primary ring-2 ring-primary ring-offset-2'
-                                                        : 'border-border'
-                                                }`}
-                                                style={{ backgroundColor: color.value }}
-                                                title={color.label}
-                                            />
-                                        ))}
-                                    </div>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
 
                         <DialogFooter>
                             <Button

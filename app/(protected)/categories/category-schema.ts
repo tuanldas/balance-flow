@@ -12,10 +12,6 @@ export const getCategorySchema = () => {
         }),
         parent_id: z.string().nullable().optional(),
         icon: z.string(), // Can be empty when icon_file is provided
-        color: z
-            .string()
-            .min(1, { message: i18n.t('categories.validation.colorRequired') })
-            .regex(/^#[0-9A-Fa-f]{6}$/, { message: i18n.t('categories.validation.colorInvalid') }),
     });
 };
 
