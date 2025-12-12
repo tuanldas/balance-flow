@@ -53,6 +53,7 @@
             "main": "Main",
             "dashboard": "Dashboard",
             "dashboards": "Dashboards",
+            "categories": "Categories",
             "publicProfile": "Public Profile",
             "accountSettings": "Account Settings",
             "network": "Network",
@@ -153,6 +154,49 @@
             "passwordSpecialChar": "Password must contain at least one special character.",
             "confirmPasswordRequired": "Password confirmation is required.",
             "passwordsNotMatch": "Passwords do not match."
+        }
+    },
+    "categories": {
+        "title": "Categories Management",
+        "income": "Income",
+        "expense": "Expense",
+        "addCategory": "Add Category",
+        "addSubcategory": "Add Subcategory",
+        "editCategory": "Edit Category",
+        "deleteCategory": "Delete Category",
+        "confirmDelete": "Are you sure you want to delete category \"{{name}}\"?",
+        "noCategories": "No categories yet",
+        "form": {
+            "name": "Category Name",
+            "namePlaceholder": "Enter category name",
+            "type": "Category Type",
+            "typeIncome": "Income",
+            "typeExpense": "Expense",
+            "parentCategory": "Parent Category",
+            "selectParent": "Select parent category",
+            "icon": "Icon",
+            "iconPlaceholder": "Select icon",
+            "color": "Color",
+            "colorPlaceholder": "Select color",
+            "createButton": "Create Category",
+            "updateButton": "Update",
+            "cancelButton": "Cancel"
+        },
+        "validation": {
+            "nameRequired": "Category name is required.",
+            "nameMinLength": "Category name must be at least 2 characters long.",
+            "typeRequired": "Category type is required.",
+            "iconRequired": "Icon is required.",
+            "colorRequired": "Color is required.",
+            "colorInvalid": "Color must be a valid hex code (e.g., #FF5722)."
+        },
+        "messages": {
+            "createSuccess": "Category created successfully!",
+            "updateSuccess": "Category updated successfully!",
+            "deleteSuccess": "Category deleted successfully!",
+            "createError": "Cannot create category. Please try again.",
+            "updateError": "Cannot update category. Please try again.",
+            "deleteError": "Cannot delete category. Please try again."
         }
     }
 }

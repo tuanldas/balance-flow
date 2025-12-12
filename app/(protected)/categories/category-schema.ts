@@ -1,0 +1,22 @@
+import i18n from 'i18next';
+import { z } from 'zod';
+
+export const getCategorySchema = () => {
+    return z.object({
+        name: z
+            .string()
+            .min(1, { message: i18n.t('categories.validation.nameRequired') })
+            .min(2, { message: i18n.t('categories.validation.nameMinLength') }),
+        category_type: z.enum(['income', 'expense'], {
+            required_error: i18n.t('categories.validation.typeRequired'),
+        }),
+        parent_id: z.string().nullable().optional(),
+        icon: z.string().min(1, { message: i18n.t('categories.validation.iconRequired') }),
+        color: z
+            .string()
+            .min(1, { message: i18n.t('categories.validation.colorRequired') })
+            .regex(/^#[0-9A-Fa-f]{6}$/, { message: i18n.t('categories.validation.colorInvalid') }),
+    });
+};
+
+export type CategorySchemaType = z.infer<ReturnType<typeof getCategorySchema>>;
