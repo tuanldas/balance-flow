@@ -270,6 +270,7 @@
             "review": "Xem xét"
         },
         "detail": {
+            "title": "Chi tiết giao dịch",
             "noSelection": "Chưa chọn giao dịch",
             "selectPrompt": "Chọn một giao dịch để xem chi tiết",
             "category": "Danh mục",

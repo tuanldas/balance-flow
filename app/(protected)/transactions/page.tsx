@@ -4,8 +4,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { filterTransactions, groupTransactionsByDate, mockTransactions } from '@/lib/data/mock-transactions';
-import type { Transaction, TransactionSortBy } from '@/lib/types/transaction';
+import type { Transaction, TransactionGroup, TransactionSortBy } from '@/lib/types/transaction';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { FilterBar } from './filter-bar';
 import { TransactionDetail } from './transaction-detail';
 import { TransactionRow } from './transaction-row';
@@ -22,6 +23,51 @@ function useIsLargeScreen() {
     }, []);
 
     return isLarge;
+}
+
+// Extracted TransactionList component to avoid duplication
+interface TransactionListProps {
+    groupedTransactions: TransactionGroup[];
+    filteredTransactionsCount: number;
+    selectedTransactionId?: string;
+    onTransactionSelect: (transaction: Transaction) => void;
+}
+
+function TransactionList({
+    groupedTransactions,
+    filteredTransactionsCount,
+    selectedTransactionId,
+    onTransactionSelect,
+}: TransactionListProps) {
+    const { t } = useTranslation();
+
+    return (
+        <ScrollArea className="flex-1">
+            <div className="p-4 space-y-6">
+                {groupedTransactions.map((group) => (
+                    <div key={group.date}>
+                        <h3 className="text-sm font-medium text-muted-foreground mb-2 px-1">{group.label}</h3>
+                        <div className="space-y-1">
+                            {group.transactions.map((transaction) => (
+                                <TransactionRow
+                                    key={transaction.id}
+                                    transaction={transaction}
+                                    isSelected={selectedTransactionId === transaction.id}
+                                    onClick={() => onTransactionSelect(transaction)}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                ))}
+
+                {filteredTransactionsCount === 0 && (
+                    <div className="text-center py-12 text-muted-foreground">
+                        <p>{t('transactions.noResults')}</p>
+                    </div>
+                )}
+            </div>
+        </ScrollArea>
+    );
 }
 
 export default function TransactionsPage() {
@@ -89,18 +135,11 @@ export default function TransactionsPage() {
 
     const handleBackToList = useCallback(() => {
         setShowDetail(false);
-    }, []);
+        router.push('/transactions', { scroll: false });
+    }, [router]);
 
-    // Mobile/Tablet view (<1280px): show either list or detail
+    // Mobile/Tablet view (<1280px): show list with Sheet for detail
     if (!isLargeScreen) {
-        if (showDetail && selectedTransaction) {
-            return (
-                <div className="h-[calc(100vh-64px)] bg-background">
-                    <TransactionDetail transaction={selectedTransaction} onBack={handleBackToList} isMobile />
-                </div>
-            );
-        }
-
         return (
             <div className="h-[calc(100vh-64px)] flex flex-col bg-background">
                 <FilterBar
@@ -109,31 +148,26 @@ export default function TransactionsPage() {
                     sortBy={sortBy}
                     onSortChange={setSortBy}
                 />
-                <ScrollArea className="flex-1">
-                    <div className="p-4 space-y-6">
-                        {groupedTransactions.map((group) => (
-                            <div key={group.date}>
-                                <h3 className="text-sm font-medium text-muted-foreground mb-2 px-1">{group.label}</h3>
-                                <div className="space-y-1">
-                                    {group.transactions.map((transaction) => (
-                                        <TransactionRow
-                                            key={transaction.id}
-                                            transaction={transaction}
-                                            isSelected={selectedTransaction?.id === transaction.id}
-                                            onClick={() => handleTransactionSelect(transaction)}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
+                <TransactionList
+                    groupedTransactions={groupedTransactions}
+                    filteredTransactionsCount={filteredTransactions.length}
+                    selectedTransactionId={selectedTransaction?.id}
+                    onTransactionSelect={handleTransactionSelect}
+                />
 
-                        {filteredTransactions.length === 0 && (
-                            <div className="text-center py-12 text-muted-foreground">
-                                <p>{t('transactions.noResults')}</p>
-                            </div>
-                        )}
-                    </div>
-                </ScrollArea>
+                <Sheet
+                    open={showDetail}
+                    onOpenChange={(open) => {
+                        if (!open) {
+                            handleBackToList();
+                        }
+                    }}
+                >
+                    <SheetContent side="right" className="w-full sm:max-w-md p-0" close={false}>
+                        <SheetTitle className="sr-only">{t('transactions.detail.title')}</SheetTitle>
+                        <TransactionDetail transaction={selectedTransaction} onBack={handleBackToList} isMobile />
+                    </SheetContent>
+                </Sheet>
             </div>
         );
     }
@@ -149,31 +183,12 @@ export default function TransactionsPage() {
                     sortBy={sortBy}
                     onSortChange={setSortBy}
                 />
-                <ScrollArea className="flex-1">
-                    <div className="p-4 space-y-6">
-                        {groupedTransactions.map((group) => (
-                            <div key={group.date}>
-                                <h3 className="text-sm font-medium text-muted-foreground mb-2 px-1">{group.label}</h3>
-                                <div className="space-y-1">
-                                    {group.transactions.map((transaction) => (
-                                        <TransactionRow
-                                            key={transaction.id}
-                                            transaction={transaction}
-                                            isSelected={selectedTransaction?.id === transaction.id}
-                                            onClick={() => handleTransactionSelect(transaction)}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
-
-                        {filteredTransactions.length === 0 && (
-                            <div className="text-center py-12 text-muted-foreground">
-                                <p>{t('transactions.noResults')}</p>
-                            </div>
-                        )}
-                    </div>
-                </ScrollArea>
+                <TransactionList
+                    groupedTransactions={groupedTransactions}
+                    filteredTransactionsCount={filteredTransactions.length}
+                    selectedTransactionId={selectedTransaction?.id}
+                    onTransactionSelect={handleTransactionSelect}
+                />
             </div>
 
             {/* Right Pane - Transaction Detail */}

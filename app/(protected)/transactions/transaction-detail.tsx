@@ -91,7 +91,7 @@ export function TransactionDetail({ transaction, onBack, isMobile = false }: Tra
     return (
         <ScrollArea className="h-full">
             <div className="p-6">
-                {/* Header with back button for mobile */}
+                {/* Close button for mobile sheet */}
                 {isMobile && onBack && (
                     <Button variant="ghost" size="sm" onClick={onBack} className="mb-4 -ml-2 gap-1.5">
                         <ArrowLeft className="h-4 w-4" />

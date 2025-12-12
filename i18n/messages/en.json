@@ -270,6 +270,7 @@
             "review": "Review"
         },
         "detail": {
+            "title": "Transaction Detail",
             "noSelection": "No transaction selected",
             "selectPrompt": "Select a transaction to view details",
             "category": "Category",
