@@ -113,7 +113,7 @@ export function IconPicker({ value, uploadedFile, onSelectIcon, onUploadIcon, di
                         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                         <Input
                             type="text"
-                            placeholder="Search..."
+                            placeholder={t('categories.iconPicker.searchPlaceholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="pl-9 h-9"
@@ -143,7 +143,9 @@ export function IconPicker({ value, uploadedFile, onSelectIcon, onUploadIcon, di
                         </div>
                     ) : filteredIcons.length === 0 ? (
                         <div className="p-8 text-center text-sm text-muted-foreground border rounded-lg">
-                            {searchQuery ? 'Không tìm thấy icon phù hợp' : 'Không có icon nào'}
+                            {searchQuery
+                                ? t('categories.iconPicker.noSearchResults')
+                                : t('categories.iconPicker.noIcons')}
                         </div>
                     ) : (
                         <div className="grid grid-cols-7 gap-1.5 p-2 max-h-60 overflow-y-auto border rounded-lg bg-background">

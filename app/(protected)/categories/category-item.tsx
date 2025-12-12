@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ChevronDown, ChevronRight, MoreVertical, Pencil, Plus, Trash2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { Category } from '@/lib/types/category';
 import { useSettings } from '@/providers/settings-provider';
 import { Badge } from '@/components/ui/badge';
@@ -23,6 +24,7 @@ interface CategoryItemProps {
 }
 
 export function CategoryItem({ category, level = 0, onEdit, onDelete, onAddSubcategory }: CategoryItemProps) {
+    const { t } = useTranslation();
     const [isExpanded, setIsExpanded] = useState(false);
     const { getOption } = useSettings();
     const categoryIconBgColor = getOption<string>('categoryIconBgColor');
@@ -40,7 +42,7 @@ export function CategoryItem({ category, level = 0, onEdit, onDelete, onAddSubca
                     <button
                         onClick={() => setIsExpanded(!isExpanded)}
                         className="flex h-5 w-5 items-center justify-center rounded hover:bg-accent-foreground/10"
-                        aria-label={isExpanded ? 'Thu gọn' : 'Mở rộng'}
+                        aria-label={isExpanded ? t('categories.actions.collapse') : t('categories.actions.expand')}
                     >
                         {isExpanded ? (
                             <ChevronDown className="h-4 w-4 text-muted-foreground" />
@@ -77,7 +79,7 @@ export function CategoryItem({ category, level = 0, onEdit, onDelete, onAddSubca
                         )}
                         {category.is_system && (
                             <Badge variant="outline" className="text-xs">
-                                Hệ thống
+                                {t('categories.systemBadge')}
                             </Badge>
                         )}
                     </div>
@@ -93,18 +95,18 @@ export function CategoryItem({ category, level = 0, onEdit, onDelete, onAddSubca
                     <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => onEdit?.(category)}>
                             <Pencil className="mr-2 h-4 w-4" />
-                            Chỉnh sửa
+                            {t('categories.actions.edit')}
                         </DropdownMenuItem>
                         {level === 0 && (
                             <DropdownMenuItem onClick={() => onAddSubcategory?.(category)}>
                                 <Plus className="mr-2 h-4 w-4" />
-                                Thêm danh mục con
+                                {t('categories.addSubcategory')}
                             </DropdownMenuItem>
                         )}
                         <DropdownMenuSeparator />
                         <DropdownMenuItem className="text-destructive" onClick={() => onDelete?.(category)}>
                             <Trash2 className="mr-2 h-4 w-4" />
-                            Xóa
+                            {t('categories.actions.delete')}
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>

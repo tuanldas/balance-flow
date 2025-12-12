@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, Plus } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { DEFAULT_PER_PAGE } from '@/lib/constants/pagination';
 import type { Category, CategoryType } from '@/lib/types/category';
 import { useDeleteCategory, useInfiniteCategories } from '@/hooks/use-categories';
@@ -30,6 +31,7 @@ function CategoryList({
     onDelete: (category: Category) => void;
     onAddSubcategory: (category: Category) => void;
 }) {
+    const { t } = useTranslation();
     const loadMoreRef = useRef<HTMLDivElement>(null);
     const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage, error } = useInfiniteCategories(
         type,
@@ -83,7 +85,7 @@ function CategoryList({
     if (error) {
         return (
             <div className="text-center py-8 text-destructive">
-                <p>Có lỗi xảy ra khi tải danh mục</p>
+                <p>{t('categories.messages.loadError')}</p>
                 <p className="text-sm text-muted-foreground mt-2">{(error as Error).message}</p>
             </div>
         );
@@ -92,7 +94,7 @@ function CategoryList({
     if (categories.length === 0) {
         return (
             <div className="text-center py-8 text-muted-foreground">
-                {type === 'income' ? 'Chưa có danh mục thu nhập nào' : 'Chưa có danh mục chi tiêu nào'}
+                {type === 'income' ? t('categories.empty.income') : t('categories.empty.expense')}
             </div>
         );
     }
@@ -116,14 +118,14 @@ function CategoryList({
             {isFetchingNextPage && (
                 <div className="flex items-center justify-center py-4">
                     <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                    <span className="ml-2 text-sm text-muted-foreground">Đang tải thêm...</span>
+                    <span className="ml-2 text-sm text-muted-foreground">{t('categories.loadingMore')}</span>
                 </div>
             )}
 
             {/* End of list indicator */}
             {!hasNextPage && categories.length > 0 && totalCount > DEFAULT_PER_PAGE && (
                 <div className="text-center py-4 text-sm text-muted-foreground">
-                    Đã hiển thị tất cả {totalCount} danh mục
+                    {t('categories.showingAll', { count: totalCount })}
                 </div>
             )}
         </div>
@@ -131,6 +133,7 @@ function CategoryList({
 }
 
 export default function CategoriesPage() {
+    const { t } = useTranslation();
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -168,12 +171,12 @@ export default function CategoriesPage() {
     };
 
     const handleDelete = async (category: Category) => {
-        if (confirm(`Bạn có chắc chắn muốn xóa danh mục "${category.name}"?`)) {
+        if (confirm(t('categories.confirmDelete', { name: category.name }))) {
             try {
                 await deleteCategoryMutation.mutateAsync(category.id);
             } catch (error) {
                 console.error('Error deleting category:', error);
-                alert('Không thể xóa danh mục. Vui lòng thử lại.');
+                alert(t('categories.messages.deleteError'));
             }
         }
     };
@@ -194,12 +197,12 @@ export default function CategoriesPage() {
         <div className="container-fluid">
             <Toolbar>
                 <ToolbarHeading>
-                    <ToolbarPageTitle>Quản lý danh mục</ToolbarPageTitle>
+                    <ToolbarPageTitle>{t('categories.title')}</ToolbarPageTitle>
                 </ToolbarHeading>
                 <ToolbarActions>
                     <Button onClick={handleAddCategory}>
                         <Plus className="mr-2 h-4 w-4" />
-                        Thêm danh mục
+                        {t('categories.addCategory')}
                     </Button>
                 </ToolbarActions>
             </Toolbar>
@@ -207,10 +210,10 @@ export default function CategoriesPage() {
             <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
                 <TabsList className="grid w-full max-w-md grid-cols-2">
                     <TabsTrigger value="income" className="gap-2">
-                        Thu nhập ({incomeQuery.isLoading ? '...' : incomeCount})
+                        {t('categories.income')} ({incomeQuery.isLoading ? '...' : incomeCount})
                     </TabsTrigger>
                     <TabsTrigger value="expense" className="gap-2">
-                        Chi tiêu ({expenseQuery.isLoading ? '...' : expenseCount})
+                        {t('categories.expense')} ({expenseQuery.isLoading ? '...' : expenseCount})
                     </TabsTrigger>
                 </TabsList>
 

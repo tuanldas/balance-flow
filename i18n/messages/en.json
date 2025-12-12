@@ -166,6 +166,19 @@
         "deleteCategory": "Delete Category",
         "confirmDelete": "Are you sure you want to delete category \"{{name}}\"?",
         "noCategories": "No categories yet",
+        "systemBadge": "System",
+        "loadingMore": "Loading more...",
+        "showingAll": "Showing all {{count}} categories",
+        "empty": {
+            "income": "No income categories yet",
+            "expense": "No expense categories yet"
+        },
+        "actions": {
+            "expand": "Expand",
+            "collapse": "Collapse",
+            "edit": "Edit",
+            "delete": "Delete"
+        },
         "form": {
             "name": "Category Name",
             "namePlaceholder": "Enter category name",
@@ -180,7 +193,9 @@
             "colorPlaceholder": "Select color",
             "createButton": "Create Category",
             "updateButton": "Update",
-            "cancelButton": "Cancel"
+            "cancelButton": "Cancel",
+            "subcategoryOf": "Subcategory of:",
+            "enterInfo": "Enter category information"
         },
         "validation": {
             "nameRequired": "Category name is required.",
@@ -196,7 +211,8 @@
             "deleteSuccess": "Category deleted successfully!",
             "createError": "Cannot create category. Please try again.",
             "updateError": "Cannot update category. Please try again.",
-            "deleteError": "Cannot delete category. Please try again."
+            "deleteError": "Cannot delete category. Please try again.",
+            "loadError": "Error loading categories"
         },
         "iconPicker": {
             "defaultIcons": "Default Icons",
@@ -208,7 +224,10 @@
             "removeIcon": "Remove Icon",
             "noIconSelected": "Not selected",
             "loadingIcons": "Loading icons...",
-            "errorLoadingIcons": "Cannot load icons list"
+            "errorLoadingIcons": "Cannot load icons list",
+            "searchPlaceholder": "Search...",
+            "noSearchResults": "No matching icons found",
+            "noIcons": "No icons available"
         }
     }
 }

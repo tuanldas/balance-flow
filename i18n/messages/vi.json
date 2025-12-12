@@ -166,6 +166,19 @@
         "deleteCategory": "Xóa danh mục",
         "confirmDelete": "Bạn có chắc chắn muốn xóa danh mục \"{{name}}\"?",
         "noCategories": "Chưa có danh mục nào",
+        "systemBadge": "Hệ thống",
+        "loadingMore": "Đang tải thêm...",
+        "showingAll": "Đã hiển thị tất cả {{count}} danh mục",
+        "empty": {
+            "income": "Chưa có danh mục thu nhập nào",
+            "expense": "Chưa có danh mục chi tiêu nào"
+        },
+        "actions": {
+            "expand": "Mở rộng",
+            "collapse": "Thu gọn",
+            "edit": "Chỉnh sửa",
+            "delete": "Xóa"
+        },
         "form": {
             "name": "Tên danh mục",
             "namePlaceholder": "Nhập tên danh mục",
@@ -180,7 +193,9 @@
             "colorPlaceholder": "Chọn màu sắc",
             "createButton": "Tạo danh mục",
             "updateButton": "Cập nhật",
-            "cancelButton": "Hủy"
+            "cancelButton": "Hủy",
+            "subcategoryOf": "Danh mục con của:",
+            "enterInfo": "Nhập thông tin danh mục"
         },
         "validation": {
             "nameRequired": "Tên danh mục là bắt buộc.",
@@ -196,7 +211,8 @@
             "deleteSuccess": "Xóa danh mục thành công!",
             "createError": "Không thể tạo danh mục. Vui lòng thử lại.",
             "updateError": "Không thể cập nhật danh mục. Vui lòng thử lại.",
-            "deleteError": "Không thể xóa danh mục. Vui lòng thử lại."
+            "deleteError": "Không thể xóa danh mục. Vui lòng thử lại.",
+            "loadError": "Có lỗi xảy ra khi tải danh mục"
         },
         "iconPicker": {
             "defaultIcons": "Biểu tượng mặc định",
@@ -208,7 +224,10 @@
             "removeIcon": "Xóa biểu tượng",
             "noIconSelected": "Chưa chọn",
             "loadingIcons": "Đang tải biểu tượng...",
-            "errorLoadingIcons": "Không thể tải danh sách biểu tượng"
+            "errorLoadingIcons": "Không thể tải danh sách biểu tượng",
+            "searchPlaceholder": "Tìm kiếm...",
+            "noSearchResults": "Không tìm thấy icon phù hợp",
+            "noIcons": "Không có icon nào"
         }
     }
 }
