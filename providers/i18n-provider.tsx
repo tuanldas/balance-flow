@@ -30,7 +30,7 @@ function I18nProvider({ children }: I18nProviderProps) {
                 .init({
                     resources,
                     fallbackLng: 'vi',
-                    lng: 'vi',
+                    // Không đặt 'lng' để LanguageDetector có thể đọc từ localStorage
                     debug: process.env.NODE_ENV === 'development',
 
                     interpolation: {
