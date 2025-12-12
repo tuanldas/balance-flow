@@ -8,7 +8,7 @@ export const getCategorySchema = () => {
             .min(1, { message: i18n.t('categories.validation.nameRequired') })
             .min(2, { message: i18n.t('categories.validation.nameMinLength') }),
         category_type: z.enum(['income', 'expense'], {
-            required_error: i18n.t('categories.validation.typeRequired'),
+            message: i18n.t('categories.validation.typeRequired'),
         }),
         parent_id: z.string().nullable().optional(),
         icon: z.string().min(1, { message: i18n.t('categories.validation.iconRequired') }),
