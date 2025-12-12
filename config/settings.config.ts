@@ -3,6 +3,7 @@ import { Settings } from './types';
 export const APP_SETTINGS: Settings = {
     layout: '',
     container: 'fixed',
+    categoryIconBgColor: '#F3F4F6', // Default gray-100
     layouts: {
         demo1: {
             sidebarCollapse: false,

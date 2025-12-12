@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import type { Category, CategoryType } from '@/lib/types/category';
 import { useCreateCategory, useUpdateCategory } from '@/hooks/use-categories';
 import { useCategoryIcons } from '@/hooks/use-category-icons';
+import { useSettings } from '@/providers/settings-provider';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -43,6 +44,8 @@ export function CategoryFormDialogCompact({
     onSuccess,
 }: CategoryFormDialogCompactProps) {
     const { t } = useTranslation();
+    const { getOption } = useSettings();
+    const categoryIconBgColor = getOption<string>('categoryIconBgColor');
     const [uploadedIconFile, setUploadedIconFile] = useState<File | null>(null);
 
     const [isIconPopoverOpen, setIsIconPopoverOpen] = useState(false);
@@ -159,7 +162,8 @@ export function CategoryFormDialogCompact({
                                     <PopoverTrigger asChild>
                                         <button
                                             type="button"
-                                            className="w-16 h-16 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 cursor-pointer hover:ring-2 hover:ring-primary hover:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 bg-muted"
+                                            className="w-16 h-16 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 cursor-pointer hover:ring-2 hover:ring-primary hover:ring-offset-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                            style={{ backgroundColor: categoryIconBgColor }}
                                             title={t('categories.iconPicker.selectIcon')}
                                             disabled={isLoading}
                                         >

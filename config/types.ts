@@ -22,6 +22,7 @@ export type MenuConfig = MenuItem[];
 export interface Settings {
     container: 'fixed' | 'fluid';
     layout: string;
+    categoryIconBgColor: string; // Background color for category icons (hex code)
     layouts: {
         demo1: {
             sidebarCollapse: boolean;

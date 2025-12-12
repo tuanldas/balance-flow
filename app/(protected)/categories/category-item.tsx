@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronRight, MoreVertical, Pencil, Plus, Trash2 } from 'lucide-react';
 import type { Category } from '@/lib/types/category';
+import { useSettings } from '@/providers/settings-provider';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -23,6 +24,8 @@ interface CategoryItemProps {
 
 export function CategoryItem({ category, level = 0, onEdit, onDelete, onAddSubcategory }: CategoryItemProps) {
     const [isExpanded, setIsExpanded] = useState(false);
+    const { getOption } = useSettings();
+    const categoryIconBgColor = getOption<string>('categoryIconBgColor');
     const hasChildren = category.children && category.children.length > 0;
 
     return (
@@ -50,7 +53,10 @@ export function CategoryItem({ category, level = 0, onEdit, onDelete, onAddSubca
                 )}
 
                 {/* Icon */}
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
+                <div
+                    className="flex h-10 w-10 items-center justify-center rounded-lg"
+                    style={{ backgroundColor: categoryIconBgColor }}
+                >
                     {category.icon.startsWith('http') ? (
                         <img src={category.icon} alt={category.name} className="h-6 w-6 object-contain" />
                     ) : (
