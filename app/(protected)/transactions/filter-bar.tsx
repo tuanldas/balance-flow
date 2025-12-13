@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { ArrowDownAZ, ArrowDownWideNarrow, ArrowUpNarrowWide, Filter, Search } from 'lucide-react';
+import { ArrowDownAZ, ArrowDownWideNarrow, ArrowUpNarrowWide, Filter, Search, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { TransactionSortBy } from '@/lib/types/transaction';
 import { cn } from '@/lib/utils';
@@ -65,74 +65,96 @@ export function FilterBar({ searchValue, onSearchChange, sortBy, onSortChange }:
 
     const currentSort = sortOptions.find((opt) => opt.value === sortBy);
 
+    const hasActiveFilters = searchValue.trim().length > 0;
+
     return (
-        <div className="flex items-center gap-2 p-4 border-b border-border">
-            {/* Search Popover */}
-            <Popover open={isSearchOpen} onOpenChange={setIsSearchOpen}>
-                <PopoverTrigger asChild>
-                    <Button
-                        variant="outline"
-                        size="icon"
-                        className={cn('h-9 w-9', searchValue && 'border-primary text-primary')}
-                    >
-                        <Search className="h-4 w-4" />
-                    </Button>
-                </PopoverTrigger>
-                <PopoverContent align="start" className="w-64 p-2">
-                    <Input
-                        ref={searchInputRef}
-                        type="text"
-                        placeholder={t('transactions.searchPlaceholder')}
-                        value={searchValue}
-                        onChange={(e) => onSearchChange(e.target.value)}
-                        className="h-9"
-                    />
-                </PopoverContent>
-            </Popover>
-
-            {/* Spacer */}
-            <div className="flex-1" />
-
-            {/* Filter Dropdown */}
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="gap-1.5">
-                        <Filter className="h-4 w-4" />
-                        <span className="hidden sm:inline">{t('transactions.filterButton')}</span>
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                    <DropdownMenuLabel>{t('transactions.filterBy')}</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    {filterOptions.map((option) => (
-                        <DropdownMenuItem key={option.value}>{option.label}</DropdownMenuItem>
-                    ))}
-                </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Sort Dropdown */}
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="sm" className="gap-1.5">
-                        {currentSort?.icon}
-                        <span className="hidden sm:inline">{t('transactions.sortButton')}</span>
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                    <DropdownMenuLabel>{t('transactions.sortBy')}</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    {sortOptions.map((option) => (
-                        <DropdownMenuItem
-                            key={option.value}
-                            onClick={() => onSortChange(option.value)}
-                            className="gap-2"
+        <div className="border-b border-border">
+            {/* Main Filter Bar */}
+            <div className="flex items-center gap-2 p-4">
+                {/* Search Popover */}
+                <Popover open={isSearchOpen} onOpenChange={setIsSearchOpen}>
+                    <PopoverTrigger asChild>
+                        <Button
+                            variant="outline"
+                            size="icon"
+                            className={cn('h-9 w-9', searchValue && 'border-primary text-primary')}
                         >
-                            {option.icon}
-                            {option.label}
-                        </DropdownMenuItem>
-                    ))}
-                </DropdownMenuContent>
-            </DropdownMenu>
+                            <Search className="h-4 w-4" />
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent align="start" className="w-64 p-2">
+                        <Input
+                            ref={searchInputRef}
+                            type="text"
+                            placeholder={t('transactions.searchPlaceholder')}
+                            value={searchValue}
+                            onChange={(e) => onSearchChange(e.target.value)}
+                            className="h-9"
+                        />
+                    </PopoverContent>
+                </Popover>
+
+                {/* Spacer */}
+                <div className="flex-1" />
+
+                {/* Filter Dropdown */}
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm" className="gap-1.5">
+                            <Filter className="h-4 w-4" />
+                            <span className="hidden sm:inline">{t('transactions.filterButton')}</span>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuLabel>{t('transactions.filterBy')}</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        {filterOptions.map((option) => (
+                            <DropdownMenuItem key={option.value}>{option.label}</DropdownMenuItem>
+                        ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                {/* Sort Dropdown */}
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm" className="gap-1.5">
+                            {currentSort?.icon}
+                            <span className="hidden sm:inline">{t('transactions.sortButton')}</span>
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuLabel>{t('transactions.sortBy')}</DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        {sortOptions.map((option) => (
+                            <DropdownMenuItem
+                                key={option.value}
+                                onClick={() => onSortChange(option.value)}
+                                className="gap-2"
+                            >
+                                {option.icon}
+                                {option.label}
+                            </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+
+            {/* Active Filters Display */}
+            {hasActiveFilters && (
+                <div className="flex items-center gap-2 px-4 pb-4">
+                    {/* Search Term Badge */}
+                    {searchValue.trim() && (
+                        <button
+                            onClick={() => onSearchChange('')}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors"
+                        >
+                            <Search className="h-3.5 w-3.5" />
+                            <span className="max-w-[150px] truncate">{searchValue}</span>
+                            <X className="h-3.5 w-3.5" />
+                        </button>
+                    )}
+                </div>
+            )}
         </div>
     );
 }
