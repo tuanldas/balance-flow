@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { filterTransactions, groupTransactionsByDate, mockTransactions } from '@/lib/data/mock-transactions';
@@ -33,7 +33,7 @@ interface TransactionListProps {
     onTransactionSelect: (transaction: Transaction) => void;
 }
 
-function TransactionList({
+const TransactionList = memo(function TransactionList({
     groupedTransactions,
     filteredTransactionsCount,
     selectedTransactionId,
@@ -68,7 +68,7 @@ function TransactionList({
             </div>
         </ScrollArea>
     );
-}
+});
 
 export default function TransactionsPage() {
     const { t } = useTranslation();
@@ -112,12 +112,12 @@ export default function TransactionsPage() {
         return groupTransactionsByDate(filteredTransactions, t);
     }, [filteredTransactions, t]);
 
-    // Update URL when selecting a transaction
+    // Update URL when selecting a transaction (use replace to avoid history pollution)
     const updateUrlWithTransaction = useCallback(
         (transactionId: string) => {
             const params = new URLSearchParams(searchParams.toString());
             params.set('id', transactionId);
-            router.push(`/transactions?${params.toString()}`, { scroll: false });
+            router.replace(`/transactions?${params.toString()}`, { scroll: false });
         },
         [router, searchParams],
     );

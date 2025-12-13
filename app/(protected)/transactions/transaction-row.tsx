@@ -1,11 +1,12 @@
 'use client';
 
 import { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { Transaction } from '@/lib/types/transaction';
 import { cn } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { categoryIconMap, DefaultCategoryIcon } from './constants';
+import { categoryIconMap, DefaultCategoryIcon, localeMap } from './constants';
 
 interface TransactionRowProps {
     transaction: Transaction;
@@ -14,13 +15,16 @@ interface TransactionRowProps {
 }
 
 function TransactionRowComponent({ transaction, isSelected, onClick }: TransactionRowProps) {
-    const formattedAmount = new Intl.NumberFormat('en-US', {
+    const { i18n } = useTranslation();
+    const locale = localeMap[i18n.language] || 'en-US';
+
+    const formattedAmount = new Intl.NumberFormat(locale, {
         style: 'currency',
         currency: transaction.currency,
         minimumFractionDigits: 2,
     }).format(transaction.amount);
 
-    const transactionTime = new Date(transaction.date).toLocaleTimeString('en-US', {
+    const transactionTime = new Date(transaction.date).toLocaleTimeString(locale, {
         hour: 'numeric',
         minute: '2-digit',
         hour12: true,

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowLeft, Building2, Calendar, CreditCard, RefreshCw, Split, Tag, Target } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { getSimilarTransactions } from '@/lib/data/mock-transactions';
@@ -14,7 +14,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-import { categoryIconMap, DefaultCategoryIcon } from './constants';
+import { categoryIconMap, DefaultCategoryIcon, localeMap } from './constants';
 
 interface TransactionDetailProps {
     transaction: Transaction | null;
@@ -23,10 +23,19 @@ interface TransactionDetailProps {
 }
 
 export function TransactionDetail({ transaction, onBack, isMobile = false }: TransactionDetailProps) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
+    const locale = localeMap[i18n.language] || 'en-US';
+
     const [notes, setNotes] = useState(transaction?.notes || '');
     const [tags, setTags] = useState(transaction?.tags?.join(', ') || '');
     const [goal, setGoal] = useState(transaction?.goal || '');
+
+    // Reset form state when transaction changes
+    useEffect(() => {
+        setNotes(transaction?.notes || '');
+        setTags(transaction?.tags?.join(', ') || '');
+        setGoal(transaction?.goal || '');
+    }, [transaction?.id, transaction?.notes, transaction?.tags, transaction?.goal]);
 
     if (!transaction) {
         return (
@@ -40,13 +49,13 @@ export function TransactionDetail({ transaction, onBack, isMobile = false }: Tra
         );
     }
 
-    const formattedAmount = new Intl.NumberFormat('en-US', {
+    const formattedAmount = new Intl.NumberFormat(locale, {
         style: 'currency',
         currency: transaction.currency,
         minimumFractionDigits: 2,
     }).format(transaction.amount);
 
-    const formattedDate = new Date(transaction.date).toLocaleDateString('en-US', {
+    const formattedDate = new Date(transaction.date).toLocaleDateString(locale, {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
@@ -240,7 +249,7 @@ export function TransactionDetail({ transaction, onBack, isMobile = false }: Tra
                                         className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
                                     >
                                         <span className="text-sm text-muted-foreground">
-                                            {new Date(txn.date).toLocaleDateString('en-US', {
+                                            {new Date(txn.date).toLocaleDateString(locale, {
                                                 month: 'short',
                                                 day: 'numeric',
                                                 year: 'numeric',
@@ -255,7 +264,7 @@ export function TransactionDetail({ transaction, onBack, isMobile = false }: Tra
                                             )}
                                         >
                                             {txn.type === 'income' ? '+' : '-'}
-                                            {new Intl.NumberFormat('en-US', {
+                                            {new Intl.NumberFormat(locale, {
                                                 style: 'currency',
                                                 currency: txn.currency,
                                             }).format(txn.amount)}

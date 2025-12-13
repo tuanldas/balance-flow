@@ -27,3 +27,9 @@ export const categoryIconMap: Record<string, React.ComponentType<{ className?: s
 
 // Default icon when category icon not found
 export const DefaultCategoryIcon = ShoppingBag;
+
+// Map i18n language code to Intl locale for formatting
+export const localeMap: Record<string, string> = {
+    vi: 'vi-VN',
+    en: 'en-US',
+};
