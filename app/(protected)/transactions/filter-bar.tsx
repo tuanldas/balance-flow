@@ -1,8 +1,10 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
 import { ArrowDownAZ, ArrowDownWideNarrow, ArrowUpNarrowWide, Filter, Search } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { TransactionSortBy } from '@/lib/types/transaction';
+import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -12,7 +14,8 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Input, InputWrapper } from '@/components/ui/input';
+import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 interface FilterBarProps {
     searchValue: string;
@@ -23,6 +26,19 @@ interface FilterBarProps {
 
 export function FilterBar({ searchValue, onSearchChange, sortBy, onSortChange }: FilterBarProps) {
     const { t } = useTranslation();
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const searchInputRef = useRef<HTMLInputElement>(null);
+
+    // Focus input when popover opens
+    useEffect(() => {
+        if (isSearchOpen) {
+            // Small delay to ensure popover is rendered
+            const timer = setTimeout(() => {
+                searchInputRef.current?.focus();
+            }, 0);
+            return () => clearTimeout(timer);
+        }
+    }, [isSearchOpen]);
 
     const sortOptions: { value: TransactionSortBy; label: string; icon: React.ReactNode }[] = [
         { value: 'date', label: t('transactions.sort.date'), icon: <ArrowDownAZ className="h-4 w-4" /> },
@@ -51,17 +67,31 @@ export function FilterBar({ searchValue, onSearchChange, sortBy, onSortChange }:
 
     return (
         <div className="flex items-center gap-2 p-4 border-b border-border">
-            {/* Search Input */}
-            <InputWrapper variant="sm" className="flex-1">
-                <Search className="h-4 w-4" />
-                <Input
-                    type="text"
-                    placeholder={t('transactions.searchPlaceholder')}
-                    value={searchValue}
-                    onChange={(e) => onSearchChange(e.target.value)}
-                    className="border-0 shadow-none"
-                />
-            </InputWrapper>
+            {/* Search Popover */}
+            <Popover open={isSearchOpen} onOpenChange={setIsSearchOpen}>
+                <PopoverTrigger asChild>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className={cn('h-9 w-9', searchValue && 'border-primary text-primary')}
+                    >
+                        <Search className="h-4 w-4" />
+                    </Button>
+                </PopoverTrigger>
+                <PopoverContent align="start" className="w-64 p-2">
+                    <Input
+                        ref={searchInputRef}
+                        type="text"
+                        placeholder={t('transactions.searchPlaceholder')}
+                        value={searchValue}
+                        onChange={(e) => onSearchChange(e.target.value)}
+                        className="h-9"
+                    />
+                </PopoverContent>
+            </Popover>
+
+            {/* Spacer */}
+            <div className="flex-1" />
 
             {/* Filter Dropdown */}
             <DropdownMenu>
