@@ -256,7 +256,17 @@
             "date": "Date",
             "goals": "Goals",
             "keywords": "Keywords",
-            "tags": "Tags"
+            "tags": "Tags",
+            "recurring": "Recurring",
+            "reviewStatus": "Review status",
+            "type": "Type",
+            "searchPlaceholder": "Search...",
+            "all": "All",
+            "yes": "Yes",
+            "no": "No",
+            "income": "Income",
+            "expense": "Expense",
+            "clearAll": "Clear all filters"
         },
         "status": {
             "completed": "Completed",

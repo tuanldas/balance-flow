@@ -343,17 +343,34 @@ export function getSimilarTransactions(merchantName: string, excludeId: string):
         .slice(0, 5);
 }
 
-// Helper function to filter transactions
-export function filterTransactions(
+// Helper function to get unique tags from all transactions
+export function getUniqueTags(): { id: string; name: string }[] {
+    const tagsSet = new Set<string>();
+    mockTransactions.forEach((txn) => {
+        txn.tags?.forEach((tag) => tagsSet.add(tag));
+    });
+    return Array.from(tagsSet)
+        .sort()
+        .map((tag) => ({ id: tag, name: tag }));
+}
+
+// Advanced filter function supporting all filter types
+export function filterTransactionsAdvanced(
     transactions: Transaction[],
-    search: string,
+    filters: {
+        search?: string;
+        accountIds?: string[];
+        categoryIds?: string[];
+        tags?: string[];
+        type?: 'income' | 'expense';
+    },
     sortBy: 'date' | 'amount_asc' | 'amount_desc',
 ): Transaction[] {
     let filtered = [...transactions];
 
     // Search filter
-    if (search) {
-        const searchLower = search.toLowerCase();
+    if (filters.search) {
+        const searchLower = filters.search.toLowerCase();
         filtered = filtered.filter(
             (txn) =>
                 txn.merchant.toLowerCase().includes(searchLower) ||
@@ -361,6 +378,26 @@ export function filterTransactions(
                 txn.notes?.toLowerCase().includes(searchLower) ||
                 txn.tags?.some((tag) => tag.toLowerCase().includes(searchLower)),
         );
+    }
+
+    // Account filter
+    if (filters.accountIds?.length) {
+        filtered = filtered.filter((txn) => filters.accountIds!.includes(txn.account.id));
+    }
+
+    // Category filter
+    if (filters.categoryIds?.length) {
+        filtered = filtered.filter((txn) => filters.categoryIds!.includes(txn.category.id));
+    }
+
+    // Tags filter
+    if (filters.tags?.length) {
+        filtered = filtered.filter((txn) => txn.tags?.some((tag) => filters.tags!.includes(tag)));
+    }
+
+    // Type filter
+    if (filters.type) {
+        filtered = filtered.filter((txn) => txn.type === filters.type);
     }
 
     // Sort

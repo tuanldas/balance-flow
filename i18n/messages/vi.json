@@ -256,7 +256,17 @@
             "date": "Ngày",
             "goals": "Mục tiêu",
             "keywords": "Từ khóa",
-            "tags": "Nhãn"
+            "tags": "Nhãn",
+            "recurring": "Định kỳ",
+            "reviewStatus": "Trạng thái xem xét",
+            "type": "Loại",
+            "searchPlaceholder": "Tìm kiếm...",
+            "all": "Tất cả",
+            "yes": "Có",
+            "no": "Không",
+            "income": "Thu nhập",
+            "expense": "Chi tiêu",
+            "clearAll": "Xóa tất cả bộ lọc"
         },
         "status": {
             "completed": "Hoàn thành",

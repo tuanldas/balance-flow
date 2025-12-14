@@ -39,12 +39,15 @@ export interface TransactionFilters {
     type?: TransactionType;
     status?: TransactionStatus;
     categoryId?: string;
+    categoryIds?: string[];
     accountId?: string;
+    accountIds?: string[];
     dateFrom?: string;
     dateTo?: string;
     tags?: string[];
     minAmount?: number;
     maxAmount?: number;
+    isRecurring?: boolean;
 }
 
 export type TransactionSortBy = 'date' | 'amount_asc' | 'amount_desc';

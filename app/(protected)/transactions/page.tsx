@@ -3,27 +3,14 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
-import { filterTransactions, groupTransactionsByDate, mockTransactions } from '@/lib/data/mock-transactions';
-import type { Transaction, TransactionGroup, TransactionSortBy } from '@/lib/types/transaction';
+import { filterTransactionsAdvanced, groupTransactionsByDate, mockTransactions } from '@/lib/data/mock-transactions';
+import type { Transaction, TransactionFilters, TransactionGroup, TransactionSortBy } from '@/lib/types/transaction';
+import { useIsLargeScreen } from '@/hooks/use-large-screen';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { FilterBar } from './filter-bar';
 import { TransactionDetail } from './transaction-detail';
 import { TransactionRow } from './transaction-row';
-
-// Custom hook for detecting if screen is large enough for split view (xl: 1280px)
-function useIsLargeScreen() {
-    const [isLarge, setIsLarge] = useState(false);
-
-    useEffect(() => {
-        const checkSize = () => setIsLarge(window.innerWidth >= 1280);
-        checkSize();
-        window.addEventListener('resize', checkSize);
-        return () => window.removeEventListener('resize', checkSize);
-    }, []);
-
-    return isLarge;
-}
 
 // Extracted TransactionList component to avoid duplication
 interface TransactionListProps {
@@ -91,6 +78,7 @@ export default function TransactionsPage() {
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(getInitialTransaction);
     const [searchValue, setSearchValue] = useState('');
     const [sortBy, setSortBy] = useState<TransactionSortBy>('date');
+    const [filters, setFilters] = useState<TransactionFilters>({});
     const [showDetail, setShowDetail] = useState(!!transactionIdFromUrl && !isLargeScreen);
 
     // Sync selected transaction with URL on mount and URL changes
@@ -104,8 +92,18 @@ export default function TransactionsPage() {
 
     // Filter and sort transactions
     const filteredTransactions = useMemo(() => {
-        return filterTransactions(mockTransactions, searchValue, sortBy);
-    }, [searchValue, sortBy]);
+        return filterTransactionsAdvanced(
+            mockTransactions,
+            {
+                search: searchValue,
+                accountIds: filters.accountIds,
+                categoryIds: filters.categoryIds,
+                tags: filters.tags,
+                type: filters.type,
+            },
+            sortBy,
+        );
+    }, [searchValue, sortBy, filters]);
 
     // Group transactions by date
     const groupedTransactions = useMemo(() => {
@@ -147,6 +145,8 @@ export default function TransactionsPage() {
                     onSearchChange={setSearchValue}
                     sortBy={sortBy}
                     onSortChange={setSortBy}
+                    filters={filters}
+                    onFiltersChange={setFilters}
                 />
                 <TransactionList
                     groupedTransactions={groupedTransactions}
@@ -182,6 +182,8 @@ export default function TransactionsPage() {
                     onSearchChange={setSearchValue}
                     sortBy={sortBy}
                     onSortChange={setSortBy}
+                    filters={filters}
+                    onFiltersChange={setFilters}
                 />
                 <TransactionList
                     groupedTransactions={groupedTransactions}

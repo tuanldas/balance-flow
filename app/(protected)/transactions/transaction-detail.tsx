@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ArrowLeft, Building2, Calendar, CreditCard, RefreshCw, Split, Tag, Target } from 'lucide-react';
+import { ArrowLeft, Building2, Calendar, CreditCard, Tag, Target } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { getSimilarTransactions } from '@/lib/data/mock-transactions';
+import { getSimilarTransactions, mockAccounts, mockCategories } from '@/lib/data/mock-transactions';
 import type { Transaction } from '@/lib/types/transaction';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
@@ -76,36 +76,18 @@ export function TransactionDetail({ transaction, onBack, isMobile = false }: Tra
                     </Button>
                 )}
 
-                {/* Top Bar - Status and Actions */}
-                <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-2">
-                        {transaction.status === 'to_review' && (
-                            <Badge variant="warning" appearance="light" size="sm">
-                                {t('transactions.status.toReview')}
-                            </Badge>
-                        )}
-                        {transaction.status === 'completed' && (
-                            <Badge variant="success" appearance="light" size="sm">
-                                {t('transactions.status.completed')}
-                            </Badge>
-                        )}
-                        {transaction.isRecurring && (
-                            <Badge variant="info" appearance="light" size="sm" className="gap-1">
-                                <RefreshCw className="h-3 w-3" />
-                                {t('transactions.recurring')}
-                            </Badge>
-                        )}
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm" className="gap-1.5">
-                            <Split className="h-4 w-4" />
-                            <span className="hidden sm:inline">{t('transactions.actions.split')}</span>
-                        </Button>
-                        <Button variant="outline" size="sm" className="gap-1.5">
-                            <RefreshCw className="h-4 w-4" />
-                            <span className="hidden sm:inline">{t('transactions.actions.recurring')}</span>
-                        </Button>
-                    </div>
+                {/* Top Bar - Status */}
+                <div className="flex items-center gap-2 mb-6">
+                    {transaction.status === 'to_review' && (
+                        <Badge variant="warning" appearance="light" size="sm">
+                            {t('transactions.status.toReview')}
+                        </Badge>
+                    )}
+                    {transaction.status === 'completed' && (
+                        <Badge variant="success" appearance="light" size="sm">
+                            {t('transactions.status.completed')}
+                        </Badge>
+                    )}
                 </div>
 
                 {/* Main Amount Display */}
@@ -148,14 +130,19 @@ export function TransactionDetail({ transaction, onBack, isMobile = false }: Tra
                                 </SelectValue>
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value={transaction.category.id}>
-                                    <div className="flex items-center gap-2">
-                                        <span style={{ color: transaction.category.color }}>
-                                            <CategoryIcon className="h-4 w-4" />
-                                        </span>
-                                        {transaction.category.name}
-                                    </div>
-                                </SelectItem>
+                                {mockCategories.map((cat) => {
+                                    const CatIcon = categoryIconMap[cat.icon] || DefaultCategoryIcon;
+                                    return (
+                                        <SelectItem key={cat.id} value={cat.id}>
+                                            <div className="flex items-center gap-2">
+                                                <span style={{ color: cat.color }}>
+                                                    <CatIcon className="h-4 w-4" />
+                                                </span>
+                                                {cat.name}
+                                            </div>
+                                        </SelectItem>
+                                    );
+                                })}
                             </SelectContent>
                         </Select>
                     </div>
@@ -176,12 +163,14 @@ export function TransactionDetail({ transaction, onBack, isMobile = false }: Tra
                                 </SelectValue>
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value={transaction.account.id}>
-                                    <div className="flex items-center gap-2">
-                                        <CreditCard className="h-4 w-4" />
-                                        {transaction.account.name} (****{transaction.account.lastFourDigits})
-                                    </div>
-                                </SelectItem>
+                                {mockAccounts.map((acc) => (
+                                    <SelectItem key={acc.id} value={acc.id}>
+                                        <div className="flex items-center gap-2">
+                                            <CreditCard className="h-4 w-4" />
+                                            {acc.name} (****{acc.lastFourDigits})
+                                        </div>
+                                    </SelectItem>
+                                ))}
                             </SelectContent>
                         </Select>
                     </div>
