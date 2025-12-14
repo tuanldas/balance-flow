@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { getIntlLocale } from '@/i18n/config';
 import { ArrowLeft, Building2, Calendar, CreditCard, Tag, Target } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { getSimilarTransactions, mockAccounts } from '@/lib/data/mock-transactions';
 import type { Transaction } from '@/lib/types/transaction';
 import { cn } from '@/lib/utils';
 import { useCategories } from '@/hooks/use-categories';
@@ -16,7 +16,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-import { localeMap } from './constants';
 
 interface TransactionDetailProps {
     transaction: Transaction | null;
@@ -26,11 +25,10 @@ interface TransactionDetailProps {
 
 export function TransactionDetail({ transaction, onBack, isMobile = false }: TransactionDetailProps) {
     const { t, i18n } = useTranslation();
-    const locale = localeMap[i18n.language] || 'en-US';
+    const locale = getIntlLocale(i18n.language);
     const { getOption } = useSettings();
     const categoryIconBgColor = getOption<string>('categoryIconBgColor');
 
-    // Fetch categories from API for dropdown
     const { data: categoriesData } = useCategories({ type: transaction?.type });
     const categories = categoriesData?.data || [];
 
@@ -40,7 +38,6 @@ export function TransactionDetail({ transaction, onBack, isMobile = false }: Tra
 
     const isIconUrl = transaction?.category.icon?.startsWith('http');
 
-    // Reset form state when transaction changes
     useEffect(() => {
         setNotes(transaction?.notes || '');
         setTags(transaction?.tags?.join(', ') || '');
@@ -72,12 +69,9 @@ export function TransactionDetail({ transaction, onBack, isMobile = false }: Tra
         day: 'numeric',
     });
 
-    const similarTransactions = getSimilarTransactions(transaction.merchant, transaction.id);
-
     return (
         <ScrollArea className="h-full">
             <div className="p-6">
-                {/* Close button for mobile sheet */}
                 {isMobile && onBack && (
                     <Button variant="ghost" size="sm" onClick={onBack} className="mb-4 -ml-2 gap-1.5">
                         <ArrowLeft className="h-4 w-4" />
@@ -85,7 +79,6 @@ export function TransactionDetail({ transaction, onBack, isMobile = false }: Tra
                     </Button>
                 )}
 
-                {/* Top Bar - Status */}
                 <div className="flex items-center gap-2 mb-6">
                     {transaction.status === 'to_review' && (
                         <Badge variant="warning" appearance="light" size="sm">
@@ -99,7 +92,6 @@ export function TransactionDetail({ transaction, onBack, isMobile = false }: Tra
                     )}
                 </div>
 
-                {/* Main Amount Display */}
                 <div className="mb-6">
                     <p
                         className={cn(
@@ -121,9 +113,7 @@ export function TransactionDetail({ transaction, onBack, isMobile = false }: Tra
 
                 <Separator className="mb-6" />
 
-                {/* Editable Form Fields */}
                 <div className="space-y-5">
-                    {/* Category */}
                     <div className="space-y-2">
                         <Label className="flex items-center gap-2 text-muted-foreground">
                             <Tag className="h-4 w-4" />
@@ -190,35 +180,19 @@ export function TransactionDetail({ transaction, onBack, isMobile = false }: Tra
                         </Select>
                     </div>
 
-                    {/* Account */}
                     <div className="space-y-2">
                         <Label className="flex items-center gap-2 text-muted-foreground">
                             <Building2 className="h-4 w-4" />
                             {t('transactions.detail.account')}
                         </Label>
-                        <Select defaultValue={transaction.account.id}>
-                            <SelectTrigger>
-                                <SelectValue>
-                                    <div className="flex items-center gap-2">
-                                        <CreditCard className="h-4 w-4" />
-                                        {transaction.account.name} (****{transaction.account.lastFourDigits})
-                                    </div>
-                                </SelectValue>
-                            </SelectTrigger>
-                            <SelectContent>
-                                {mockAccounts.map((acc) => (
-                                    <SelectItem key={acc.id} value={acc.id}>
-                                        <div className="flex items-center gap-2">
-                                            <CreditCard className="h-4 w-4" />
-                                            {acc.name} (****{acc.lastFourDigits})
-                                        </div>
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                        <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-muted/50">
+                            <CreditCard className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-sm">
+                                {transaction.account.name} (****{transaction.account.lastFourDigits})
+                            </span>
+                        </div>
                     </div>
 
-                    {/* Goal */}
                     <div className="space-y-2">
                         <Label className="flex items-center gap-2 text-muted-foreground">
                             <Target className="h-4 w-4" />
@@ -231,7 +205,6 @@ export function TransactionDetail({ transaction, onBack, isMobile = false }: Tra
                         />
                     </div>
 
-                    {/* Notes */}
                     <div className="space-y-2">
                         <Label className="flex items-center gap-2 text-muted-foreground">
                             {t('transactions.detail.notes')}
@@ -244,7 +217,6 @@ export function TransactionDetail({ transaction, onBack, isMobile = false }: Tra
                         />
                     </div>
 
-                    {/* Tags */}
                     <div className="space-y-2">
                         <Label className="flex items-center gap-2 text-muted-foreground">
                             {t('transactions.detail.tags')}
@@ -266,49 +238,6 @@ export function TransactionDetail({ transaction, onBack, isMobile = false }: Tra
                     </div>
                 </div>
 
-                {/* Similar Transactions */}
-                {similarTransactions.length > 0 && (
-                    <>
-                        <Separator className="my-6" />
-                        <div>
-                            <h3 className="text-sm font-medium text-muted-foreground mb-3">
-                                {t('transactions.detail.similarTransactions')}
-                            </h3>
-                            <div className="space-y-2">
-                                {similarTransactions.map((txn) => (
-                                    <div
-                                        key={txn.id}
-                                        className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
-                                    >
-                                        <span className="text-sm text-muted-foreground">
-                                            {new Date(txn.date).toLocaleDateString(locale, {
-                                                month: 'short',
-                                                day: 'numeric',
-                                                year: 'numeric',
-                                            })}
-                                        </span>
-                                        <span
-                                            className={cn(
-                                                'text-sm font-medium',
-                                                txn.type === 'income'
-                                                    ? 'text-green-600 dark:text-green-500'
-                                                    : 'text-red-600 dark:text-red-500',
-                                            )}
-                                        >
-                                            {txn.type === 'income' ? '+' : '-'}
-                                            {new Intl.NumberFormat(locale, {
-                                                style: 'currency',
-                                                currency: txn.currency,
-                                            }).format(txn.amount)}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </>
-                )}
-
-                {/* Save Button */}
                 <div className="mt-6">
                     <Button className="w-full">{t('common.buttons.save')}</Button>
                 </div>

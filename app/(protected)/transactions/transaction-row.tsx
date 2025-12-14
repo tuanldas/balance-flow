@@ -1,12 +1,12 @@
 'use client';
 
 import { memo } from 'react';
+import { getIntlLocale } from '@/i18n/config';
 import { useTranslation } from 'react-i18next';
 import type { Transaction } from '@/lib/types/transaction';
 import { cn } from '@/lib/utils';
 import { useSettings } from '@/providers/settings-provider';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { localeMap } from './constants';
 
 interface TransactionRowProps {
     transaction: Transaction;
@@ -16,7 +16,7 @@ interface TransactionRowProps {
 
 function TransactionRowComponent({ transaction, isSelected, onClick }: TransactionRowProps) {
     const { i18n } = useTranslation();
-    const locale = localeMap[i18n.language] || 'en-US';
+    const locale = getIntlLocale(i18n.language);
     const { getOption } = useSettings();
     const categoryIconBgColor = getOption<string>('categoryIconBgColor');
 

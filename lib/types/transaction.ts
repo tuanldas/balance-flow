@@ -125,12 +125,12 @@ export interface TransactionApiFilters {
     page?: number;
     sort_by?: 'transaction_date' | 'amount' | 'created_at' | 'updated_at';
     sort_direction?: 'asc' | 'desc';
-    // Future filters
     start_date?: string;
     end_date?: string;
     category_id?: string;
     status?: ApiTransactionStatus;
     type?: CategoryType;
+    search?: string;
 }
 
 // Summary filters

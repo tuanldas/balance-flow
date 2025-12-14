@@ -94,6 +94,9 @@ export const transactionsApi = {
         if (filters?.type) {
             params.append('type', filters.type);
         }
+        if (filters?.search) {
+            params.append('search', filters.search);
+        }
 
         const queryString = params.toString();
         const endpoint = `/api/transactions${queryString ? `?${queryString}` : ''}`;

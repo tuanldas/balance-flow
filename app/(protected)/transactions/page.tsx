@@ -4,15 +4,9 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { filterTransactionsAdvanced, groupTransactionsByDate } from '@/lib/data/mock-transactions';
-import type {
-    Transaction,
-    TransactionApiFilters,
-    TransactionFilters,
-    TransactionGroup,
-    TransactionSortBy,
-} from '@/lib/types/transaction';
+import type { Transaction, TransactionApiFilters, TransactionGroup, TransactionSortBy } from '@/lib/types/transaction';
 import { apiTransactionToLegacy } from '@/lib/types/transaction';
+import { groupTransactionsByDate } from '@/lib/utils/transaction-utils';
 import { useIsLargeScreen } from '@/hooks/use-large-screen';
 import { useInfiniteTransactions } from '@/hooks/use-transactions';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -138,7 +132,7 @@ export default function TransactionsPage() {
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
     const [searchValue, setSearchValue] = useState('');
     const [sortBy, setSortBy] = useState<TransactionSortBy>('date');
-    const [filters, setFilters] = useState<TransactionFilters>({});
+    const [categoryIds, setCategoryIds] = useState<string[]>([]);
     const [showDetail, setShowDetail] = useState(!!transactionIdFromUrl && !isLargeScreen);
 
     // Build API filters based on UI state
@@ -154,9 +148,10 @@ export default function TransactionsPage() {
 
         return {
             ...sortMapping[sortBy],
-            type: filters.type,
+            category_id: categoryIds.length > 0 ? categoryIds.join(',') : undefined,
+            search: searchValue || undefined,
         };
-    }, [sortBy, filters.type]);
+    }, [sortBy, categoryIds, searchValue]);
 
     // Fetch transactions from API with infinite scroll
     const {
@@ -201,25 +196,10 @@ export default function TransactionsPage() {
         }
     }, [transactionIdFromUrl, getInitialTransaction, isLargeScreen, allTransactions.length]);
 
-    // Filter transactions client-side (for search and additional filters)
-    const filteredTransactions = useMemo(() => {
-        return filterTransactionsAdvanced(
-            allTransactions,
-            {
-                search: searchValue,
-                accountIds: filters.accountIds,
-                categoryIds: filters.categoryIds,
-                tags: filters.tags,
-                // type is already filtered server-side
-            },
-            sortBy,
-        );
-    }, [allTransactions, searchValue, sortBy, filters]);
-
     // Group transactions by date
     const groupedTransactions = useMemo(() => {
-        return groupTransactionsByDate(filteredTransactions, t);
-    }, [filteredTransactions, t]);
+        return groupTransactionsByDate(allTransactions, t);
+    }, [allTransactions, t]);
 
     // Update URL when selecting a transaction (use replace to avoid history pollution)
     const updateUrlWithTransaction = useCallback(
@@ -256,12 +236,12 @@ export default function TransactionsPage() {
                     onSearchChange={setSearchValue}
                     sortBy={sortBy}
                     onSortChange={setSortBy}
-                    filters={filters}
-                    onFiltersChange={setFilters}
+                    categoryIds={categoryIds}
+                    onCategoryIdsChange={setCategoryIds}
                 />
                 <TransactionList
                     groupedTransactions={groupedTransactions}
-                    filteredTransactionsCount={filteredTransactions.length}
+                    filteredTransactionsCount={allTransactions.length}
                     selectedTransactionId={selectedTransaction?.id}
                     onTransactionSelect={handleTransactionSelect}
                     isLoading={isLoading}
@@ -298,12 +278,12 @@ export default function TransactionsPage() {
                     onSearchChange={setSearchValue}
                     sortBy={sortBy}
                     onSortChange={setSortBy}
-                    filters={filters}
-                    onFiltersChange={setFilters}
+                    categoryIds={categoryIds}
+                    onCategoryIdsChange={setCategoryIds}
                 />
                 <TransactionList
                     groupedTransactions={groupedTransactions}
-                    filteredTransactionsCount={filteredTransactions.length}
+                    filteredTransactionsCount={allTransactions.length}
                     selectedTransactionId={selectedTransaction?.id}
                     onTransactionSelect={handleTransactionSelect}
                     isLoading={isLoading}
