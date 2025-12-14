@@ -95,7 +95,9 @@ export function TransactionDetail({ transaction, onBack, isMobile = false }: Tra
                     <p
                         className={cn(
                             'text-3xl font-bold mb-1',
-                            transaction.type === 'income' ? 'text-green-600 dark:text-green-500' : 'text-foreground',
+                            transaction.type === 'income'
+                                ? 'text-green-600 dark:text-green-500'
+                                : 'text-red-600 dark:text-red-500',
                         )}
                     >
                         {transaction.type === 'income' ? '+' : '-'}
@@ -249,7 +251,7 @@ export function TransactionDetail({ transaction, onBack, isMobile = false }: Tra
                                                 'text-sm font-medium',
                                                 txn.type === 'income'
                                                     ? 'text-green-600 dark:text-green-500'
-                                                    : 'text-foreground',
+                                                    : 'text-red-600 dark:text-red-500',
                                             )}
                                         >
                                             {txn.type === 'income' ? '+' : '-'}

@@ -1,12 +1,21 @@
 'use client';
 
-import { memo, useCallback, useEffect, useMemo, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { filterTransactionsAdvanced, groupTransactionsByDate, mockTransactions } from '@/lib/data/mock-transactions';
-import type { Transaction, TransactionFilters, TransactionGroup, TransactionSortBy } from '@/lib/types/transaction';
+import { filterTransactionsAdvanced, groupTransactionsByDate } from '@/lib/data/mock-transactions';
+import type {
+    Transaction,
+    TransactionApiFilters,
+    TransactionFilters,
+    TransactionGroup,
+    TransactionSortBy,
+} from '@/lib/types/transaction';
+import { apiTransactionToLegacy } from '@/lib/types/transaction';
 import { useIsLargeScreen } from '@/hooks/use-large-screen';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { useInfiniteTransactions } from '@/hooks/use-transactions';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { FilterBar } from './filter-bar';
 import { TransactionDetail } from './transaction-detail';
@@ -18,6 +27,11 @@ interface TransactionListProps {
     filteredTransactionsCount: number;
     selectedTransactionId?: string;
     onTransactionSelect: (transaction: Transaction) => void;
+    isLoading?: boolean;
+    isFetchingNextPage?: boolean;
+    hasNextPage?: boolean;
+    onLoadMore?: () => void;
+    error?: Error | null;
 }
 
 const TransactionList = memo(function TransactionList({
@@ -25,11 +39,56 @@ const TransactionList = memo(function TransactionList({
     filteredTransactionsCount,
     selectedTransactionId,
     onTransactionSelect,
+    isLoading,
+    isFetchingNextPage,
+    hasNextPage,
+    onLoadMore,
+    error,
 }: TransactionListProps) {
     const { t } = useTranslation();
+    const loadMoreRef = useRef<HTMLDivElement>(null);
+
+    // Intersection Observer for infinite scroll
+    useEffect(() => {
+        if (!loadMoreRef.current || !onLoadMore || !hasNextPage || isFetchingNextPage) return;
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+                    onLoadMore();
+                }
+            },
+            { threshold: 0.1 },
+        );
+
+        observer.observe(loadMoreRef.current);
+
+        return () => observer.disconnect();
+    }, [hasNextPage, isFetchingNextPage, onLoadMore]);
+
+    if (isLoading) {
+        return (
+            <div className="flex-1 flex items-center justify-center">
+                <div className="text-center">
+                    <Loader2 className="h-8 w-8 animate-spin mx-auto text-muted-foreground" />
+                    <p className="mt-2 text-sm text-muted-foreground">{t('common.messages.loading')}</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex-1 p-4">
+                <Alert variant="destructive">
+                    <AlertDescription>{error.message || t('common.messages.error')}</AlertDescription>
+                </Alert>
+            </div>
+        );
+    }
 
     return (
-        <ScrollArea className="flex-1">
+        <div className="flex-1 overflow-y-auto">
             <div className="p-4 space-y-6">
                 {groupedTransactions.map((group) => (
                     <div key={group.date}>
@@ -47,13 +106,23 @@ const TransactionList = memo(function TransactionList({
                     </div>
                 ))}
 
-                {filteredTransactionsCount === 0 && (
+                {filteredTransactionsCount === 0 && !isFetchingNextPage && (
                     <div className="text-center py-12 text-muted-foreground">
                         <p>{t('transactions.noResults')}</p>
                     </div>
                 )}
+
+                {/* Load more trigger element */}
+                <div ref={loadMoreRef} className="py-4">
+                    {isFetchingNextPage && (
+                        <div className="flex items-center justify-center gap-2">
+                            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                            <span className="text-sm text-muted-foreground">{t('common.messages.loading')}</span>
+                        </div>
+                    )}
+                </div>
             </div>
-        </ScrollArea>
+        </div>
     );
 });
 
@@ -66,44 +135,86 @@ export default function TransactionsPage() {
     // Get transaction ID from URL
     const transactionIdFromUrl = searchParams.get('id');
 
-    // Find transaction from URL or default to first one
-    const getInitialTransaction = useCallback((): Transaction | null => {
-        if (transactionIdFromUrl) {
-            const found = mockTransactions.find((txn) => txn.id === transactionIdFromUrl);
-            if (found) return found;
-        }
-        return mockTransactions[0] || null;
-    }, [transactionIdFromUrl]);
-
-    const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(getInitialTransaction);
+    const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
     const [searchValue, setSearchValue] = useState('');
     const [sortBy, setSortBy] = useState<TransactionSortBy>('date');
     const [filters, setFilters] = useState<TransactionFilters>({});
     const [showDetail, setShowDetail] = useState(!!transactionIdFromUrl && !isLargeScreen);
 
-    // Sync selected transaction with URL on mount and URL changes
-    useEffect(() => {
-        const transaction = getInitialTransaction();
-        setSelectedTransaction(transaction);
-        if (transactionIdFromUrl && !isLargeScreen) {
-            setShowDetail(true);
-        }
-    }, [transactionIdFromUrl, getInitialTransaction, isLargeScreen]);
+    // Build API filters based on UI state
+    const apiFilters = useMemo((): Omit<TransactionApiFilters, 'page'> => {
+        const sortMapping: Record<
+            TransactionSortBy,
+            { sort_by: 'transaction_date' | 'amount'; sort_direction: 'asc' | 'desc' }
+        > = {
+            date: { sort_by: 'transaction_date', sort_direction: 'desc' },
+            amount_asc: { sort_by: 'amount', sort_direction: 'asc' },
+            amount_desc: { sort_by: 'amount', sort_direction: 'desc' },
+        };
 
-    // Filter and sort transactions
+        return {
+            ...sortMapping[sortBy],
+            type: filters.type,
+        };
+    }, [sortBy, filters.type]);
+
+    // Fetch transactions from API with infinite scroll
+    const {
+        data: transactionsData,
+        isLoading,
+        error,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
+    } = useInfiniteTransactions(apiFilters, 10);
+
+    // Convert API transactions to legacy format (flatten all pages)
+    const allTransactions = useMemo(() => {
+        if (!transactionsData?.pages) return [];
+        return transactionsData.pages.flatMap((page) => page.data.map(apiTransactionToLegacy));
+    }, [transactionsData?.pages]);
+
+    // Handle load more
+    const handleLoadMore = useCallback(() => {
+        if (hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
+        }
+    }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+    // Find transaction from URL or default to first one
+    const getInitialTransaction = useCallback((): Transaction | null => {
+        if (transactionIdFromUrl) {
+            const found = allTransactions.find((txn) => txn.id === transactionIdFromUrl);
+            if (found) return found;
+        }
+        return allTransactions[0] || null;
+    }, [transactionIdFromUrl, allTransactions]);
+
+    // Sync selected transaction with data on mount and URL changes
+    useEffect(() => {
+        if (allTransactions.length > 0) {
+            const transaction = getInitialTransaction();
+            setSelectedTransaction(transaction);
+            if (transactionIdFromUrl && !isLargeScreen) {
+                setShowDetail(true);
+            }
+        }
+    }, [transactionIdFromUrl, getInitialTransaction, isLargeScreen, allTransactions.length]);
+
+    // Filter transactions client-side (for search and additional filters)
     const filteredTransactions = useMemo(() => {
         return filterTransactionsAdvanced(
-            mockTransactions,
+            allTransactions,
             {
                 search: searchValue,
                 accountIds: filters.accountIds,
                 categoryIds: filters.categoryIds,
                 tags: filters.tags,
-                type: filters.type,
+                // type is already filtered server-side
             },
             sortBy,
         );
-    }, [searchValue, sortBy, filters]);
+    }, [allTransactions, searchValue, sortBy, filters]);
 
     // Group transactions by date
     const groupedTransactions = useMemo(() => {
@@ -153,6 +264,11 @@ export default function TransactionsPage() {
                     filteredTransactionsCount={filteredTransactions.length}
                     selectedTransactionId={selectedTransaction?.id}
                     onTransactionSelect={handleTransactionSelect}
+                    isLoading={isLoading}
+                    isFetchingNextPage={isFetchingNextPage}
+                    hasNextPage={hasNextPage}
+                    onLoadMore={handleLoadMore}
+                    error={error as Error | null}
                 />
 
                 <Sheet
@@ -190,6 +306,11 @@ export default function TransactionsPage() {
                     filteredTransactionsCount={filteredTransactions.length}
                     selectedTransactionId={selectedTransaction?.id}
                     onTransactionSelect={handleTransactionSelect}
+                    isLoading={isLoading}
+                    isFetchingNextPage={isFetchingNextPage}
+                    hasNextPage={hasNextPage}
+                    onLoadMore={handleLoadMore}
+                    error={error as Error | null}
                 />
             </div>
 

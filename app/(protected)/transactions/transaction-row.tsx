@@ -82,7 +82,9 @@ function TransactionRowComponent({ transaction, isSelected, onClick }: Transacti
                 <span
                     className={cn(
                         'font-semibold text-sm tabular-nums',
-                        transaction.type === 'income' ? 'text-green-600 dark:text-green-500' : 'text-foreground',
+                        transaction.type === 'income'
+                            ? 'text-green-600 dark:text-green-500'
+                            : 'text-red-600 dark:text-red-500',
                     )}
                 >
                     {transaction.type === 'income' ? '+' : '-'}
