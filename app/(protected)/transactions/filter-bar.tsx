@@ -1,15 +1,14 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowDownAZ, ArrowDownWideNarrow, ArrowUpNarrowWide, Building2, Plus, Search, Tag, X } from 'lucide-react';
+import { ArrowDownAZ, ArrowDownWideNarrow, ArrowUpNarrowWide, Plus, Search, Tag, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { getUniqueTags, mockAccounts, mockCategories } from '@/lib/data/mock-transactions';
-import type { TransactionFilters, TransactionSortBy, TransactionType } from '@/lib/types/transaction';
+import type { TransactionSortBy } from '@/lib/types/transaction';
 import { cn } from '@/lib/utils';
+import { useCategories } from '@/hooks/use-categories';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
-    DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
@@ -29,8 +28,8 @@ interface FilterBarProps {
     onSearchChange: (value: string) => void;
     sortBy: TransactionSortBy;
     onSortChange: (sort: TransactionSortBy) => void;
-    filters: TransactionFilters;
-    onFiltersChange: (filters: TransactionFilters) => void;
+    categoryIds: string[];
+    onCategoryIdsChange: (categoryIds: string[]) => void;
 }
 
 export function FilterBar({
@@ -38,14 +37,15 @@ export function FilterBar({
     onSearchChange,
     sortBy,
     onSortChange,
-    filters,
-    onFiltersChange,
+    categoryIds,
+    onCategoryIdsChange,
 }: FilterBarProps) {
     const { t } = useTranslation();
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const searchInputRef = useRef<HTMLInputElement>(null);
 
-    // Focus input when popover opens
+    const { data: categoriesData } = useCategories();
+
     useEffect(() => {
         if (isSearchOpen) {
             const timer = setTimeout(() => {
@@ -71,76 +71,34 @@ export function FilterBar({
 
     const currentSort = sortOptions.find((opt) => opt.value === sortBy);
 
-    // Toggle array filter helper
-    const toggleArrayFilter = (key: 'accountIds' | 'categoryIds' | 'tags', id: string) => {
-        const current = filters[key] || [];
-        const updated = current.includes(id) ? current.filter((i) => i !== id) : [...current, id];
-        onFiltersChange({ ...filters, [key]: updated.length > 0 ? updated : undefined });
-    };
-
-    // Set single value filter helper
-    const setFilter = <K extends keyof TransactionFilters>(key: K, value: TransactionFilters[K] | undefined) => {
-        const updated = { ...filters };
-        if (value === undefined) {
-            delete updated[key];
-        } else {
-            updated[key] = value;
-        }
-        onFiltersChange(updated);
-    };
-
-    // Get account items with colors
-    const accountItems = useMemo(() => {
-        const colors = ['#EF4444', '#F97316', '#3B82F6', '#10B981', '#8B5CF6', '#EC4899'];
-        return mockAccounts.map((acc, idx) => ({
-            id: acc.id,
-            name: `${acc.name} (****${acc.lastFourDigits})`,
-            color: colors[idx % colors.length],
-        }));
-    }, []);
-
-    // Get category items
     const categoryItems = useMemo(() => {
-        return mockCategories.map((cat) => ({
+        const categories = categoriesData?.data || [];
+        return categories.map((cat) => ({
             id: cat.id,
             name: cat.name,
             color: cat.color,
             icon: cat.icon,
         }));
-    }, []);
+    }, [categoriesData?.data]);
 
-    // Get unique tags from transactions data
-    const tagItems = useMemo(() => getUniqueTags(), []);
-
-    // Type options
-    const typeOptions: { value: TransactionType; label: string }[] = [
-        { value: 'income', label: t('transactions.filter.income') },
-        { value: 'expense', label: t('transactions.filter.expense') },
-    ];
-
-    // Calculate active filter count
-    const activeFilterCount = useMemo(() => {
-        let count = 0;
-        if (filters.accountIds?.length) count += filters.accountIds.length;
-        if (filters.categoryIds?.length) count += filters.categoryIds.length;
-        if (filters.tags?.length) count += filters.tags.length;
-        if (filters.type) count += 1;
-        return count;
-    }, [filters]);
-
-    const hasActiveFilters = searchValue.trim().length > 0 || activeFilterCount > 0;
-
-    // Clear all filters
-    const clearAllFilters = () => {
-        onSearchChange('');
-        onFiltersChange({});
+    const toggleCategory = (id: string) => {
+        if (categoryIds.includes(id)) {
+            onCategoryIdsChange(categoryIds.filter((cid) => cid !== id));
+        } else {
+            onCategoryIdsChange([...categoryIds, id]);
+        }
     };
 
-    // Get filter badges for display
+    const hasActiveFilters = searchValue.trim().length > 0 || categoryIds.length > 0;
+
+    const clearAllFilters = () => {
+        onSearchChange('');
+        onCategoryIdsChange([]);
+    };
+
     const getFilterBadges = () => {
         const badges: { key: string; label: string; color?: string; onRemove: () => void }[] = [];
 
-        // Search badge
         if (searchValue.trim()) {
             badges.push({
                 key: 'search',
@@ -149,52 +107,17 @@ export function FilterBar({
             });
         }
 
-        // Account badges
-        filters.accountIds?.forEach((id) => {
-            const account = accountItems.find((a) => a.id === id);
-            if (account) {
-                badges.push({
-                    key: `account-${id}`,
-                    label: account.name,
-                    color: account.color,
-                    onRemove: () => toggleArrayFilter('accountIds', id),
-                });
-            }
-        });
-
-        // Category badges
-        filters.categoryIds?.forEach((id) => {
+        categoryIds.forEach((id) => {
             const category = categoryItems.find((c) => c.id === id);
             if (category) {
                 badges.push({
                     key: `category-${id}`,
                     label: category.name,
                     color: category.color,
-                    onRemove: () => toggleArrayFilter('categoryIds', id),
+                    onRemove: () => toggleCategory(id),
                 });
             }
         });
-
-        // Tag badges
-        filters.tags?.forEach((tag) => {
-            badges.push({
-                key: `tag-${tag}`,
-                label: `#${tag}`,
-                onRemove: () => toggleArrayFilter('tags', tag),
-            });
-        });
-
-        // Type badge
-        if (filters.type) {
-            const type = typeOptions.find((t) => t.value === filters.type);
-            if (type) {
-                badges.push({
-                    key: 'type',
-                    label: type.label,
-                    onRemove: () => setFilter('type', undefined),
-                });
-            }
-        }
 
         return badges;
     };
@@ -203,9 +126,7 @@ export function FilterBar({
 
     return (
         <div className="border-b border-border">
-            {/* Main Filter Bar */}
             <div className="flex items-center justify-end gap-2 p-4">
-                {/* Search Popover */}
                 <Popover open={isSearchOpen} onOpenChange={setIsSearchOpen}>
                     <PopoverTrigger asChild>
                         <Button
@@ -228,7 +149,6 @@ export function FilterBar({
                     </PopoverContent>
                 </Popover>
 
-                {/* Multi-layer Filter Dropdown */}
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="sm" className="gap-1.5">
@@ -237,106 +157,27 @@ export function FilterBar({
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="w-52">
-                        {/* Account Filter */}
-                        <DropdownMenuSub>
-                            <DropdownMenuSubTrigger>
-                                <Building2 className="h-4 w-4 mr-2" />
-                                {t('transactions.filter.account')}
-                                {filters.accountIds?.length ? (
-                                    <span className="ml-auto text-xs text-muted-foreground">
-                                        {filters.accountIds.length}
-                                    </span>
-                                ) : null}
-                            </DropdownMenuSubTrigger>
-                            <DropdownMenuPortal>
-                                <DropdownMenuSubContent>
-                                    <FilterSubmenu
-                                        items={accountItems}
-                                        selectedIds={filters.accountIds || []}
-                                        onToggle={(id) => toggleArrayFilter('accountIds', id)}
-                                        searchPlaceholder={t('transactions.filter.searchPlaceholder')}
-                                    />
-                                </DropdownMenuSubContent>
-                            </DropdownMenuPortal>
-                        </DropdownMenuSub>
-
-                        {/* Category Filter */}
                         <DropdownMenuSub>
                             <DropdownMenuSubTrigger>
                                 <Tag className="h-4 w-4 mr-2" />
                                 {t('transactions.filter.category')}
-                                {filters.categoryIds?.length ? (
-                                    <span className="ml-auto text-xs text-muted-foreground">
-                                        {filters.categoryIds.length}
-                                    </span>
-                                ) : null}
+                                {categoryIds.length > 0 && (
+                                    <span className="ml-auto text-xs text-muted-foreground">{categoryIds.length}</span>
+                                )}
                             </DropdownMenuSubTrigger>
                             <DropdownMenuPortal>
                                 <DropdownMenuSubContent>
                                     <FilterSubmenu
                                         items={categoryItems}
-                                        selectedIds={filters.categoryIds || []}
-                                        onToggle={(id) => toggleArrayFilter('categoryIds', id)}
+                                        selectedIds={categoryIds}
+                                        onToggle={toggleCategory}
                                         searchPlaceholder={t('transactions.filter.searchPlaceholder')}
                                     />
                                 </DropdownMenuSubContent>
                             </DropdownMenuPortal>
                         </DropdownMenuSub>
 
-                        {/* Tags Filter */}
-                        <DropdownMenuSub>
-                            <DropdownMenuSubTrigger>
-                                <Tag className="h-4 w-4 mr-2" />
-                                {t('transactions.filter.tags')}
-                                {filters.tags?.length ? (
-                                    <span className="ml-auto text-xs text-muted-foreground">{filters.tags.length}</span>
-                                ) : null}
-                            </DropdownMenuSubTrigger>
-                            <DropdownMenuPortal>
-                                <DropdownMenuSubContent>
-                                    <FilterSubmenu
-                                        items={tagItems}
-                                        selectedIds={filters.tags || []}
-                                        onToggle={(id) => toggleArrayFilter('tags', id)}
-                                        searchPlaceholder={t('transactions.filter.searchPlaceholder')}
-                                    />
-                                </DropdownMenuSubContent>
-                            </DropdownMenuPortal>
-                        </DropdownMenuSub>
-
-                        <DropdownMenuSeparator />
-
-                        {/* Type Filter */}
-                        <DropdownMenuSub>
-                            <DropdownMenuSubTrigger>
-                                {t('transactions.filter.type')}
-                                {filters.type && <span className="ml-auto text-xs text-muted-foreground">1</span>}
-                            </DropdownMenuSubTrigger>
-                            <DropdownMenuPortal>
-                                <DropdownMenuSubContent className="min-w-[150px]">
-                                    <DropdownMenuCheckboxItem
-                                        checked={filters.type === undefined}
-                                        onCheckedChange={() => setFilter('type', undefined)}
-                                        onSelect={(e) => e.preventDefault()}
-                                    >
-                                        {t('transactions.filter.all')}
-                                    </DropdownMenuCheckboxItem>
-                                    {typeOptions.map((option) => (
-                                        <DropdownMenuCheckboxItem
-                                            key={option.value}
-                                            checked={filters.type === option.value}
-                                            onCheckedChange={() => setFilter('type', option.value)}
-                                            onSelect={(e) => e.preventDefault()}
-                                        >
-                                            {option.label}
-                                        </DropdownMenuCheckboxItem>
-                                    ))}
-                                </DropdownMenuSubContent>
-                            </DropdownMenuPortal>
-                        </DropdownMenuSub>
-
-                        {/* Clear All */}
-                        {activeFilterCount > 0 && (
+                        {categoryIds.length > 0 && (
                             <>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={clearAllFilters} className="text-destructive">
@@ -348,7 +189,6 @@ export function FilterBar({
                     </DropdownMenuContent>
                 </DropdownMenu>
 
-                {/* Sort Dropdown */}
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="sm" className="gap-1.5">
@@ -373,7 +213,6 @@ export function FilterBar({
                 </DropdownMenu>
             </div>
 
-            {/* Active Filters Display */}
             {hasActiveFilters && (
                 <div className="flex flex-wrap items-center gap-2 px-4 pb-4">
                     {filterBadges.map((badge) => (

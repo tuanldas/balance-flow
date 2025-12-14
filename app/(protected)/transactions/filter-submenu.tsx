@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { DropdownMenuCheckboxItem } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { categoryIconMap, DefaultCategoryIcon } from './constants';
 
 export interface FilterItem {
     id: string;
@@ -29,7 +28,6 @@ export function FilterSubmenu({ items, selectedIds, onToggle, searchPlaceholder 
         return items.filter((item) => item.name.toLowerCase().includes(searchLower));
     }, [items, search]);
 
-    // Focus search input when submenu opens
     useEffect(() => {
         const timer = setTimeout(() => {
             inputRef.current?.focus();
@@ -53,7 +51,7 @@ export function FilterSubmenu({ items, selectedIds, onToggle, searchPlaceholder 
             </div>
             <div className="max-h-[250px] overflow-y-auto p-1">
                 {filteredItems.map((item) => {
-                    const CategoryIcon = item.icon ? categoryIconMap[item.icon] || DefaultCategoryIcon : null;
+                    const isIconUrl = item.icon?.startsWith('http');
                     return (
                         <DropdownMenuCheckboxItem
                             key={item.id}
@@ -62,17 +60,23 @@ export function FilterSubmenu({ items, selectedIds, onToggle, searchPlaceholder 
                             onSelect={(e) => e.preventDefault()}
                             className="gap-2"
                         >
-                            {item.color && (
+                            {item.color && !item.icon && (
                                 <span
                                     className="h-2 w-2 rounded-full shrink-0"
                                     style={{ backgroundColor: item.color }}
                                 />
                             )}
-                            {CategoryIcon && (
-                                <span style={{ color: item.color }}>
-                                    <CategoryIcon className="h-4 w-4" />
-                                </span>
-                            )}
+                            {item.icon &&
+                                (isIconUrl ? (
+                                    <img src={item.icon} alt={item.name} className="h-4 w-4 object-contain shrink-0" />
+                                ) : (
+                                    <span
+                                        className="material-symbols-outlined shrink-0"
+                                        style={{ fontSize: '16px', color: item.color }}
+                                    >
+                                        {item.icon}
+                                    </span>
+                                ))}
                             <span className="truncate">{item.name}</span>
                         </DropdownMenuCheckboxItem>
                     );
