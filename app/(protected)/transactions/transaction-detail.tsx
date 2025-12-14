@@ -3,9 +3,11 @@
 import { useEffect, useState } from 'react';
 import { ArrowLeft, Building2, Calendar, CreditCard, Tag, Target } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { getSimilarTransactions, mockAccounts, mockCategories } from '@/lib/data/mock-transactions';
+import { getSimilarTransactions, mockAccounts } from '@/lib/data/mock-transactions';
 import type { Transaction } from '@/lib/types/transaction';
 import { cn } from '@/lib/utils';
+import { useCategories } from '@/hooks/use-categories';
+import { useSettings } from '@/providers/settings-provider';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,7 +16,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
-import { categoryIconMap, DefaultCategoryIcon, localeMap } from './constants';
+import { localeMap } from './constants';
 
 interface TransactionDetailProps {
     transaction: Transaction | null;
@@ -25,10 +27,18 @@ interface TransactionDetailProps {
 export function TransactionDetail({ transaction, onBack, isMobile = false }: TransactionDetailProps) {
     const { t, i18n } = useTranslation();
     const locale = localeMap[i18n.language] || 'en-US';
+    const { getOption } = useSettings();
+    const categoryIconBgColor = getOption<string>('categoryIconBgColor');
+
+    // Fetch categories from API for dropdown
+    const { data: categoriesData } = useCategories({ type: transaction?.type });
+    const categories = categoriesData?.data || [];
 
     const [notes, setNotes] = useState(transaction?.notes || '');
     const [tags, setTags] = useState(transaction?.tags?.join(', ') || '');
     const [goal, setGoal] = useState(transaction?.goal || '');
+
+    const isIconUrl = transaction?.category.icon?.startsWith('http');
 
     // Reset form state when transaction changes
     useEffect(() => {
@@ -63,7 +73,6 @@ export function TransactionDetail({ transaction, onBack, isMobile = false }: Tra
     });
 
     const similarTransactions = getSimilarTransactions(transaction.merchant, transaction.id);
-    const CategoryIcon = categoryIconMap[transaction.category.icon] || DefaultCategoryIcon;
 
     return (
         <ScrollArea className="h-full">
@@ -124,22 +133,54 @@ export function TransactionDetail({ transaction, onBack, isMobile = false }: Tra
                             <SelectTrigger>
                                 <SelectValue>
                                     <div className="flex items-center gap-2">
-                                        <span style={{ color: transaction.category.color }}>
-                                            <CategoryIcon className="h-4 w-4" />
-                                        </span>
+                                        <div
+                                            className="flex h-6 w-6 items-center justify-center rounded"
+                                            style={{ backgroundColor: categoryIconBgColor }}
+                                        >
+                                            {isIconUrl ? (
+                                                <img
+                                                    src={transaction.category.icon}
+                                                    alt={transaction.category.name}
+                                                    className="h-4 w-4 object-contain"
+                                                />
+                                            ) : (
+                                                <span
+                                                    className="material-symbols-outlined text-foreground"
+                                                    style={{ fontSize: '16px' }}
+                                                >
+                                                    {transaction.category.icon}
+                                                </span>
+                                            )}
+                                        </div>
                                         {transaction.category.name}
                                     </div>
                                 </SelectValue>
                             </SelectTrigger>
                             <SelectContent>
-                                {mockCategories.map((cat) => {
-                                    const CatIcon = categoryIconMap[cat.icon] || DefaultCategoryIcon;
+                                {categories.map((cat) => {
+                                    const catIsIconUrl = cat.icon?.startsWith('http');
                                     return (
                                         <SelectItem key={cat.id} value={cat.id}>
                                             <div className="flex items-center gap-2">
-                                                <span style={{ color: cat.color }}>
-                                                    <CatIcon className="h-4 w-4" />
-                                                </span>
+                                                <div
+                                                    className="flex h-6 w-6 items-center justify-center rounded"
+                                                    style={{ backgroundColor: categoryIconBgColor }}
+                                                >
+                                                    {catIsIconUrl ? (
+                                                        <img
+                                                            src={cat.icon}
+                                                            alt={cat.name}
+                                                            className="h-4 w-4 object-contain"
+                                                        />
+                                                    ) : (
+                                                        <span
+                                                            className="material-symbols-outlined text-foreground"
+                                                            style={{ fontSize: '16px' }}
+                                                        >
+                                                            {cat.icon}
+                                                        </span>
+                                                    )}
+                                                </div>
                                                 {cat.name}
                                             </div>
                                         </SelectItem>

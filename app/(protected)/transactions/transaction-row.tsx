@@ -4,9 +4,9 @@ import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 import type { Transaction } from '@/lib/types/transaction';
 import { cn } from '@/lib/utils';
+import { useSettings } from '@/providers/settings-provider';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { categoryIconMap, DefaultCategoryIcon, localeMap } from './constants';
+import { localeMap } from './constants';
 
 interface TransactionRowProps {
     transaction: Transaction;
@@ -17,6 +17,8 @@ interface TransactionRowProps {
 function TransactionRowComponent({ transaction, isSelected, onClick }: TransactionRowProps) {
     const { i18n } = useTranslation();
     const locale = localeMap[i18n.language] || 'en-US';
+    const { getOption } = useSettings();
+    const categoryIconBgColor = getOption<string>('categoryIconBgColor');
 
     const formattedAmount = new Intl.NumberFormat(locale, {
         style: 'currency',
@@ -30,7 +32,7 @@ function TransactionRowComponent({ transaction, isSelected, onClick }: Transacti
         hour12: true,
     });
 
-    const CategoryIcon = categoryIconMap[transaction.category.icon] || DefaultCategoryIcon;
+    const isIconUrl = transaction.category.icon?.startsWith('http');
 
     return (
         <div
@@ -60,25 +62,31 @@ function TransactionRowComponent({ transaction, isSelected, onClick }: Transacti
                 </div>
             </div>
 
-            {/* Right side: Category badge and amount */}
+            {/* Right side: Category and amount */}
             <div className="flex items-center gap-3 shrink-0">
-                <Badge
-                    variant="secondary"
-                    appearance="light"
-                    size="sm"
-                    className="gap-1"
-                    style={
-                        {
-                            '--badge-bg': `${transaction.category.color}15`,
-                            '--badge-text': transaction.category.color,
-                            backgroundColor: 'var(--badge-bg)',
-                            color: 'var(--badge-text)',
-                        } as React.CSSProperties
-                    }
+                {/* Category Badge: Icon + Name */}
+                <div
+                    className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg"
+                    style={{ backgroundColor: categoryIconBgColor }}
                 >
-                    <CategoryIcon className="h-3 w-3" />
-                    <span className="hidden sm:inline">{transaction.category.name}</span>
-                </Badge>
+                    {isIconUrl ? (
+                        <img
+                            src={transaction.category.icon}
+                            alt={transaction.category.name}
+                            className="h-5 w-5 object-contain shrink-0"
+                        />
+                    ) : (
+                        <span
+                            className="material-symbols-outlined text-foreground shrink-0"
+                            style={{ fontSize: '20px' }}
+                        >
+                            {transaction.category.icon}
+                        </span>
+                    )}
+                    <span className="text-sm text-foreground hidden sm:inline max-w-24 truncate">
+                        {transaction.category.name}
+                    </span>
+                </div>
                 <span
                     className={cn(
                         'font-semibold text-sm tabular-nums',
