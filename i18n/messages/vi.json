@@ -9,7 +9,8 @@
             "remove": "Gỡ bỏ",
             "submit": "Gửi",
             "close": "Đóng",
-            "logout": "Đăng xuất"
+            "logout": "Đăng xuất",
+            "back": "Quay lại"
         },
         "labels": {
             "name": "Tên",
@@ -54,6 +55,7 @@
             "dashboard": "Bảng điều khiển",
             "dashboards": "Bảng điều khiển",
             "categories": "Danh mục",
+            "transactions": "Giao dịch",
             "publicProfile": "Hồ sơ công khai",
             "accountSettings": "Cài đặt tài khoản",
             "network": "Mạng",
@@ -228,6 +230,68 @@
             "searchPlaceholder": "Tìm kiếm...",
             "noSearchResults": "Không tìm thấy icon phù hợp",
             "noIcons": "Không có icon nào"
+        }
+    },
+    "transactions": {
+        "title": "Giao dịch",
+        "searchPlaceholder": "Tìm kiếm giao dịch...",
+        "filterButton": "Lọc",
+        "filterBy": "Lọc theo",
+        "sortButton": "Sắp xếp",
+        "sortBy": "Sắp xếp theo",
+        "noResults": "Không tìm thấy giao dịch nào",
+        "recurring": "Định kỳ",
+        "dateGroups": {
+            "today": "Hôm nay",
+            "yesterday": "Hôm qua"
+        },
+        "sort": {
+            "date": "Ngày",
+            "amountHighToLow": "Số tiền (Cao đến thấp)",
+            "amountLowToHigh": "Số tiền (Thấp đến cao)"
+        },
+        "filter": {
+            "account": "Tài khoản",
+            "category": "Danh mục",
+            "date": "Ngày",
+            "goals": "Mục tiêu",
+            "keywords": "Từ khóa",
+            "tags": "Nhãn",
+            "recurring": "Định kỳ",
+            "reviewStatus": "Trạng thái xem xét",
+            "type": "Loại",
+            "searchPlaceholder": "Tìm kiếm...",
+            "all": "Tất cả",
+            "yes": "Có",
+            "no": "Không",
+            "income": "Thu nhập",
+            "expense": "Chi tiêu",
+            "clearAll": "Xóa tất cả bộ lọc"
+        },
+        "status": {
+            "completed": "Hoàn thành",
+            "pending": "Đang chờ",
+            "cancelled": "Đã hủy",
+            "toReview": "Cần xem xét"
+        },
+        "actions": {
+            "split": "Chia nhỏ",
+            "recurring": "Định kỳ",
+            "review": "Xem xét"
+        },
+        "detail": {
+            "title": "Chi tiết giao dịch",
+            "noSelection": "Chưa chọn giao dịch",
+            "selectPrompt": "Chọn một giao dịch để xem chi tiết",
+            "category": "Danh mục",
+            "account": "Tài khoản",
+            "goal": "Mục tiêu",
+            "goalPlaceholder": "Thêm mục tiêu cho giao dịch này",
+            "notes": "Ghi chú",
+            "notesPlaceholder": "Thêm ghi chú...",
+            "tags": "Nhãn",
+            "tagsPlaceholder": "Thêm nhãn (phân cách bằng dấu phẩy)",
+            "similarTransactions": "Giao dịch tương tự"
         }
     }
 }
