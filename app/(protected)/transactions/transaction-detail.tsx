@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 import type { Transaction } from '@/lib/types/transaction';
 import { cn } from '@/lib/utils';
 import { useCategories } from '@/hooks/use-categories';
-import { useDeleteTransaction, useUpdateTransaction } from '@/hooks/use-transactions';
+import { useCreateTransaction, useDeleteTransaction, useUpdateTransaction } from '@/hooks/use-transactions';
 import { useSettings } from '@/providers/settings-provider';
 import {
     AlertDialog,
@@ -30,23 +30,44 @@ import { Label } from '@/components/ui/label';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { getTransactionSchema, type TransactionSchemaType } from './transaction-schema';
 
 interface TransactionDetailProps {
     transaction: Transaction | null;
+    mode?: 'view' | 'create';
     onBack?: () => void;
     isMobile?: boolean;
     onEditSuccess?: () => void;
     onDeleteSuccess?: () => void;
+    onCreateSuccess?: () => void;
+}
+
+// Helper function to get local datetime string in format YYYY-MM-DDTHH:mm
+function getLocalDateTimeString(date: Date = new Date()): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+// Helper function to convert ISO datetime string to local datetime string
+function convertUTCToLocal(utcDateString: string): string {
+    const date = new Date(utcDateString);
+    return getLocalDateTimeString(date);
 }
 
 export function TransactionDetail({
     transaction,
+    mode = 'view',
     onBack,
     isMobile = false,
     onEditSuccess,
     onDeleteSuccess,
+    onCreateSuccess,
 }: TransactionDetailProps) {
     const { t, i18n } = useTranslation();
     const locale = getIntlLocale(i18n.language);
@@ -55,60 +76,94 @@ export function TransactionDetail({
 
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [isEditingAmount, setIsEditingAmount] = useState(false);
+    const [transactionType, setTransactionType] = useState<'income' | 'expense'>(
+        mode === 'create' ? 'expense' : transaction?.type || 'expense',
+    );
 
     const deleteMutation = useDeleteTransaction();
     const updateMutation = useUpdateTransaction();
+    const createMutation = useCreateTransaction();
 
-    // Fetch categories for the current transaction type
-    const { data: categoriesData } = useCategories({ type: transaction?.type });
+    // Fetch categories based on transaction type (or selected type in create mode)
+    const { data: categoriesData } = useCategories({
+        type: mode === 'create' ? transactionType : transaction?.type,
+    });
     const categories = useMemo(() => categoriesData?.data || [], [categoriesData?.data]);
 
-    // Initialize form with transaction data
+    // Initialize form with transaction data or empty for create mode
     const form = useForm<TransactionSchemaType>({
         resolver: zodResolver(getTransactionSchema()),
-        defaultValues: {
-            category_id: transaction?.category.id || '',
-            amount: transaction?.amount || 0,
-            transaction_date: transaction?.date.slice(0, 16) || '', // ISO to datetime-local
-            notes: transaction?.notes || '',
-            status: (transaction?.status as 'completed' | 'pending' | 'cancelled') || 'completed',
-        },
+        defaultValues:
+            mode === 'create'
+                ? {
+                      name: '',
+                      category_id: '',
+                      amount: 0,
+                      transaction_date: getLocalDateTimeString(),
+                      notes: '',
+                  }
+                : {
+                      name: transaction?.merchant || '',
+                      category_id: transaction?.category.id || '',
+                      amount: transaction?.amount || 0,
+                      transaction_date: transaction?.date ? convertUTCToLocal(transaction.date) : '',
+                      notes: transaction?.notes || '',
+                  },
     });
 
-    // Reset form when transaction changes
+    // Reset form when transaction changes or mode changes
     useEffect(() => {
-        if (transaction) {
+        if (mode === 'create') {
             form.reset({
+                name: '',
+                category_id: '',
+                amount: 0,
+                transaction_date: getLocalDateTimeString(),
+                notes: '',
+            });
+            setIsEditingAmount(false);
+        } else if (transaction) {
+            form.reset({
+                name: transaction.merchant,
                 category_id: transaction.category.id,
                 amount: transaction.amount,
-                transaction_date: transaction.date.slice(0, 16),
+                transaction_date: convertUTCToLocal(transaction.date),
                 notes: transaction.notes || '',
-                status: transaction.status as 'completed' | 'pending' | 'cancelled',
             });
             setIsEditingAmount(false);
+            setTransactionType(transaction.type);
         }
-    }, [transaction, form]);
+    }, [transaction, mode, form]);
 
     const handleSave = async (data: TransactionSchemaType) => {
-        if (!transaction) return;
-
         try {
-            await updateMutation.mutateAsync({
-                id: transaction.id,
-                data: {
-                    category_id: data.category_id,
-                    amount: data.amount,
-                    transaction_date: new Date(data.transaction_date).toISOString(),
-                    notes: data.notes || undefined,
-                    status: data.status || 'completed',
-                },
-            });
-            toast.success(t('transactions.messages.updateSuccess'));
-            setIsEditingAmount(false);
-            onEditSuccess?.();
+            const submitData = {
+                name: data.name,
+                category_id: data.category_id,
+                amount: data.amount,
+                transaction_date: new Date(data.transaction_date).toISOString(),
+                notes: data.notes || undefined,
+            };
+
+            if (mode === 'create') {
+                await createMutation.mutateAsync(submitData);
+                toast.success(t('transactions.messages.createSuccess'));
+                onCreateSuccess?.();
+            } else {
+                if (!transaction) return;
+                await updateMutation.mutateAsync({
+                    id: transaction.id,
+                    data: submitData,
+                });
+                toast.success(t('transactions.messages.updateSuccess'));
+                setIsEditingAmount(false);
+                onEditSuccess?.();
+            }
         } catch (error) {
-            console.error('Error updating transaction:', error);
-            toast.error(t('transactions.messages.updateError'));
+            console.error('Error saving transaction:', error);
+            toast.error(
+                mode === 'create' ? t('transactions.messages.createError') : t('transactions.messages.updateError'),
+            );
         }
     };
 
@@ -126,7 +181,7 @@ export function TransactionDetail({
         }
     };
 
-    if (!transaction) {
+    if (!transaction && mode !== 'create') {
         return (
             <div className="flex items-center justify-center h-full bg-muted/30">
                 <div className="text-center text-muted-foreground">
@@ -138,20 +193,26 @@ export function TransactionDetail({
         );
     }
 
-    const formattedAmount = new Intl.NumberFormat(locale, {
-        style: 'currency',
-        currency: transaction.currency,
-        minimumFractionDigits: 2,
-    }).format(transaction.amount);
+    const formattedAmount =
+        mode === 'view' && transaction
+            ? new Intl.NumberFormat(locale, {
+                  style: 'currency',
+                  currency: transaction.currency,
+                  minimumFractionDigits: 2,
+              }).format(transaction.amount)
+            : '';
 
-    const formattedDate = new Date(transaction.date).toLocaleDateString(locale, {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    });
+    const formattedDate =
+        mode === 'view' && transaction
+            ? new Date(transaction.date).toLocaleDateString(locale, {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+              })
+            : '';
 
-    const isLoading = updateMutation.isPending;
+    const isLoading = mode === 'create' ? createMutation.isPending : updateMutation.isPending;
 
     return (
         <ScrollArea className="h-full">
@@ -163,81 +224,103 @@ export function TransactionDetail({
                     </Button>
                 )}
 
-                <div className="flex items-center gap-2 mb-6">
-                    {transaction.status === 'to_review' && (
-                        <Badge variant="warning" appearance="light" size="sm">
-                            {t('transactions.status.toReview')}
-                        </Badge>
-                    )}
-                    {transaction.status === 'completed' && (
-                        <Badge variant="success" appearance="light" size="sm">
-                            {t('transactions.status.completed')}
-                        </Badge>
-                    )}
-                    {transaction.status === 'pending' && (
-                        <Badge variant="default" appearance="light" size="sm">
-                            {t('transactions.status.pending')}
-                        </Badge>
-                    )}
-                    {transaction.status === 'cancelled' && (
-                        <Badge variant="destructive" appearance="light" size="sm">
-                            {t('transactions.status.cancelled')}
-                        </Badge>
-                    )}
-                </div>
+                {/* Title for Create Mode */}
+                {mode === 'create' && (
+                    <div className="mb-6">
+                        <h2 className="text-2xl font-bold">{t('transactions.form.createTitle')}</h2>
+                        <p className="text-sm text-muted-foreground mt-1">{t('transactions.form.createDescription')}</p>
+                    </div>
+                )}
 
-                {/* Amount - Click to Edit */}
-                <div className="mb-6">
-                    {isEditingAmount ? (
-                        <Form {...form}>
-                            <FormField
-                                control={form.control}
-                                name="amount"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormControl>
-                                            <Input
-                                                type="number"
-                                                step="0.01"
-                                                min="0"
-                                                {...field}
-                                                onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
-                                                className="text-3xl font-bold h-auto px-2 py-1"
-                                                autoFocus
-                                                onBlur={() => setIsEditingAmount(false)}
-                                            />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
+                {/* Amount Header - View Mode Only */}
+                {mode === 'view' && transaction && (
+                    <div className="mb-6">
+                        {isEditingAmount ? (
+                            <Form {...form}>
+                                <FormField
+                                    control={form.control}
+                                    name="amount"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormControl>
+                                                <Input
+                                                    type="number"
+                                                    step="0.01"
+                                                    min="0"
+                                                    {...field}
+                                                    onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                                    className="text-3xl font-bold h-auto px-2 py-1"
+                                                    autoFocus
+                                                    onBlur={() => setIsEditingAmount(false)}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </Form>
+                        ) : (
+                            <p
+                                className={cn(
+                                    'text-3xl font-bold mb-1 cursor-pointer hover:opacity-70 transition-opacity',
+                                    transaction.type === 'income'
+                                        ? 'text-green-600 dark:text-green-500'
+                                        : 'text-red-600 dark:text-red-500',
                                 )}
-                            />
-                        </Form>
-                    ) : (
-                        <p
-                            className={cn(
-                                'text-3xl font-bold mb-1 cursor-pointer hover:opacity-70 transition-opacity',
-                                transaction.type === 'income'
-                                    ? 'text-green-600 dark:text-green-500'
-                                    : 'text-red-600 dark:text-red-500',
-                            )}
-                            onClick={() => setIsEditingAmount(true)}
-                        >
-                            {transaction.type === 'income' ? '+' : '-'}
-                            {formattedAmount}
+                                onClick={() => setIsEditingAmount(true)}
+                            >
+                                {transaction.type === 'income' ? '+' : '-'}
+                                {formattedAmount}
+                            </p>
+                        )}
+                        <h2 className="text-lg font-semibold text-foreground mb-1">{transaction.merchant}</h2>
+                        <p className="text-sm text-muted-foreground flex items-center gap-1.5">
+                            <Calendar className="h-4 w-4" />
+                            {formattedDate}
                         </p>
-                    )}
-                    <h2 className="text-lg font-semibold text-foreground mb-1">{transaction.merchant}</h2>
-                    <p className="text-sm text-muted-foreground flex items-center gap-1.5">
-                        <Calendar className="h-4 w-4" />
-                        {formattedDate}
-                    </p>
-                </div>
+                    </div>
+                )}
 
                 <Separator className="mb-6" />
 
                 {/* Editable Form */}
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(handleSave)} className="space-y-5">
+                        {/* Transaction Type Selector - Create Mode Only */}
+                        {mode === 'create' && (
+                            <div className="space-y-2">
+                                <Label>{t('transactions.form.type')}</Label>
+                                <Tabs
+                                    value={transactionType}
+                                    onValueChange={(value) => {
+                                        setTransactionType(value as 'income' | 'expense');
+                                        // Reset category when type changes
+                                        form.setValue('category_id', '');
+                                    }}
+                                >
+                                    <TabsList className="grid w-full grid-cols-2">
+                                        <TabsTrigger value="expense">{t('transactions.type.expense')}</TabsTrigger>
+                                        <TabsTrigger value="income">{t('transactions.type.income')}</TabsTrigger>
+                                    </TabsList>
+                                </Tabs>
+                            </div>
+                        )}
+
+                        {/* Transaction Name - Always Editable */}
+                        <FormField
+                            control={form.control}
+                            name="name"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('transactions.form.merchant')}</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder={t('transactions.form.merchantPlaceholder')} {...field} />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
                         {/* Category - Always Editable */}
                         <FormField
                             control={form.control}
@@ -291,6 +374,30 @@ export function TransactionDetail({
                             )}
                         />
 
+                        {/* Amount - Create Mode Only (in form) */}
+                        {mode === 'create' && (
+                            <FormField
+                                control={form.control}
+                                name="amount"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('transactions.form.amount')}</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                type="number"
+                                                step="0.01"
+                                                min="0"
+                                                placeholder={t('transactions.form.amountPlaceholder')}
+                                                {...field}
+                                                onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        )}
+
                         {/* Transaction Date - Always Editable */}
                         <FormField
                             control={form.control}
@@ -309,47 +416,21 @@ export function TransactionDetail({
                             )}
                         />
 
-                        {/* Account - Read Only */}
-                        <div className="space-y-2">
-                            <Label className="flex items-center gap-2 text-muted-foreground">
-                                <CreditCard className="h-4 w-4" />
-                                {t('transactions.detail.account')}
-                            </Label>
-                            <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-muted/50">
-                                <CreditCard className="h-4 w-4 text-muted-foreground" />
-                                <span className="text-sm">
-                                    {transaction.account.name} (****{transaction.account.lastFourDigits})
-                                </span>
+                        {/* Account - Read Only - View Mode Only */}
+                        {mode === 'view' && transaction && (
+                            <div className="space-y-2">
+                                <Label className="flex items-center gap-2 text-muted-foreground">
+                                    <CreditCard className="h-4 w-4" />
+                                    {t('transactions.detail.account')}
+                                </Label>
+                                <div className="flex items-center gap-2 px-3 py-2 border rounded-md bg-muted/50">
+                                    <CreditCard className="h-4 w-4 text-muted-foreground" />
+                                    <span className="text-sm">
+                                        {transaction.account.name} (****{transaction.account.lastFourDigits})
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-
-                        {/* Status - Always Editable */}
-                        <FormField
-                            control={form.control}
-                            name="status"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t('transactions.form.status')}</FormLabel>
-                                    <Select onValueChange={field.onChange} value={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value="completed">
-                                                {t('transactions.status.completed')}
-                                            </SelectItem>
-                                            <SelectItem value="pending">{t('transactions.status.pending')}</SelectItem>
-                                            <SelectItem value="cancelled">
-                                                {t('transactions.status.cancelled')}
-                                            </SelectItem>
-                                        </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        )}
 
                         {/* Notes - Always Editable */}
                         <FormField
@@ -370,8 +451,8 @@ export function TransactionDetail({
                             )}
                         />
 
-                        {/* Tags - Display Only for now */}
-                        {transaction.tags && transaction.tags.length > 0 && (
+                        {/* Tags - Display Only for now - View Mode Only */}
+                        {mode === 'view' && transaction?.tags && transaction.tags.length > 0 && (
                             <div className="space-y-2">
                                 <Label className="flex items-center gap-2 text-muted-foreground">
                                     {t('transactions.detail.tags')}
@@ -386,8 +467,8 @@ export function TransactionDetail({
                             </div>
                         )}
 
-                        {/* Goal - Display Only for now */}
-                        {transaction.goal && (
+                        {/* Goal - Display Only for now - View Mode Only */}
+                        {mode === 'view' && transaction?.goal && (
                             <div className="space-y-2">
                                 <Label className="flex items-center gap-2 text-muted-foreground">
                                     <Target className="h-4 w-4" />
@@ -402,18 +483,24 @@ export function TransactionDetail({
                         {/* Action Buttons */}
                         <div className="pt-4 space-y-3">
                             <Button type="submit" className="w-full" disabled={isLoading}>
-                                {isLoading ? t('common.messages.loading') : t('common.buttons.save')}
+                                {isLoading
+                                    ? t('common.messages.loading')
+                                    : mode === 'create'
+                                      ? t('transactions.form.createButton')
+                                      : t('common.buttons.save')}
                             </Button>
-                            <Button
-                                type="button"
-                                variant="destructive"
-                                className="w-full gap-2"
-                                onClick={() => setIsDeleteDialogOpen(true)}
-                                disabled={isLoading}
-                            >
-                                <Trash2 className="h-4 w-4" />
-                                {t('common.buttons.delete')}
-                            </Button>
+                            {mode === 'view' && (
+                                <Button
+                                    type="button"
+                                    variant="destructive"
+                                    className="w-full gap-2"
+                                    onClick={() => setIsDeleteDialogOpen(true)}
+                                    disabled={isLoading}
+                                >
+                                    <Trash2 className="h-4 w-4" />
+                                    {t('common.buttons.delete')}
+                                </Button>
+                            )}
                         </div>
                     </form>
                 </Form>

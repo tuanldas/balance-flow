@@ -13,7 +13,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { FilterBar } from './filter-bar';
 import { TransactionDetail } from './transaction-detail';
-import { TransactionFormDialog } from './transaction-form-dialog';
 import { TransactionRow } from './transaction-row';
 
 // Extracted TransactionList component to avoid duplication
@@ -127,15 +126,18 @@ export default function TransactionsPage() {
     const searchParams = useSearchParams();
     const isLargeScreen = useIsLargeScreen();
 
-    // Get transaction ID from URL
+    // Get transaction ID and mode from URL
     const transactionIdFromUrl = searchParams.get('id');
+    const modeFromUrl = searchParams.get('mode') as 'view' | 'create' | null;
 
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
     const [searchValue, setSearchValue] = useState('');
     const [sortBy, setSortBy] = useState<TransactionSortBy>('date');
     const [categoryIds, setCategoryIds] = useState<string[]>([]);
-    const [showDetail, setShowDetail] = useState(!!transactionIdFromUrl && !isLargeScreen);
-    const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+    const [showDetail, setShowDetail] = useState(
+        (!!transactionIdFromUrl || modeFromUrl === 'create') && !isLargeScreen,
+    );
+    const [detailMode, setDetailMode] = useState<'view' | 'create'>(modeFromUrl || 'view');
 
     // Build API filters based on UI state
     const apiFilters = useMemo((): Omit<TransactionApiFilters, 'page'> => {
@@ -198,40 +200,72 @@ export default function TransactionsPage() {
         }
     }, [transactionIdFromUrl, getInitialTransaction, isLargeScreen, allTransactions.length]);
 
+    // Sync detailMode with URL
+    useEffect(() => {
+        if (modeFromUrl) {
+            setDetailMode(modeFromUrl);
+            if (modeFromUrl === 'create') {
+                setSelectedTransaction(null);
+                if (!isLargeScreen) {
+                    setShowDetail(true);
+                }
+            }
+        }
+    }, [modeFromUrl, isLargeScreen]);
+
     // Group transactions by date
     const groupedTransactions = useMemo(() => {
         return groupTransactionsByDate(allTransactions, t);
     }, [allTransactions, t]);
 
-    // Update URL when selecting a transaction (use replace to avoid history pollution)
-    const updateUrlWithTransaction = useCallback(
-        (transactionId: string) => {
-            const params = new URLSearchParams(searchParams.toString());
-            params.set('id', transactionId);
-            router.replace(`/transactions?${params.toString()}`, { scroll: false });
-        },
-        [router, searchParams],
-    );
-
     const handleTransactionSelect = useCallback(
         (transaction: Transaction) => {
             setSelectedTransaction(transaction);
-            updateUrlWithTransaction(transaction.id);
+            setDetailMode('view');
+            // Clear mode param and set transaction id
+            const params = new URLSearchParams(searchParams.toString());
+            params.set('id', transaction.id);
+            params.delete('mode');
+            router.replace(`/transactions?${params.toString()}`, { scroll: false });
             if (!isLargeScreen) {
                 setShowDetail(true);
             }
         },
-        [isLargeScreen, updateUrlWithTransaction],
+        [isLargeScreen, router, searchParams],
     );
 
     const handleBackToList = useCallback(() => {
         setShowDetail(false);
+        setDetailMode('view');
+        // Clear all params
         router.push('/transactions', { scroll: false });
     }, [router]);
 
+    const handleCreateClick = useCallback(() => {
+        setDetailMode('create');
+        setSelectedTransaction(null);
+        // Update URL with mode=create
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete('id');
+        params.set('mode', 'create');
+        router.replace(`/transactions?${params.toString()}`, { scroll: false });
+        if (!isLargeScreen) {
+            setShowDetail(true);
+        }
+    }, [isLargeScreen, router, searchParams]);
+
     const handleCreateSuccess = useCallback(() => {
         // Data will be automatically refetched by React Query invalidation
-    }, []);
+        // Close side panel or switch back to view mode
+        if (!isLargeScreen) {
+            setShowDetail(false);
+        }
+        setDetailMode('view');
+        // Clear mode from URL
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete('mode');
+        router.replace(`/transactions?${params.toString()}`, { scroll: false });
+    }, [isLargeScreen, router, searchParams]);
 
     const handleEditSuccess = useCallback(() => {
         // Data will be automatically refetched by React Query invalidation
@@ -257,7 +291,7 @@ export default function TransactionsPage() {
                     onSortChange={setSortBy}
                     categoryIds={categoryIds}
                     onCategoryIdsChange={setCategoryIds}
-                    onCreateClick={() => setIsCreateDialogOpen(true)}
+                    onCreateClick={handleCreateClick}
                 />
                 <TransactionList
                     groupedTransactions={groupedTransactions}
@@ -280,23 +314,22 @@ export default function TransactionsPage() {
                     }}
                 >
                     <SheetContent side="right" className="w-full sm:max-w-md p-0" close={false}>
-                        <SheetTitle className="sr-only">{t('transactions.detail.title')}</SheetTitle>
+                        <SheetTitle className="sr-only">
+                            {detailMode === 'create'
+                                ? t('transactions.form.createTitle')
+                                : t('transactions.detail.title')}
+                        </SheetTitle>
                         <TransactionDetail
                             transaction={selectedTransaction}
+                            mode={detailMode}
                             onBack={handleBackToList}
                             isMobile
                             onEditSuccess={handleEditSuccess}
                             onDeleteSuccess={handleDeleteSuccess}
+                            onCreateSuccess={handleCreateSuccess}
                         />
                     </SheetContent>
                 </Sheet>
-
-                <TransactionFormDialog
-                    open={isCreateDialogOpen}
-                    onOpenChange={setIsCreateDialogOpen}
-                    mode="create"
-                    onSuccess={handleCreateSuccess}
-                />
             </div>
         );
     }
@@ -313,7 +346,7 @@ export default function TransactionsPage() {
                     onSortChange={setSortBy}
                     categoryIds={categoryIds}
                     onCategoryIdsChange={setCategoryIds}
-                    onCreateClick={() => setIsCreateDialogOpen(true)}
+                    onCreateClick={handleCreateClick}
                 />
                 <TransactionList
                     groupedTransactions={groupedTransactions}
@@ -332,17 +365,12 @@ export default function TransactionsPage() {
             <div className="overflow-hidden">
                 <TransactionDetail
                     transaction={selectedTransaction}
+                    mode={detailMode}
                     onEditSuccess={handleEditSuccess}
                     onDeleteSuccess={handleDeleteSuccess}
+                    onCreateSuccess={handleCreateSuccess}
                 />
             </div>
-
-            <TransactionFormDialog
-                open={isCreateDialogOpen}
-                onOpenChange={setIsCreateDialogOpen}
-                mode="create"
-                onSuccess={handleCreateSuccess}
-            />
         </div>
     );
 }

@@ -274,6 +274,10 @@
             "cancelled": "Cancelled",
             "toReview": "To Review"
         },
+        "type": {
+            "income": "Income",
+            "expense": "Expense"
+        },
         "actions": {
             "split": "Split",
             "recurring": "Recurring",
@@ -295,15 +299,17 @@
         },
         "form": {
             "createTitle": "Add New Transaction",
+            "createDescription": "Fill in your transaction details below",
             "editTitle": "Edit Transaction",
+            "type": "Transaction Type",
             "category": "Category",
             "categoryPlaceholder": "Select category",
             "amount": "Amount",
             "amountPlaceholder": "Enter amount",
             "date": "Transaction Date",
             "datePlaceholder": "Select date",
-            "merchant": "Merchant",
-            "merchantPlaceholder": "Enter merchant name (optional)",
+            "merchant": "Transaction Name",
+            "merchantPlaceholder": "Enter transaction name",
             "notes": "Notes",
             "notesPlaceholder": "Enter notes (optional)",
             "status": "Status",
@@ -314,6 +320,7 @@
             "deleteButton": "Delete"
         },
         "validation": {
+            "merchantRequired": "Transaction name is required.",
             "categoryRequired": "Category is required.",
             "amountInvalid": "Amount must be a number.",
             "amountPositive": "Amount must be greater than 0.",
