@@ -33,7 +33,6 @@ interface TransactionFormDialogProps {
         category_id: string;
         amount: number;
         transaction_date: string;
-        merchant_name?: string | null;
         notes?: string | null;
         status: ApiTransactionStatus;
     } | null;
@@ -67,7 +66,6 @@ export function TransactionFormDialog({
             category_id: '',
             amount: 0,
             transaction_date: new Date().toISOString().slice(0, 16), // Format: YYYY-MM-DDTHH:mm
-            merchant_name: '',
             notes: '',
             status: 'completed',
         },
@@ -99,7 +97,6 @@ export function TransactionFormDialog({
                     category_id: transaction.category_id,
                     amount: transaction.amount,
                     transaction_date: transaction.transaction_date.slice(0, 16), // ISO to datetime-local format
-                    merchant_name: transaction.merchant_name || '',
                     notes: transaction.notes || '',
                     status: transaction.status,
                 });
@@ -109,7 +106,6 @@ export function TransactionFormDialog({
                     category_id: '',
                     amount: 0,
                     transaction_date: new Date().toISOString().slice(0, 16),
-                    merchant_name: '',
                     notes: '',
                     status: 'completed',
                 });
@@ -125,7 +121,6 @@ export function TransactionFormDialog({
                 category_id: data.category_id,
                 amount: data.amount,
                 transaction_date: new Date(data.transaction_date).toISOString(), // Convert to ISO 8601
-                merchant_name: data.merchant_name || undefined,
                 notes: data.notes || undefined,
                 status: data.status || 'completed',
             };
@@ -252,21 +247,6 @@ export function TransactionFormDialog({
                                             placeholder={t('transactions.form.datePlaceholder')}
                                             {...field}
                                         />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        {/* Merchant Name */}
-                        <FormField
-                            control={form.control}
-                            name="merchant_name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t('transactions.form.merchant')}</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder={t('transactions.form.merchantPlaceholder')} {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

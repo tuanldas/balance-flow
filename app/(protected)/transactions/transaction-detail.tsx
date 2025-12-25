@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { getIntlLocale } from '@/i18n/config';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AlertTriangle, ArrowLeft, Building2, Calendar, CreditCard, Tag, Target, Trash2 } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, Calendar, CreditCard, Tag, Target, Trash2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -70,7 +70,6 @@ export function TransactionDetail({
             category_id: transaction?.category.id || '',
             amount: transaction?.amount || 0,
             transaction_date: transaction?.date.slice(0, 16) || '', // ISO to datetime-local
-            merchant_name: transaction?.merchant || '',
             notes: transaction?.notes || '',
             status: (transaction?.status as 'completed' | 'pending' | 'cancelled') || 'completed',
         },
@@ -83,7 +82,6 @@ export function TransactionDetail({
                 category_id: transaction.category.id,
                 amount: transaction.amount,
                 transaction_date: transaction.date.slice(0, 16),
-                merchant_name: transaction.merchant,
                 notes: transaction.notes || '',
                 status: transaction.status as 'completed' | 'pending' | 'cancelled',
             });
@@ -101,7 +99,6 @@ export function TransactionDetail({
                     category_id: data.category_id,
                     amount: data.amount,
                     transaction_date: new Date(data.transaction_date).toISOString(),
-                    merchant_name: data.merchant_name || undefined,
                     notes: data.notes || undefined,
                     status: data.status || 'completed',
                 },
@@ -289,24 +286,6 @@ export function TransactionDetail({
                                             })}
                                         </SelectContent>
                                     </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        {/* Merchant - Always Editable */}
-                        <FormField
-                            control={form.control}
-                            name="merchant_name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="flex items-center gap-2 text-muted-foreground">
-                                        <Building2 className="h-4 w-4" />
-                                        {t('transactions.form.merchant')}
-                                    </FormLabel>
-                                    <FormControl>
-                                        <Input placeholder={t('transactions.form.merchantPlaceholder')} {...field} />
-                                    </FormControl>
                                     <FormMessage />
                                 </FormItem>
                             )}
