@@ -9,9 +9,9 @@ import { apiTransactionToLegacy } from '@/lib/types/transaction';
 import { groupTransactionsByDate } from '@/lib/utils/transaction-utils';
 import { useIsLargeScreen } from '@/hooks/use-large-screen';
 import { useInfiniteTransactions } from '@/hooks/use-transactions';
+import { useUrlFilters } from '@/hooks/use-url-filters';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
-import { DateRangeValue } from './date-range-filter';
 import { FilterBar } from './filter-bar';
 import { TransactionDetail } from './transaction-detail';
 import { TransactionRow } from './transaction-row';
@@ -132,10 +132,8 @@ export default function TransactionsPage() {
     const modeFromUrl = searchParams.get('mode') as 'view' | 'create' | null;
 
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
-    const [searchValue, setSearchValue] = useState('');
-    const [sortBy, setSortBy] = useState<TransactionSortBy>('date');
-    const [categoryIds, setCategoryIds] = useState<string[]>([]);
-    const [dateRange, setDateRange] = useState<DateRangeValue>({ from: undefined, to: undefined });
+    const { searchValue, setSearchValue, sortBy, setSortBy, categoryIds, setCategoryIds, dateRange, setDateRange } =
+        useUrlFilters({ defaultSort: 'date' });
     const [showDetail, setShowDetail] = useState(
         (!!transactionIdFromUrl || modeFromUrl === 'create') && !isLargeScreen,
     );
