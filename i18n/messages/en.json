@@ -335,6 +335,13 @@
             "deleteError": "Cannot delete transaction. Please try again.",
             "confirmDelete": "Are you sure you want to delete this transaction?",
             "deleteWarning": "This action cannot be undone."
+        },
+        "dateRange": {
+            "selectRange": "Select date range",
+            "today": "Today",
+            "thisWeek": "This Week",
+            "thisMonth": "This Month",
+            "custom": "Custom"
         }
     }
 }

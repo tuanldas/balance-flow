@@ -335,6 +335,13 @@
             "deleteError": "Không thể xóa giao dịch. Vui lòng thử lại.",
             "confirmDelete": "Bạn có chắc chắn muốn xóa giao dịch này?",
             "deleteWarning": "Hành động này không thể hoàn tác."
+        },
+        "dateRange": {
+            "selectRange": "Chọn khoảng thời gian",
+            "today": "Hôm nay",
+            "thisWeek": "Tuần này",
+            "thisMonth": "Tháng này",
+            "custom": "Tùy chỉnh"
         }
     }
 }

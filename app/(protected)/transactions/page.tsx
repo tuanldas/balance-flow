@@ -11,6 +11,7 @@ import { useIsLargeScreen } from '@/hooks/use-large-screen';
 import { useInfiniteTransactions } from '@/hooks/use-transactions';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
+import { DateRangeValue } from './date-range-filter';
 import { FilterBar } from './filter-bar';
 import { TransactionDetail } from './transaction-detail';
 import { TransactionRow } from './transaction-row';
@@ -134,6 +135,7 @@ export default function TransactionsPage() {
     const [searchValue, setSearchValue] = useState('');
     const [sortBy, setSortBy] = useState<TransactionSortBy>('date');
     const [categoryIds, setCategoryIds] = useState<string[]>([]);
+    const [dateRange, setDateRange] = useState<DateRangeValue>({ from: undefined, to: undefined });
     const [showDetail, setShowDetail] = useState(
         (!!transactionIdFromUrl || modeFromUrl === 'create') && !isLargeScreen,
     );
@@ -150,12 +152,19 @@ export default function TransactionsPage() {
             amount_desc: { sort_by: 'amount', sort_direction: 'desc' },
         };
 
+        // Format dates to ISO string for API
+        const formatDateForAPI = (date: Date): string => {
+            return date.toISOString();
+        };
+
         return {
             ...sortMapping[sortBy],
             category_id: categoryIds.length > 0 ? categoryIds.join(',') : undefined,
             search: searchValue || undefined,
+            start_date: dateRange.from ? formatDateForAPI(dateRange.from) : undefined,
+            end_date: dateRange.to ? formatDateForAPI(dateRange.to) : undefined,
         };
-    }, [sortBy, categoryIds, searchValue]);
+    }, [sortBy, categoryIds, searchValue, dateRange]);
 
     // Fetch transactions from API with infinite scroll
     const {
@@ -291,6 +300,8 @@ export default function TransactionsPage() {
                     onSortChange={setSortBy}
                     categoryIds={categoryIds}
                     onCategoryIdsChange={setCategoryIds}
+                    dateRange={dateRange}
+                    onDateRangeChange={setDateRange}
                     onCreateClick={handleCreateClick}
                 />
                 <TransactionList
@@ -346,6 +357,8 @@ export default function TransactionsPage() {
                     onSortChange={setSortBy}
                     categoryIds={categoryIds}
                     onCategoryIdsChange={setCategoryIds}
+                    dateRange={dateRange}
+                    onDateRangeChange={setDateRange}
                     onCreateClick={handleCreateClick}
                 />
                 <TransactionList

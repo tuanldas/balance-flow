@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { DateRangeFilter, DateRangeValue } from './date-range-filter';
 import { FilterSubmenu } from './filter-submenu';
 
 interface FilterBarProps {
@@ -30,6 +31,8 @@ interface FilterBarProps {
     onSortChange: (sort: TransactionSortBy) => void;
     categoryIds: string[];
     onCategoryIdsChange: (categoryIds: string[]) => void;
+    dateRange: DateRangeValue;
+    onDateRangeChange: (dateRange: DateRangeValue) => void;
     onCreateClick?: () => void;
 }
 
@@ -40,6 +43,8 @@ export function FilterBar({
     onSortChange,
     categoryIds,
     onCategoryIdsChange,
+    dateRange,
+    onDateRangeChange,
     onCreateClick,
 }: FilterBarProps) {
     const { t } = useTranslation();
@@ -91,11 +96,12 @@ export function FilterBar({
         }
     };
 
-    const hasActiveFilters = searchValue.trim().length > 0 || categoryIds.length > 0;
+    const hasActiveFilters = searchValue.trim().length > 0 || categoryIds.length > 0 || dateRange.from !== undefined;
 
     const clearAllFilters = () => {
         onSearchChange('');
         onCategoryIdsChange([]);
+        onDateRangeChange({ from: undefined, to: undefined });
     };
 
     const getFilterBadges = () => {
@@ -106,6 +112,26 @@ export function FilterBar({
                 key: 'search',
                 label: searchValue,
                 onRemove: () => onSearchChange(''),
+            });
+        }
+
+        if (dateRange.from) {
+            const formatDate = (date: Date) => {
+                return new Intl.DateTimeFormat('vi-VN', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                }).format(date);
+            };
+
+            const label = dateRange.to
+                ? `${formatDate(dateRange.from)} - ${formatDate(dateRange.to)}`
+                : formatDate(dateRange.from);
+
+            badges.push({
+                key: 'dateRange',
+                label,
+                onRemove: () => onDateRangeChange({ from: undefined, to: undefined }),
             });
         }
 
@@ -160,6 +186,8 @@ export function FilterBar({
                             />
                         </PopoverContent>
                     </Popover>
+
+                    <DateRangeFilter value={dateRange} onChange={onDateRangeChange} />
 
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
