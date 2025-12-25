@@ -32,31 +32,36 @@
 
 ---
 
+## ✅ Mới hoàn thành (2025-12-25)
+
+### CRUD Operations UI - Inline Editing
+
+- [x] **Create Transaction Form** `page:transactions`
+    - [x] Tạo dialog/drawer form để thêm giao dịch mới
+    - [x] Form fields: category, amount, date, merchant, notes, status
+    - [x] Validation với Zod schema
+    - [x] Integration với `useCreateTransaction` hook
+    - [x] Toast notification khi success/error
+    - [x] File: `transaction-form-dialog.tsx` (created)
+
+- [x] **Edit Transaction - Inline Editing** `page:transactions`
+    - [x] Triển khai inline editing trong `TransactionDetail`
+    - [x] Category, Merchant, Date, Status, Notes: Always editable
+    - [x] Amount: Click-to-edit (toggle between display and input)
+    - [x] Account: Read-only display
+    - [x] Tags/Goal: Display-only (for now)
+    - [x] Button "Save" gọi API update với `useUpdateTransaction` hook
+    - [x] Toast notification khi success/error
+    - [x] File: `transaction-detail.tsx` (refactored)
+
+- [x] **Delete Transaction** `page:transactions`
+    - [x] Thêm nút Delete trong TransactionDetail
+    - [x] AlertDialog confirmation trước khi xóa
+    - [x] Integration với `useDeleteTransaction` hook
+    - [x] Callback onDeleteSuccess để xử lý UI
+    - [x] File: `transaction-detail.tsx`
+
 ## 🔴 Ưu tiên cao (Critical)
-
-### 1. CRUD Operations UI
-
-- [ ] **Create Transaction Form** `page:transactions`
-    - [ ] Tạo dialog/drawer form để thêm giao dịch mới
-    - [ ] Form fields: category, amount, date, merchant, notes, status
-    - [ ] Validation với Zod schema
-    - [ ] Integration với `useCreateTransaction` hook
-    - [ ] Toast notification khi success/error
-    - [ ] File: Tạo mới `transaction-form-dialog.tsx`
-
-- [ ] **Edit Transaction** `page:transactions`
-    - [ ] Kích hoạt form edit trong `TransactionDetail`
-    - [ ] Button "Save" thực sự gọi API update
-    - [ ] Integration với `useUpdateTransaction` hook
-    - [ ] Optimistic update trong UI
-    - [ ] File: Sửa `transaction-detail.tsx:242`
-
-- [ ] **Delete Transaction** `page:transactions`
-    - [ ] Thêm nút Delete trong TransactionDetail
-    - [ ] Confirmation dialog trước khi xóa
-    - [ ] Integration với `useDeleteTransaction` hook
-    - [ ] Redirect về list sau khi delete
-    - [ ] File: Sửa `transaction-detail.tsx`
 
 ### 2. Transaction Summary Dashboard
 
