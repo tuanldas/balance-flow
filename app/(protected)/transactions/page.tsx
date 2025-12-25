@@ -15,7 +15,6 @@ import { FilterBar } from './filter-bar';
 import { TransactionDetail } from './transaction-detail';
 import { TransactionFormDialog } from './transaction-form-dialog';
 import { TransactionRow } from './transaction-row';
-import { TransactionSummaryCard } from './transaction-summary-card';
 
 // Extracted TransactionList component to avoid duplication
 interface TransactionListProps {
@@ -260,9 +259,6 @@ export default function TransactionsPage() {
                     onCategoryIdsChange={setCategoryIds}
                     onCreateClick={() => setIsCreateDialogOpen(true)}
                 />
-                <div className="p-4">
-                    <TransactionSummaryCard />
-                </div>
                 <TransactionList
                     groupedTransactions={groupedTransactions}
                     filteredTransactionsCount={allTransactions.length}
@@ -319,9 +315,6 @@ export default function TransactionsPage() {
                     onCategoryIdsChange={setCategoryIds}
                     onCreateClick={() => setIsCreateDialogOpen(true)}
                 />
-                <div className="p-4">
-                    <TransactionSummaryCard />
-                </div>
                 <TransactionList
                     groupedTransactions={groupedTransactions}
                     filteredTransactionsCount={allTransactions.length}
