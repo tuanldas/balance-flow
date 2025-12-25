@@ -2,6 +2,40 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## ⚠️ CRITICAL RULE: Session Notes Management
+
+**IMPORTANT:** Claude Code sessions have context limits. To maintain continuity across sessions:
+
+1. **ALWAYS create or update session notes** in `/workspace/docs/session-notes/` after completing significant work
+2. **Session note naming:** Use format `YYYY-MM-DD-brief-description.md` (e.g., `2025-12-25-transactions-crud-inline-editing.md`)
+3. **When to create/update:**
+   - After implementing a major feature
+   - After making significant architectural changes
+   - When user explicitly requests "take note" or "cập nhật session note"
+   - Before reaching context limits (proactive documentation)
+   - After user says "continue" from a previous session (update existing note)
+
+4. **What to include in session notes:**
+   - Overview: What was requested and why
+   - Technical details: Key decisions, patterns used, code examples
+   - Files changed: List of created/modified files with explanations
+   - Issues encountered and solutions
+   - Next steps: Pending tasks or future work
+   - User feedback: Important quotes or clarifications
+   - Git commits: Commit hashes and messages
+
+5. **Format:** Use clear Markdown with sections, code blocks, and examples for easy reference in future sessions
+
+**Example workflow:**
+```bash
+# After completing work
+1. Create/update session note in docs/session-notes/
+2. Git add and commit the session note
+3. Provide summary to user
+```
+
+This ensures that future sessions (or other developers) can quickly understand what was done and continue work seamlessly.
+
 ## Project Overview
 
 Balance Flow is a Next.js 16 application showcasing multiple dashboard layout configurations. The project is built with React 19, TypeScript, and Tailwind CSS 4, demonstrating various UI/UX patterns for admin dashboards and application interfaces.
