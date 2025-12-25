@@ -319,6 +319,15 @@
             "amountPositive": "Amount must be greater than 0.",
             "dateRequired": "Transaction date is required."
         },
+        "summary": {
+            "totalIncome": "Total Income",
+            "totalExpense": "Total Expense",
+            "balance": "Balance",
+            "incomeDescription": "Total money received",
+            "expenseDescription": "Total money spent",
+            "positiveBalance": "Income exceeds expenses",
+            "negativeBalance": "Expenses exceed income"
+        },
         "messages": {
             "createSuccess": "Transaction created successfully!",
             "updateSuccess": "Transaction updated successfully!",

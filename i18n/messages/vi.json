@@ -319,6 +319,15 @@
             "amountPositive": "Số tiền phải lớn hơn 0.",
             "dateRequired": "Ngày giao dịch là bắt buộc."
         },
+        "summary": {
+            "totalIncome": "Tổng thu nhập",
+            "totalExpense": "Tổng chi tiêu",
+            "balance": "Số dư",
+            "incomeDescription": "Tổng tiền thu được",
+            "expenseDescription": "Tổng tiền đã chi",
+            "positiveBalance": "Thu nhập vượt chi tiêu",
+            "negativeBalance": "Chi tiêu vượt thu nhập"
+        },
         "messages": {
             "createSuccess": "Tạo giao dịch thành công!",
             "updateSuccess": "Cập nhật giao dịch thành công!",
