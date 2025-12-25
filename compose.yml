@@ -1,0 +1,22 @@
+# Base Docker Compose configuration for Balance Flow
+# Use compose-dev.yml or compose-prod.yml as compose.override.yml for environment-specific settings
+
+services:
+    app:
+        image: balance-flow:latest
+        container_name: balance-flow-app
+        restart: unless-stopped
+
+        ports:
+            - '3000:3000'
+
+        environment:
+            - NODE_ENV=${NODE_ENV:-production}
+            - NEXT_TELEMETRY_DISABLED=1
+
+        networks:
+            - balance-flow-network
+
+networks:
+    balance-flow-network:
+        driver: bridge

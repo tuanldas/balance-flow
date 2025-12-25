@@ -1,0 +1,33 @@
+# Development environment override
+# Copy this file to compose.override.yml to use: cp compose-dev.yml compose.override.yml
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: builder
+            args:
+                - NODE_ENV=development
+
+        image: balance-flow:dev
+
+        environment:
+            - NODE_ENV=development
+            - NEXT_TELEMETRY_DISABLED=1
+            - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8080}
+            - WATCHPACK_POLLING=true
+            - CHOKIDAR_USEPOLLING=true
+
+        volumes:
+            - .:/app
+            - /app/node_modules
+            - /app/.next
+
+        command: npm run dev
+
+        ports:
+            - '${DEV_PORT:-3000}:3000'
+
+        stdin_open: true
+        tty: true

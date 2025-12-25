@@ -1,0 +1,43 @@
+# Production environment override
+# Copy this file to compose.override.yml to use: cp compose-prod.yml compose.override.yml
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: runner
+            args:
+                - NODE_ENV=production
+
+        image: balance-flow:production
+
+        environment:
+            - NODE_ENV=production
+            - NEXT_TELEMETRY_DISABLED=1
+            - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8080}
+
+        deploy:
+            resources:
+                limits:
+                    cpus: '1.0'
+                    memory: 1G
+                reservations:
+                    cpus: '0.5'
+                    memory: 512M
+
+        restart: always
+
+        logging:
+            driver: 'json-file'
+            options:
+                max-size: '10m'
+                max-file: '3'
+
+        security_opt:
+            - no-new-privileges:true
+
+        # read_only: true
+        # tmpfs:
+        #     - /tmp
+        #     - /app/.next/cache

@@ -42,3 +42,6 @@ _chat.md
 .idea
 postman_collection.json
 .env
+
+# Docker
+compose.override.yml
