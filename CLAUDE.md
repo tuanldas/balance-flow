@@ -8,18 +8,37 @@ Balance Flow is a Next.js 16 application showcasing multiple dashboard layout co
 
 ## Development Commands
 
+**IMPORTANT: Always run commands inside Docker container**
+
+When working with this project, ALWAYS execute commands inside the Docker container using `docker compose exec app <command>` instead of running them directly on the host machine. This ensures consistency across development environments.
+
 **Development:**
 
 ```bash
-npm run dev          # Start development server (http://localhost:3000)
-npm run build        # Production build
-npm run start        # Start production server
-npm run build:staging # Build with staging environment (.env.staging → .env.example)
+# Setup Docker environment first
+cp compose-dev.yml compose.override.yml  # For development
+docker compose up -d                      # Start containers
+
+# Run commands inside container
+docker compose exec app npm run dev       # Start development server
+docker compose exec app npm run build     # Production build
+docker compose exec app npm run start     # Start production server
+docker compose exec app npm install <pkg> # Install new package
 ```
 
 **Code Quality:**
 
 ```bash
+docker compose exec app npm run lint      # Run ESLint
+docker compose exec app npm run format    # Format code with Prettier
+```
+
+**Direct execution (NOT recommended - use Docker instead):**
+
+```bash
+npm run dev          # Start development server (http://localhost:3000)
+npm run build        # Production build
+npm run start        # Start production server
 npm run lint         # Run ESLint
 npm run format       # Format code with Prettier
 ```
@@ -420,3 +439,130 @@ When adding or modifying layouts:
 - **Loading States:** ScreenLoader component provides consistent loading UX
 - **Responsive Design:** Use `use-mobile` hook to detect mobile viewports
 - **Menu Management:** Use `use-menu` hook for sidebar/menu state
+
+## Docker Development
+
+This project uses Docker for consistent development and deployment environments.
+
+### Docker Setup
+
+**File Structure:**
+
+```
+├── Dockerfile              # Multi-stage build (deps → builder → runner)
+├── .dockerignore          # Optimize build context
+├── compose.yml            # Base configuration
+├── compose-dev.yml        # Development overrides (hot reload)
+├── compose-prod.yml       # Production overrides (optimized)
+└── compose.override.yml   # Active environment (gitignored)
+```
+
+### Quick Start
+
+**Development:**
+
+```bash
+# Setup development environment
+cp compose-dev.yml compose.override.yml
+docker compose up -d
+
+# View logs
+docker compose logs -f app
+
+# Stop containers
+docker compose down
+```
+
+**Production:**
+
+```bash
+cp compose-prod.yml compose.override.yml
+docker compose up --build -d
+```
+
+### Running Commands in Docker
+
+**CRITICAL RULE: Always execute commands inside Docker container**
+
+Do NOT run commands directly on host machine. Always use `docker compose exec app <command>`.
+
+**Examples:**
+
+```bash
+# Install dependencies
+docker compose exec app npm install <package-name>
+
+# Run development server
+docker compose exec app npm run dev
+
+# Code quality checks
+docker compose exec app npm run lint
+docker compose exec app npm run format
+
+# Build application
+docker compose exec app npm run build
+
+# Access container shell
+docker compose exec app sh
+
+# Run any Node.js script
+docker compose exec app node script.js
+```
+
+### Environment Variables
+
+Configure in `.env` or `.env.local`:
+
+```bash
+# API Configuration
+NEXT_PUBLIC_API_BASE_URL=http://localhost:8080
+
+# Docker Development
+DEV_PORT=3000        # Host port for development
+DEBUG_PORT=9229      # Node.js debugger port
+```
+
+### Docker Configuration Details
+
+**Development (`compose-dev.yml`):**
+
+- Uses `builder` stage from Dockerfile
+- Hot reload via bind mounts
+- Runs `npm run dev`
+- Port configurable via `${DEV_PORT}`
+- Debug port available: `${DEBUG_PORT}`
+
+**Production (`compose-prod.yml`):**
+
+- Uses optimized `runner` stage
+- Resource limits (CPU/Memory)
+- No port exposure (use reverse proxy)
+- Logging with rotation
+- Security hardening
+
+### Troubleshooting
+
+**Hot reload not working:**
+
+```bash
+docker compose down
+docker compose up --build
+```
+
+**Port conflict:**
+
+```bash
+# Change port in .env
+echo "DEV_PORT=3001" >> .env
+docker compose up -d
+```
+
+**Clear everything and rebuild:**
+
+```bash
+docker compose down -v
+docker compose build --no-cache
+docker compose up -d
+```
+
+See `README.docker.md` for detailed documentation.
