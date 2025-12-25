@@ -61,16 +61,21 @@
     - [x] Callback onDeleteSuccess để xử lý UI
     - [x] File: `transaction-detail.tsx`
 
+- [x] **Transaction Summary Dashboard** `page:transactions`
+    - [x] Tạo TransactionSummaryCard component
+    - [x] Hiển thị Total Income, Total Expense, Balance
+    - [x] Integration với `useTransactionSummary` hook
+    - [x] Responsive grid layout (3 columns desktop, stack mobile)
+    - [x] Loading skeleton states
+    - [x] Error handling UI
+    - [x] Currency formatting với i18n (VND)
+    - [x] Color-coded cards (green/red/blue)
+    - [x] Real-time updates (React Query invalidation)
+    - [x] Dark mode support
+    - [x] Translations (vi, en)
+    - [x] File: `transaction-summary-card.tsx` (created)
+
 ## 🔴 Ưu tiên cao (Critical)
-
-### 2. Transaction Summary Dashboard
-
-- [ ] **Summary Card Component** `page:transactions`
-    - [ ] Hiển thị Total Income, Total Expense, Balance
-    - [ ] Integration với `useTransactionSummary` hook
-    - [ ] Responsive design
-    - [ ] Update real-time khi có thay đổi
-    - [ ] File: Tạo mới `transaction-summary-card.tsx`
 
 ---
 
