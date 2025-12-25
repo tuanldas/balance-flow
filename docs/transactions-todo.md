@@ -79,11 +79,11 @@
 
 ### 3. Advanced Filters
 
-- [ ] **Date Range Filter** `page:transactions`
-    - [ ] Date picker component (from/to dates)
-    - [ ] Integration với API filters `start_date`, `end_date`
-    - [ ] Preset ranges: Today, This Week, This Month, Custom
-    - [ ] File: Sửa `filter-bar.tsx`
+- [x] **Date Range Filter** `page:transactions` ✅ Completed 2025-12-25
+    - [x] Date picker component (from/to dates)
+    - [x] Integration với API filters `start_date`, `end_date`
+    - [x] Preset ranges: Today, This Week, This Month, Custom
+    - [x] File: Tạo `date-range-filter.tsx`, sửa `filter-bar.tsx`, `page.tsx`
 
 - [ ] **Status Filter** `page:transactions`
     - [ ] Filter theo Pending, Completed, Cancelled, To Review
