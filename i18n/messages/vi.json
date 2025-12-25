@@ -292,6 +292,42 @@
             "tags": "Nhãn",
             "tagsPlaceholder": "Thêm nhãn (phân cách bằng dấu phẩy)",
             "similarTransactions": "Giao dịch tương tự"
+        },
+        "form": {
+            "createTitle": "Thêm giao dịch mới",
+            "editTitle": "Chỉnh sửa giao dịch",
+            "category": "Danh mục",
+            "categoryPlaceholder": "Chọn danh mục",
+            "amount": "Số tiền",
+            "amountPlaceholder": "Nhập số tiền",
+            "date": "Ngày giao dịch",
+            "datePlaceholder": "Chọn ngày",
+            "merchant": "Đối tác",
+            "merchantPlaceholder": "Nhập tên đối tác (tùy chọn)",
+            "notes": "Ghi chú",
+            "notesPlaceholder": "Nhập ghi chú (tùy chọn)",
+            "status": "Trạng thái",
+            "statusPlaceholder": "Chọn trạng thái",
+            "createButton": "Tạo giao dịch",
+            "updateButton": "Cập nhật",
+            "cancelButton": "Hủy",
+            "deleteButton": "Xóa"
+        },
+        "validation": {
+            "categoryRequired": "Danh mục là bắt buộc.",
+            "amountInvalid": "Số tiền phải là một số.",
+            "amountPositive": "Số tiền phải lớn hơn 0.",
+            "dateRequired": "Ngày giao dịch là bắt buộc."
+        },
+        "messages": {
+            "createSuccess": "Tạo giao dịch thành công!",
+            "updateSuccess": "Cập nhật giao dịch thành công!",
+            "deleteSuccess": "Xóa giao dịch thành công!",
+            "createError": "Không thể tạo giao dịch. Vui lòng thử lại.",
+            "updateError": "Không thể cập nhật giao dịch. Vui lòng thử lại.",
+            "deleteError": "Không thể xóa giao dịch. Vui lòng thử lại.",
+            "confirmDelete": "Bạn có chắc chắn muốn xóa giao dịch này?",
+            "deleteWarning": "Hành động này không thể hoàn tác."
         }
     }
 }

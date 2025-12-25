@@ -292,6 +292,42 @@
             "tags": "Tags",
             "tagsPlaceholder": "Add tags (comma separated)",
             "similarTransactions": "Similar Transactions"
+        },
+        "form": {
+            "createTitle": "Add New Transaction",
+            "editTitle": "Edit Transaction",
+            "category": "Category",
+            "categoryPlaceholder": "Select category",
+            "amount": "Amount",
+            "amountPlaceholder": "Enter amount",
+            "date": "Transaction Date",
+            "datePlaceholder": "Select date",
+            "merchant": "Merchant",
+            "merchantPlaceholder": "Enter merchant name (optional)",
+            "notes": "Notes",
+            "notesPlaceholder": "Enter notes (optional)",
+            "status": "Status",
+            "statusPlaceholder": "Select status",
+            "createButton": "Create Transaction",
+            "updateButton": "Update",
+            "cancelButton": "Cancel",
+            "deleteButton": "Delete"
+        },
+        "validation": {
+            "categoryRequired": "Category is required.",
+            "amountInvalid": "Amount must be a number.",
+            "amountPositive": "Amount must be greater than 0.",
+            "dateRequired": "Transaction date is required."
+        },
+        "messages": {
+            "createSuccess": "Transaction created successfully!",
+            "updateSuccess": "Transaction updated successfully!",
+            "deleteSuccess": "Transaction deleted successfully!",
+            "createError": "Cannot create transaction. Please try again.",
+            "updateError": "Cannot update transaction. Please try again.",
+            "deleteError": "Cannot delete transaction. Please try again.",
+            "confirmDelete": "Are you sure you want to delete this transaction?",
+            "deleteWarning": "This action cannot be undone."
         }
     }
 }

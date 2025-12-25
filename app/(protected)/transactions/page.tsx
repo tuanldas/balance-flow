@@ -13,6 +13,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { FilterBar } from './filter-bar';
 import { TransactionDetail } from './transaction-detail';
+import { TransactionFormDialog } from './transaction-form-dialog';
 import { TransactionRow } from './transaction-row';
 
 // Extracted TransactionList component to avoid duplication
@@ -134,6 +135,7 @@ export default function TransactionsPage() {
     const [sortBy, setSortBy] = useState<TransactionSortBy>('date');
     const [categoryIds, setCategoryIds] = useState<string[]>([]);
     const [showDetail, setShowDetail] = useState(!!transactionIdFromUrl && !isLargeScreen);
+    const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
     // Build API filters based on UI state
     const apiFilters = useMemo((): Omit<TransactionApiFilters, 'page'> => {
@@ -227,6 +229,23 @@ export default function TransactionsPage() {
         router.push('/transactions', { scroll: false });
     }, [router]);
 
+    const handleCreateSuccess = useCallback(() => {
+        // Data will be automatically refetched by React Query invalidation
+    }, []);
+
+    const handleEditSuccess = useCallback(() => {
+        // Data will be automatically refetched by React Query invalidation
+    }, []);
+
+    const handleDeleteSuccess = useCallback(() => {
+        // Reset selection and go back to list
+        setSelectedTransaction(null);
+        if (!isLargeScreen) {
+            setShowDetail(false);
+        }
+        router.push('/transactions', { scroll: false });
+    }, [isLargeScreen, router]);
+
     // Mobile/Tablet view (<1280px): show list with Sheet for detail
     if (!isLargeScreen) {
         return (
@@ -238,6 +257,7 @@ export default function TransactionsPage() {
                     onSortChange={setSortBy}
                     categoryIds={categoryIds}
                     onCategoryIdsChange={setCategoryIds}
+                    onCreateClick={() => setIsCreateDialogOpen(true)}
                 />
                 <TransactionList
                     groupedTransactions={groupedTransactions}
@@ -261,9 +281,22 @@ export default function TransactionsPage() {
                 >
                     <SheetContent side="right" className="w-full sm:max-w-md p-0" close={false}>
                         <SheetTitle className="sr-only">{t('transactions.detail.title')}</SheetTitle>
-                        <TransactionDetail transaction={selectedTransaction} onBack={handleBackToList} isMobile />
+                        <TransactionDetail
+                            transaction={selectedTransaction}
+                            onBack={handleBackToList}
+                            isMobile
+                            onEditSuccess={handleEditSuccess}
+                            onDeleteSuccess={handleDeleteSuccess}
+                        />
                     </SheetContent>
                 </Sheet>
+
+                <TransactionFormDialog
+                    open={isCreateDialogOpen}
+                    onOpenChange={setIsCreateDialogOpen}
+                    mode="create"
+                    onSuccess={handleCreateSuccess}
+                />
             </div>
         );
     }
@@ -280,6 +313,7 @@ export default function TransactionsPage() {
                     onSortChange={setSortBy}
                     categoryIds={categoryIds}
                     onCategoryIdsChange={setCategoryIds}
+                    onCreateClick={() => setIsCreateDialogOpen(true)}
                 />
                 <TransactionList
                     groupedTransactions={groupedTransactions}
@@ -296,8 +330,19 @@ export default function TransactionsPage() {
 
             {/* Right Pane - Transaction Detail */}
             <div className="overflow-hidden">
-                <TransactionDetail transaction={selectedTransaction} />
+                <TransactionDetail
+                    transaction={selectedTransaction}
+                    onEditSuccess={handleEditSuccess}
+                    onDeleteSuccess={handleDeleteSuccess}
+                />
             </div>
+
+            <TransactionFormDialog
+                open={isCreateDialogOpen}
+                onOpenChange={setIsCreateDialogOpen}
+                mode="create"
+                onSuccess={handleCreateSuccess}
+            />
         </div>
     );
 }
