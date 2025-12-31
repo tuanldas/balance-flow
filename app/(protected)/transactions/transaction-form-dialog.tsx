@@ -5,7 +5,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import type { ApiTransactionStatus } from '@/lib/types/transaction';
 import { useCategories } from '@/hooks/use-categories';
 import { useCreateTransaction, useUpdateTransaction } from '@/hooks/use-transactions';
 import { useSettings } from '@/providers/settings-provider';
@@ -34,7 +33,6 @@ interface TransactionFormDialogProps {
         amount: number;
         transaction_date: string;
         notes?: string | null;
-        status: ApiTransactionStatus;
     } | null;
     onSuccess?: () => void;
 }
@@ -67,7 +65,6 @@ export function TransactionFormDialog({
             amount: 0,
             transaction_date: new Date().toISOString().slice(0, 16), // Format: YYYY-MM-DDTHH:mm
             notes: '',
-            status: 'completed',
         },
     });
 
@@ -98,7 +95,6 @@ export function TransactionFormDialog({
                     amount: transaction.amount,
                     transaction_date: transaction.transaction_date.slice(0, 16), // ISO to datetime-local format
                     notes: transaction.notes || '',
-                    status: transaction.status,
                 });
             } else {
                 // Create mode - reset to defaults
@@ -107,7 +103,6 @@ export function TransactionFormDialog({
                     amount: 0,
                     transaction_date: new Date().toISOString().slice(0, 16),
                     notes: '',
-                    status: 'completed',
                 });
                 setCategoryType('expense'); // Default to expense
             }
@@ -122,7 +117,6 @@ export function TransactionFormDialog({
                 amount: data.amount,
                 transaction_date: new Date(data.transaction_date).toISOString(), // Convert to ISO 8601
                 notes: data.notes || undefined,
-                status: data.status || 'completed',
             };
 
             if (mode === 'edit' && transaction) {
@@ -267,34 +261,6 @@ export function TransactionFormDialog({
                                             {...field}
                                         />
                                     </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-
-                        {/* Status */}
-                        <FormField
-                            control={form.control}
-                            name="status"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{t('transactions.form.status')}</FormLabel>
-                                    <Select onValueChange={field.onChange} value={field.value}>
-                                        <FormControl>
-                                            <SelectTrigger>
-                                                <SelectValue placeholder={t('transactions.form.statusPlaceholder')} />
-                                            </SelectTrigger>
-                                        </FormControl>
-                                        <SelectContent>
-                                            <SelectItem value="completed">
-                                                {t('transactions.status.completed')}
-                                            </SelectItem>
-                                            <SelectItem value="pending">{t('transactions.status.pending')}</SelectItem>
-                                            <SelectItem value="cancelled">
-                                                {t('transactions.status.cancelled')}
-                                            </SelectItem>
-                                        </SelectContent>
-                                    </Select>
                                     <FormMessage />
                                 </FormItem>
                             )}

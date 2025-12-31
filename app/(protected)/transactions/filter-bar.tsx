@@ -156,12 +156,14 @@ export function FilterBar({
         <div className="border-b border-border">
             <div className="flex items-center justify-between gap-2 p-4">
                 {/* Left side - Create button */}
-                {onCreateClick && (
-                    <Button onClick={onCreateClick} size="sm" className="gap-1.5">
-                        <Plus className="h-4 w-4" />
-                        <span className="hidden sm:inline">{t('common.buttons.add')}</span>
-                    </Button>
-                )}
+                <div className="flex items-center gap-2">
+                    {onCreateClick && (
+                        <Button onClick={onCreateClick} size="sm" className="gap-1.5">
+                            <Plus className="h-4 w-4" />
+                            <span className="hidden sm:inline">{t('common.buttons.add')}</span>
+                        </Button>
+                    )}
+                </div>
 
                 {/* Right side - Filter buttons */}
                 <div className="flex items-center gap-2">

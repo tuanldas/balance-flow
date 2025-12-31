@@ -326,6 +326,16 @@
             "amountPositive": "Amount must be greater than 0.",
             "dateRequired": "Transaction date is required."
         },
+        "empty": {
+            "title": "No transactions yet",
+            "description": "Start tracking your income and expenses by creating your first transaction",
+            "createFirst": "Create first transaction",
+            "noResults": {
+                "title": "No transactions found",
+                "description": "No transactions match your current filters. Try adjusting your filters.",
+                "clearFilters": "Clear filters"
+            }
+        },
         "messages": {
             "createSuccess": "Transaction created successfully!",
             "updateSuccess": "Transaction updated successfully!",
@@ -335,6 +345,14 @@
             "deleteError": "Cannot delete transaction. Please try again.",
             "confirmDelete": "Are you sure you want to delete this transaction?",
             "deleteWarning": "This action cannot be undone."
+        },
+        "bulkActions": {
+            "selected": "selected",
+            "delete": "Delete",
+            "confirmDelete": "Confirm Bulk Delete",
+            "confirmDeleteMessage": "Are you sure you want to delete {{count}} selected transactions? This action cannot be undone.",
+            "deleteSuccess": "Successfully deleted {{count}} transactions!",
+            "deleteError": "Cannot delete transactions. Please try again."
         },
         "dateRange": {
             "selectRange": "Select date range",

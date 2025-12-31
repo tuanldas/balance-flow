@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 export const getTransactionSchema = () => {
     return z.object({
-        name: z.string().min(1, { message: i18n.t('transactions.validation.merchantRequired') }),
+        name: z.string().optional(),
         category_id: z.string().min(1, { message: i18n.t('transactions.validation.categoryRequired') }),
         amount: z
             .number({ message: i18n.t('transactions.validation.amountInvalid') })

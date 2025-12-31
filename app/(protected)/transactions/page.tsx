@@ -4,16 +4,20 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import type { Transaction, TransactionApiFilters, TransactionGroup, TransactionSortBy } from '@/lib/types/transaction';
 import { apiTransactionToLegacy } from '@/lib/types/transaction';
 import { groupTransactionsByDate } from '@/lib/utils/transaction-utils';
 import { useIsLargeScreen } from '@/hooks/use-large-screen';
-import { useInfiniteTransactions } from '@/hooks/use-transactions';
+import { useBulkDeleteTransactions, useInfiniteTransactions } from '@/hooks/use-transactions';
 import { useUrlFilters } from '@/hooks/use-url-filters';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
+import { BulkActionBar } from './bulk-action-bar';
+import { EmptyState } from './empty-state';
 import { FilterBar } from './filter-bar';
 import { TransactionDetail } from './transaction-detail';
+import { TransactionListSkeleton } from './transaction-list-skeleton';
 import { TransactionRow } from './transaction-row';
 
 // Extracted TransactionList component to avoid duplication
@@ -27,6 +31,11 @@ interface TransactionListProps {
     hasNextPage?: boolean;
     onLoadMore?: () => void;
     error?: Error | null;
+    hasFilters?: boolean;
+    onCreateClick?: () => void;
+    onClearFilters?: () => void;
+    selectedIds?: Set<string>;
+    onToggleSelection?: (id: string) => void;
 }
 
 const TransactionList = memo(function TransactionList({
@@ -39,6 +48,11 @@ const TransactionList = memo(function TransactionList({
     hasNextPage,
     onLoadMore,
     error,
+    hasFilters,
+    onCreateClick,
+    onClearFilters,
+    selectedIds,
+    onToggleSelection,
 }: TransactionListProps) {
     const { t } = useTranslation();
     const loadMoreRef = useRef<HTMLDivElement>(null);
@@ -62,14 +76,7 @@ const TransactionList = memo(function TransactionList({
     }, [hasNextPage, isFetchingNextPage, onLoadMore]);
 
     if (isLoading) {
-        return (
-            <div className="flex-1 flex items-center justify-center">
-                <div className="text-center">
-                    <Loader2 className="h-8 w-8 animate-spin mx-auto text-muted-foreground" />
-                    <p className="mt-2 text-sm text-muted-foreground">{t('common.messages.loading')}</p>
-                </div>
-            </div>
-        );
+        return <TransactionListSkeleton />;
     }
 
     if (error) {
@@ -94,7 +101,21 @@ const TransactionList = memo(function TransactionList({
                                     key={transaction.id}
                                     transaction={transaction}
                                     isSelected={selectedTransactionId === transaction.id}
-                                    onClick={() => onTransactionSelect(transaction)}
+                                    onClick={() => {
+                                        // If has selections, clicking toggles selection
+                                        // Otherwise, opens detail view
+                                        if (selectedIds && selectedIds.size > 0 && onToggleSelection) {
+                                            onToggleSelection(transaction.id);
+                                        } else {
+                                            onTransactionSelect(transaction);
+                                        }
+                                    }}
+                                    isChecked={selectedIds?.has(transaction.id)}
+                                    onCheckChange={() => {
+                                        if (onToggleSelection) {
+                                            onToggleSelection(transaction.id);
+                                        }
+                                    }}
                                 />
                             ))}
                         </div>
@@ -102,9 +123,7 @@ const TransactionList = memo(function TransactionList({
                 ))}
 
                 {filteredTransactionsCount === 0 && !isFetchingNextPage && (
-                    <div className="text-center py-12 text-muted-foreground">
-                        <p>{t('transactions.noResults')}</p>
-                    </div>
+                    <EmptyState hasFilters={hasFilters} onCreateClick={onCreateClick} onClearFilters={onClearFilters} />
                 )}
 
                 {/* Load more trigger element */}
@@ -138,6 +157,10 @@ export default function TransactionsPage() {
         (!!transactionIdFromUrl || modeFromUrl === 'create') && !isLargeScreen,
     );
     const [detailMode, setDetailMode] = useState<'view' | 'create'>(modeFromUrl || 'view');
+
+    // Bulk actions state
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const bulkDeleteMutation = useBulkDeleteTransactions();
 
     // Build API filters based on UI state
     const apiFilters = useMemo((): Omit<TransactionApiFilters, 'page'> => {
@@ -287,6 +310,58 @@ export default function TransactionsPage() {
         router.push('/transactions', { scroll: false });
     }, [isLargeScreen, router]);
 
+    // Check if any filters are applied
+    const hasFilters = useMemo(() => {
+        return (
+            searchValue.trim() !== '' ||
+            categoryIds.length > 0 ||
+            dateRange.from !== undefined ||
+            dateRange.to !== undefined
+        );
+    }, [searchValue, categoryIds, dateRange]);
+
+    // Clear all filters
+    const handleClearFilters = useCallback(() => {
+        setSearchValue('');
+        setCategoryIds([]);
+        setDateRange({ from: undefined, to: undefined });
+    }, [setSearchValue, setCategoryIds, setDateRange]);
+
+    // Bulk actions handlers
+    const handleToggleSelection = useCallback((id: string) => {
+        setSelectedIds((prev) => {
+            const newSet = new Set(prev);
+            if (newSet.has(id)) {
+                newSet.delete(id);
+            } else {
+                newSet.add(id);
+            }
+            return newSet;
+        });
+    }, []);
+
+    const handleCancelBulkMode = useCallback(() => {
+        setSelectedIds(new Set());
+    }, []);
+
+    const handleBulkDelete = useCallback(async () => {
+        if (selectedIds.size === 0) return;
+
+        const count = selectedIds.size;
+        const confirmed = window.confirm(t('transactions.bulkActions.confirmDeleteMessage', { count }));
+
+        if (!confirmed) return;
+
+        try {
+            await bulkDeleteMutation.mutateAsync(Array.from(selectedIds));
+            toast.success(t('transactions.bulkActions.deleteSuccess', { count }));
+            setSelectedIds(new Set());
+        } catch (error) {
+            console.error('Bulk delete error:', error);
+            toast.error(t('transactions.bulkActions.deleteError'));
+        }
+    }, [selectedIds, bulkDeleteMutation, t]);
+
     // Mobile/Tablet view (<1280px): show list with Sheet for detail
     if (!isLargeScreen) {
         return (
@@ -312,6 +387,11 @@ export default function TransactionsPage() {
                     hasNextPage={hasNextPage}
                     onLoadMore={handleLoadMore}
                     error={error as Error | null}
+                    hasFilters={hasFilters}
+                    onCreateClick={handleCreateClick}
+                    onClearFilters={handleClearFilters}
+                    selectedIds={selectedIds}
+                    onToggleSelection={handleToggleSelection}
                 />
 
                 <Sheet
@@ -339,6 +419,15 @@ export default function TransactionsPage() {
                         />
                     </SheetContent>
                 </Sheet>
+
+                {/* Floating Bulk Action Bar */}
+                <BulkActionBar
+                    selectedCount={selectedIds.size}
+                    onDelete={handleBulkDelete}
+                    onCancel={handleCancelBulkMode}
+                    isDeleting={bulkDeleteMutation.isPending}
+                    show={selectedIds.size > 0}
+                />
             </div>
         );
     }
@@ -369,6 +458,11 @@ export default function TransactionsPage() {
                     hasNextPage={hasNextPage}
                     onLoadMore={handleLoadMore}
                     error={error as Error | null}
+                    hasFilters={hasFilters}
+                    onCreateClick={handleCreateClick}
+                    onClearFilters={handleClearFilters}
+                    selectedIds={selectedIds}
+                    onToggleSelection={handleToggleSelection}
                 />
             </div>
 
@@ -382,6 +476,15 @@ export default function TransactionsPage() {
                     onCreateSuccess={handleCreateSuccess}
                 />
             </div>
+
+            {/* Floating Bulk Action Bar */}
+            <BulkActionBar
+                selectedCount={selectedIds.size}
+                onDelete={handleBulkDelete}
+                onCancel={handleCancelBulkMode}
+                isDeleting={bulkDeleteMutation.isPending}
+                show={selectedIds.size > 0}
+            />
         </div>
     );
 }

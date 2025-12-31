@@ -7,14 +7,17 @@ import type { Transaction } from '@/lib/types/transaction';
 import { cn } from '@/lib/utils';
 import { useSettings } from '@/providers/settings-provider';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface TransactionRowProps {
     transaction: Transaction;
     isSelected: boolean;
     onClick: () => void;
+    isChecked?: boolean;
+    onCheckChange?: (checked: boolean) => void;
 }
 
-function TransactionRowComponent({ transaction, isSelected, onClick }: TransactionRowProps) {
+function TransactionRowComponent({ transaction, isSelected, onClick, isChecked, onCheckChange }: TransactionRowProps) {
     const { i18n } = useTranslation();
     const locale = getIntlLocale(i18n.language);
     const { getOption } = useSettings();
@@ -40,9 +43,25 @@ function TransactionRowComponent({ transaction, isSelected, onClick }: Transacti
             className={cn(
                 'flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors',
                 'hover:bg-accent/50',
-                isSelected ? 'bg-accent' : 'bg-transparent',
+                isChecked ? 'bg-accent' : isSelected ? 'bg-accent/50' : 'bg-transparent',
             )}
         >
+            {/* Checkbox for bulk selection - always visible */}
+            <div
+                className="flex items-center pr-3"
+                onClick={(e) => {
+                    e.stopPropagation();
+                }}
+            >
+                <Checkbox
+                    checked={isChecked}
+                    onCheckedChange={onCheckChange}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                    }}
+                />
+            </div>
+
             {/* Left side: Merchant info */}
             <div className="flex items-center gap-3 min-w-0 flex-1">
                 <Avatar className="h-10 w-10 shrink-0">

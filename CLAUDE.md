@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **IMPORTANT:** Claude Code sessions have context limits. To maintain continuity across sessions:
 
 1. **ALWAYS create or update session notes** in `/workspace/docs/session-notes/` after completing significant work
-2. **Session note naming:** Use format `YYYY-MM-DD-brief-description.md` (e.g., `2025-12-25-transactions-crud-inline-editing.md`)
+2. **Session note naming:** Use format `YYYY-MM-DD-HHMMSS-brief-description.md` (e.g., `2025-12-25-143052-transactions-crud-inline-editing.md`) - Include timestamp because multiple sessions can occur in one day
 3. **When to create/update:**
     - After implementing a major feature
     - After making significant architectural changes

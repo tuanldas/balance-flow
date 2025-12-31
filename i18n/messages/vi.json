@@ -326,6 +326,16 @@
             "amountPositive": "Số tiền phải lớn hơn 0.",
             "dateRequired": "Ngày giao dịch là bắt buộc."
         },
+        "empty": {
+            "title": "Chưa có giao dịch nào",
+            "description": "Bắt đầu theo dõi thu chi của bạn bằng cách tạo giao dịch đầu tiên",
+            "createFirst": "Tạo giao dịch đầu tiên",
+            "noResults": {
+                "title": "Không tìm thấy giao dịch nào",
+                "description": "Không có giao dịch nào khớp với bộ lọc hiện tại. Thử điều chỉnh bộ lọc của bạn.",
+                "clearFilters": "Xóa bộ lọc"
+            }
+        },
         "messages": {
             "createSuccess": "Tạo giao dịch thành công!",
             "updateSuccess": "Cập nhật giao dịch thành công!",
@@ -335,6 +345,14 @@
             "deleteError": "Không thể xóa giao dịch. Vui lòng thử lại.",
             "confirmDelete": "Bạn có chắc chắn muốn xóa giao dịch này?",
             "deleteWarning": "Hành động này không thể hoàn tác."
+        },
+        "bulkActions": {
+            "selected": "đã chọn",
+            "delete": "Xóa",
+            "confirmDelete": "Xác nhận xóa hàng loạt",
+            "confirmDeleteMessage": "Bạn có chắc chắn muốn xóa {{count}} giao dịch đã chọn? Hành động này không thể hoàn tác.",
+            "deleteSuccess": "Đã xóa {{count}} giao dịch thành công!",
+            "deleteError": "Không thể xóa giao dịch. Vui lòng thử lại."
         },
         "dateRange": {
             "selectRange": "Chọn khoảng thời gian",
