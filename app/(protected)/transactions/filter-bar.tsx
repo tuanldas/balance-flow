@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowDownAZ, ArrowDownWideNarrow, ArrowUpNarrowWide, Plus, Search, Tag, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import type { TransactionSortBy } from '@/lib/types/transaction';
+import type { TransactionSortBy, TransactionType } from '@/lib/types/transaction';
 import { cn } from '@/lib/utils';
 import { useCategories } from '@/hooks/use-categories';
 import { Button } from '@/components/ui/button';
@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DateRangeFilter, DateRangeValue } from './date-range-filter';
 import { FilterSubmenu } from './filter-submenu';
 
@@ -33,6 +34,8 @@ interface FilterBarProps {
     onCategoryIdsChange: (categoryIds: string[]) => void;
     dateRange: DateRangeValue;
     onDateRangeChange: (dateRange: DateRangeValue) => void;
+    type: TransactionType | 'all';
+    onTypeChange: (type: TransactionType | 'all') => void;
     onCreateClick?: () => void;
 }
 
@@ -45,6 +48,8 @@ export function FilterBar({
     onCategoryIdsChange,
     dateRange,
     onDateRangeChange,
+    type,
+    onTypeChange,
     onCreateClick,
 }: FilterBarProps) {
     const { t } = useTranslation();
@@ -152,9 +157,32 @@ export function FilterBar({
 
     const filterBadges = getFilterBadges();
 
+    const typeOptions: { value: TransactionType | 'all'; label: string }[] = [
+        { value: 'all', label: t('transactions.type.all') },
+        { value: 'income', label: t('transactions.type.income') },
+        { value: 'expense', label: t('transactions.type.expense') },
+    ];
+
     return (
         <div className="border-b border-border">
-            <div className="flex items-center justify-between gap-2 p-4">
+            {/* Type Filter - Sticky top row */}
+            <div className="flex items-center gap-2 px-4 pt-4 pb-2">
+                <span className="text-sm font-medium text-muted-foreground">{t('transactions.type.label')}:</span>
+                <Select value={type} onValueChange={onTypeChange}>
+                    <SelectTrigger className="w-[180px] h-9">
+                        <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {typeOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+
+            <div className="flex items-center justify-between gap-2 p-4 pt-2">
                 {/* Left side - Create button */}
                 <div className="flex items-center gap-2">
                     {onCreateClick && (

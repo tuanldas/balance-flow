@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import type { TransactionSortBy } from '@/lib/types/transaction';
+import type { TransactionSortBy, TransactionType } from '@/lib/types/transaction';
 import type { DateRangeValue } from '@/app/(protected)/transactions/date-range-filter';
 
 interface UseUrlFiltersOptions {
@@ -18,6 +18,8 @@ interface UseUrlFiltersReturn {
     setCategoryIds: (value: string[]) => void;
     dateRange: DateRangeValue;
     setDateRange: (value: DateRangeValue) => void;
+    type: TransactionType | 'all';
+    setType: (value: TransactionType | 'all') => void;
 }
 
 // Helper: Format date as YYYY-MM-DD
@@ -60,6 +62,13 @@ export function useUrlFilters(options?: UseUrlFiltersOptions): UseUrlFiltersRetu
             to: to ? parseDateString(to) : undefined,
         };
     });
+    const [type, setType] = useState<TransactionType | 'all'>(() => {
+        const typeParam = searchParams.get('type');
+        if (typeParam === 'income' || typeParam === 'expense') {
+            return typeParam;
+        }
+        return 'all';
+    });
 
     // Sync filters to URL whenever they change
     useEffect(() => {
@@ -99,13 +108,20 @@ export function useUrlFilters(options?: UseUrlFiltersOptions): UseUrlFiltersRetu
             params.delete('to');
         }
 
+        // Type
+        if (type !== 'all') {
+            params.set('type', type);
+        } else {
+            params.delete('type');
+        }
+
         // Only update if params actually changed
         const newUrl = params.toString();
         const currentUrl = searchParams.toString();
         if (newUrl !== currentUrl) {
             router.replace(`?${newUrl}`, { scroll: false });
         }
-    }, [searchValue, sortBy, categoryIds, dateRange, searchParams, router, defaultSort]);
+    }, [searchValue, sortBy, categoryIds, dateRange, type, searchParams, router, defaultSort]);
 
     return {
         searchValue,
@@ -116,5 +132,7 @@ export function useUrlFilters(options?: UseUrlFiltersOptions): UseUrlFiltersRetu
         setCategoryIds,
         dateRange,
         setDateRange,
+        type,
+        setType,
     };
 }

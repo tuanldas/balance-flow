@@ -275,6 +275,8 @@
             "toReview": "To Review"
         },
         "type": {
+            "label": "Type",
+            "all": "All",
             "income": "Income",
             "expense": "Expense"
         },

@@ -151,8 +151,18 @@ export default function TransactionsPage() {
     const modeFromUrl = searchParams.get('mode') as 'view' | 'create' | null;
 
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
-    const { searchValue, setSearchValue, sortBy, setSortBy, categoryIds, setCategoryIds, dateRange, setDateRange } =
-        useUrlFilters({ defaultSort: 'date' });
+    const {
+        searchValue,
+        setSearchValue,
+        sortBy,
+        setSortBy,
+        categoryIds,
+        setCategoryIds,
+        dateRange,
+        setDateRange,
+        type,
+        setType,
+    } = useUrlFilters({ defaultSort: 'date' });
     const [showDetail, setShowDetail] = useState(
         (!!transactionIdFromUrl || modeFromUrl === 'create') && !isLargeScreen,
     );
@@ -184,8 +194,9 @@ export default function TransactionsPage() {
             search: searchValue || undefined,
             start_date: dateRange.from ? formatDateForAPI(dateRange.from) : undefined,
             end_date: dateRange.to ? formatDateForAPI(dateRange.to) : undefined,
+            type: type !== 'all' ? type : undefined,
         };
-    }, [sortBy, categoryIds, searchValue, dateRange]);
+    }, [sortBy, categoryIds, searchValue, dateRange, type]);
 
     // Fetch transactions from API with infinite scroll
     const {
@@ -375,6 +386,8 @@ export default function TransactionsPage() {
                     onCategoryIdsChange={setCategoryIds}
                     dateRange={dateRange}
                     onDateRangeChange={setDateRange}
+                    type={type}
+                    onTypeChange={setType}
                     onCreateClick={handleCreateClick}
                 />
                 <TransactionList
@@ -446,6 +459,8 @@ export default function TransactionsPage() {
                     onCategoryIdsChange={setCategoryIds}
                     dateRange={dateRange}
                     onDateRangeChange={setDateRange}
+                    type={type}
+                    onTypeChange={setType}
                     onCreateClick={handleCreateClick}
                 />
                 <TransactionList
