@@ -6,90 +6,13 @@ import type {
     DeleteCategoryResponse,
     UpdateCategoryData,
 } from '@/lib/types/category';
-
-// Get base URL from environment
-const getBaseUrl = () => {
-    return process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
-};
-
-// Get locale from i18n
-const getLocale = () => {
-    if (typeof window !== 'undefined') {
-        return localStorage.getItem('i18nextLng') || 'vi';
-    }
-    return 'vi';
-};
-
-// Get access token
-const getAccessToken = () => {
-    if (typeof window !== 'undefined') {
-        return localStorage.getItem('access_token');
-    }
-    return null;
-};
-
-// API call helper for JSON requests
-const apiCall = async <T>(endpoint: string, options: RequestInit = {}): Promise<T> => {
-    const headers: Record<string, string> = {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'Accept-Language': getLocale(),
-    };
-
-    const token = getAccessToken();
-    if (token) {
-        headers.Authorization = `Bearer ${token}`;
-    }
-
-    const response = await fetch(`${getBaseUrl()}${endpoint}`, {
-        ...options,
-        headers: {
-            ...headers,
-            ...options.headers,
-        },
-    });
-
-    if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: 'An error occurred' }));
-        throw new Error(error.message || `HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
-};
-
-// API call helper for FormData requests (file uploads)
-// Note: DO NOT set Content-Type header - browser will set it with boundary
-const apiCallFormData = async <T>(endpoint: string, options: RequestInit = {}): Promise<T> => {
-    const headers: Record<string, string> = {
-        Accept: 'application/json',
-        'Accept-Language': getLocale(),
-    };
-
-    const token = getAccessToken();
-    if (token) {
-        headers.Authorization = `Bearer ${token}`;
-    }
-
-    const response = await fetch(`${getBaseUrl()}${endpoint}`, {
-        ...options,
-        headers: {
-            ...headers,
-            ...options.headers,
-        },
-    });
-
-    if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: 'An error occurred' }));
-        throw new Error(error.message || `HTTP error! status: ${response.status}`);
-    }
-
-    return response.json();
-};
+import { apiClient, extractData } from './client';
 
 // Convert CreateCategoryData/UpdateCategoryData to FormData
 const toFormData = (data: CreateCategoryData | UpdateCategoryData, method?: 'PUT'): FormData => {
     const formData = new FormData();
 
+    // Laravel method spoofing for PUT with file uploads
     if (method) {
         formData.append('_method', method);
     }
@@ -125,36 +48,26 @@ export const categoriesApi = {
      * Get all categories with optional filters
      */
     getAll: async (filters?: CategoryFilters): Promise<CategoriesResponse> => {
-        const params = new URLSearchParams();
-
-        if (filters?.type) {
-            params.append('type', filters.type);
-        }
-        if (filters?.per_page) {
-            params.append('per_page', filters.per_page.toString());
-        }
-        if (filters?.page) {
-            params.append('page', filters.page.toString());
-        }
-
-        const queryString = params.toString();
-        const endpoint = `/api/categories${queryString ? `?${queryString}` : ''}`;
-
-        return apiCall<CategoriesResponse>(endpoint);
+        const response = await apiClient.get<CategoriesResponse>('/api/categories', {
+            params: filters,
+        });
+        return extractData(response);
     },
 
     /**
      * Get category by ID
      */
     getById: async (id: string): Promise<CategoryDetailResponse> => {
-        return apiCall<CategoryDetailResponse>(`/api/categories/${id}`);
+        const response = await apiClient.get<CategoryDetailResponse>(`/api/categories/${id}`);
+        return extractData(response);
     },
 
     /**
      * Get subcategories of a category
      */
     getSubcategories: async (id: string): Promise<CategoriesResponse> => {
-        return apiCall<CategoriesResponse>(`/api/categories/${id}/subcategories`);
+        const response = await apiClient.get<CategoriesResponse>(`/api/categories/${id}/subcategories`);
+        return extractData(response);
     },
 
     /**
@@ -162,39 +75,35 @@ export const categoriesApi = {
      * Uses FormData to support file uploads
      */
     create: async (data: CreateCategoryData): Promise<CategoryDetailResponse> => {
-        return apiCallFormData<CategoryDetailResponse>('/api/categories', {
-            method: 'POST',
-            body: toFormData(data),
-        });
+        const formData = toFormData(data);
+        const response = await apiClient.post<CategoryDetailResponse>('/api/categories', formData);
+        // Axios automatically sets Content-Type: multipart/form-data with boundary
+        return extractData(response);
     },
 
     /**
      * Update a category (PUT)
-     * Uses POST with _method=PUT to support file uploads
+     * Uses POST with _method=PUT to support file uploads (Laravel method spoofing)
      */
     update: async (id: string, data: UpdateCategoryData): Promise<CategoryDetailResponse> => {
-        return apiCallFormData<CategoryDetailResponse>(`/api/categories/${id}`, {
-            method: 'POST',
-            body: toFormData(data, 'PUT'),
-        });
+        const formData = toFormData(data, 'PUT');
+        const response = await apiClient.post<CategoryDetailResponse>(`/api/categories/${id}`, formData);
+        return extractData(response);
     },
 
     /**
      * Partial update a category (PATCH)
      */
     patch: async (id: string, data: Partial<UpdateCategoryData>): Promise<CategoryDetailResponse> => {
-        return apiCall<CategoryDetailResponse>(`/api/categories/${id}`, {
-            method: 'PATCH',
-            body: JSON.stringify(data),
-        });
+        const response = await apiClient.patch<CategoryDetailResponse>(`/api/categories/${id}`, data);
+        return extractData(response);
     },
 
     /**
      * Delete a category
      */
     delete: async (id: string): Promise<DeleteCategoryResponse> => {
-        return apiCall<DeleteCategoryResponse>(`/api/categories/${id}`, {
-            method: 'DELETE',
-        });
+        const response = await apiClient.delete<DeleteCategoryResponse>(`/api/categories/${id}`);
+        return extractData(response);
     },
 };
