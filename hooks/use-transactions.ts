@@ -80,11 +80,30 @@ export function useCreateTransaction() {
 
     return useMutation({
         mutationFn: (data: CreateTransactionData) => transactionsApi.create(data),
-        onSuccess: () => {
-            // Invalidate and refetch transactions list (both regular and infinite)
+        // Optimistic update
+        onMutate: async () => {
+            // Cancel outgoing refetches
+            await queryClient.cancelQueries({ queryKey: transactionKeys.infiniteLists() });
+
+            // Snapshot previous value
+            const previousData = queryClient.getQueryData(transactionKeys.infiniteLists());
+
+            // Optimistically add to cache (we don't have the full transaction yet, so we'll wait for server response)
+            // For create, we can't really optimistically add because we don't have the ID yet
+            // So we'll just show loading state and rely on refetch
+
+            return { previousData };
+        },
+        // If mutation fails, rollback
+        onError: (_err, _newTransaction, context) => {
+            if (context?.previousData) {
+                queryClient.setQueryData(transactionKeys.infiniteLists(), context.previousData);
+            }
+        },
+        // Always refetch after success or error
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: transactionKeys.lists() });
             queryClient.invalidateQueries({ queryKey: transactionKeys.infiniteLists() });
-            // Also invalidate summary as totals may have changed
             queryClient.invalidateQueries({ queryKey: transactionKeys.summaries() });
         },
     });
@@ -98,13 +117,60 @@ export function useUpdateTransaction() {
 
     return useMutation({
         mutationFn: ({ id, data }: { id: string; data: UpdateTransactionData }) => transactionsApi.update(id, data),
-        onSuccess: (_, variables) => {
-            // Invalidate the specific transaction detail
+        // Optimistic update
+        onMutate: async ({ id, data }) => {
+            // Cancel outgoing refetches
+            await queryClient.cancelQueries({ queryKey: transactionKeys.detail(id) });
+            await queryClient.cancelQueries({ queryKey: transactionKeys.infiniteLists() });
+
+            // Snapshot previous values
+            const previousTransaction = queryClient.getQueryData(transactionKeys.detail(id));
+            const previousInfiniteData = queryClient.getQueryData(transactionKeys.infiniteLists());
+
+            // Optimistically update the transaction detail
+            queryClient.setQueryData(transactionKeys.detail(id), (old: unknown) => {
+                if (!old || typeof old !== 'object') return old;
+                const oldData = old as { data: Record<string, unknown> };
+                return {
+                    ...oldData,
+                    data: {
+                        ...oldData.data,
+                        ...data,
+                    },
+                };
+            });
+
+            // Optimistically update in infinite list
+            queryClient.setQueriesData({ queryKey: transactionKeys.infiniteLists() }, (old: unknown) => {
+                if (!old || typeof old !== 'object') return old;
+                const oldData = old as { pages: Array<{ data: Array<{ id: string }> }> };
+                return {
+                    ...oldData,
+                    pages: oldData.pages.map((page) => ({
+                        ...page,
+                        data: page.data.map((transaction) =>
+                            transaction.id === id ? { ...transaction, ...data } : transaction,
+                        ),
+                    })),
+                };
+            });
+
+            return { previousTransaction, previousInfiniteData };
+        },
+        // If mutation fails, rollback
+        onError: (_err, { id }, context) => {
+            if (context?.previousTransaction) {
+                queryClient.setQueryData(transactionKeys.detail(id), context.previousTransaction);
+            }
+            if (context?.previousInfiniteData) {
+                queryClient.setQueriesData({ queryKey: transactionKeys.infiniteLists() }, context.previousInfiniteData);
+            }
+        },
+        // Always refetch after success or error to ensure sync
+        onSettled: (_, __, variables) => {
             queryClient.invalidateQueries({ queryKey: transactionKeys.detail(variables.id) });
-            // Invalidate the transactions list (both regular and infinite)
             queryClient.invalidateQueries({ queryKey: transactionKeys.lists() });
             queryClient.invalidateQueries({ queryKey: transactionKeys.infiniteLists() });
-            // Also invalidate summary as totals may have changed
             queryClient.invalidateQueries({ queryKey: transactionKeys.summaries() });
         },
     });
@@ -118,11 +184,110 @@ export function useDeleteTransaction() {
 
     return useMutation({
         mutationFn: (id: string) => transactionsApi.delete(id),
-        onSuccess: () => {
-            // Invalidate and refetch transactions list (both regular and infinite)
+        // Optimistic update
+        onMutate: async (deletedId) => {
+            // Cancel outgoing refetches
+            await queryClient.cancelQueries({ queryKey: transactionKeys.infiniteLists() });
+            await queryClient.cancelQueries({ queryKey: transactionKeys.lists() });
+
+            // Snapshot previous value
+            const previousInfiniteData = queryClient.getQueryData(transactionKeys.infiniteLists());
+            const previousListData = queryClient.getQueryData(transactionKeys.lists());
+
+            // Optimistically remove from infinite list
+            queryClient.setQueriesData({ queryKey: transactionKeys.infiniteLists() }, (old: unknown) => {
+                if (!old || typeof old !== 'object') return old;
+                const oldData = old as {
+                    pages: Array<{ data: Array<{ id: string }>; pagination: { total: number } }>;
+                };
+                return {
+                    ...oldData,
+                    pages: oldData.pages.map((page) => ({
+                        ...page,
+                        data: page.data.filter((transaction) => transaction.id !== deletedId),
+                        pagination: {
+                            ...page.pagination,
+                            total: page.pagination.total - 1,
+                        },
+                    })),
+                };
+            });
+
+            return { previousInfiniteData, previousListData };
+        },
+        // If mutation fails, rollback
+        onError: (_err, _deletedId, context) => {
+            if (context?.previousInfiniteData) {
+                queryClient.setQueriesData({ queryKey: transactionKeys.infiniteLists() }, context.previousInfiniteData);
+            }
+            if (context?.previousListData) {
+                queryClient.setQueriesData({ queryKey: transactionKeys.lists() }, context.previousListData);
+            }
+        },
+        // Always refetch after success or error to ensure sync
+        onSettled: () => {
             queryClient.invalidateQueries({ queryKey: transactionKeys.lists() });
             queryClient.invalidateQueries({ queryKey: transactionKeys.infiniteLists() });
-            // Also invalidate summary as totals may have changed
+            queryClient.invalidateQueries({ queryKey: transactionKeys.summaries() });
+        },
+    });
+}
+
+/**
+ * Hook to delete multiple transactions at once (bulk delete)
+ */
+export function useBulkDeleteTransactions() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async (ids: string[]) => {
+            // Delete all transactions in parallel
+            await Promise.all(ids.map((id) => transactionsApi.delete(id)));
+        },
+        // Optimistic update
+        onMutate: async (deletedIds) => {
+            // Cancel outgoing refetches
+            await queryClient.cancelQueries({ queryKey: transactionKeys.infiniteLists() });
+            await queryClient.cancelQueries({ queryKey: transactionKeys.lists() });
+
+            // Snapshot previous values
+            const previousInfiniteData = queryClient.getQueryData(transactionKeys.infiniteLists());
+            const previousListData = queryClient.getQueryData(transactionKeys.lists());
+
+            // Optimistically remove from infinite list
+            queryClient.setQueriesData({ queryKey: transactionKeys.infiniteLists() }, (old: unknown) => {
+                if (!old || typeof old !== 'object') return old;
+                const oldData = old as {
+                    pages: Array<{ data: Array<{ id: string }>; pagination: { total: number } }>;
+                };
+                return {
+                    ...oldData,
+                    pages: oldData.pages.map((page) => ({
+                        ...page,
+                        data: page.data.filter((transaction) => !deletedIds.includes(transaction.id)),
+                        pagination: {
+                            ...page.pagination,
+                            total: page.pagination.total - deletedIds.length,
+                        },
+                    })),
+                };
+            });
+
+            return { previousInfiniteData, previousListData };
+        },
+        // If mutation fails, rollback
+        onError: (_err, _deletedIds, context) => {
+            if (context?.previousInfiniteData) {
+                queryClient.setQueriesData({ queryKey: transactionKeys.infiniteLists() }, context.previousInfiniteData);
+            }
+            if (context?.previousListData) {
+                queryClient.setQueriesData({ queryKey: transactionKeys.lists() }, context.previousListData);
+            }
+        },
+        // Always refetch after success or error to ensure sync
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: transactionKeys.lists() });
+            queryClient.invalidateQueries({ queryKey: transactionKeys.infiniteLists() });
             queryClient.invalidateQueries({ queryKey: transactionKeys.summaries() });
         },
     });

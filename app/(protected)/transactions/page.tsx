@@ -4,15 +4,20 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import type { Transaction, TransactionApiFilters, TransactionGroup, TransactionSortBy } from '@/lib/types/transaction';
 import { apiTransactionToLegacy } from '@/lib/types/transaction';
 import { groupTransactionsByDate } from '@/lib/utils/transaction-utils';
 import { useIsLargeScreen } from '@/hooks/use-large-screen';
-import { useInfiniteTransactions } from '@/hooks/use-transactions';
+import { useBulkDeleteTransactions, useInfiniteTransactions } from '@/hooks/use-transactions';
+import { useUrlFilters } from '@/hooks/use-url-filters';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
+import { BulkActionBar } from './bulk-action-bar';
+import { EmptyState } from './empty-state';
 import { FilterBar } from './filter-bar';
 import { TransactionDetail } from './transaction-detail';
+import { TransactionListSkeleton } from './transaction-list-skeleton';
 import { TransactionRow } from './transaction-row';
 
 // Extracted TransactionList component to avoid duplication
@@ -26,6 +31,11 @@ interface TransactionListProps {
     hasNextPage?: boolean;
     onLoadMore?: () => void;
     error?: Error | null;
+    hasFilters?: boolean;
+    onCreateClick?: () => void;
+    onClearFilters?: () => void;
+    selectedIds?: Set<string>;
+    onToggleSelection?: (id: string) => void;
 }
 
 const TransactionList = memo(function TransactionList({
@@ -38,6 +48,11 @@ const TransactionList = memo(function TransactionList({
     hasNextPage,
     onLoadMore,
     error,
+    hasFilters,
+    onCreateClick,
+    onClearFilters,
+    selectedIds,
+    onToggleSelection,
 }: TransactionListProps) {
     const { t } = useTranslation();
     const loadMoreRef = useRef<HTMLDivElement>(null);
@@ -61,14 +76,7 @@ const TransactionList = memo(function TransactionList({
     }, [hasNextPage, isFetchingNextPage, onLoadMore]);
 
     if (isLoading) {
-        return (
-            <div className="flex-1 flex items-center justify-center">
-                <div className="text-center">
-                    <Loader2 className="h-8 w-8 animate-spin mx-auto text-muted-foreground" />
-                    <p className="mt-2 text-sm text-muted-foreground">{t('common.messages.loading')}</p>
-                </div>
-            </div>
-        );
+        return <TransactionListSkeleton />;
     }
 
     if (error) {
@@ -93,7 +101,21 @@ const TransactionList = memo(function TransactionList({
                                     key={transaction.id}
                                     transaction={transaction}
                                     isSelected={selectedTransactionId === transaction.id}
-                                    onClick={() => onTransactionSelect(transaction)}
+                                    onClick={() => {
+                                        // If has selections, clicking toggles selection
+                                        // Otherwise, opens detail view
+                                        if (selectedIds && selectedIds.size > 0 && onToggleSelection) {
+                                            onToggleSelection(transaction.id);
+                                        } else {
+                                            onTransactionSelect(transaction);
+                                        }
+                                    }}
+                                    isChecked={selectedIds?.has(transaction.id)}
+                                    onCheckChange={() => {
+                                        if (onToggleSelection) {
+                                            onToggleSelection(transaction.id);
+                                        }
+                                    }}
                                 />
                             ))}
                         </div>
@@ -101,9 +123,7 @@ const TransactionList = memo(function TransactionList({
                 ))}
 
                 {filteredTransactionsCount === 0 && !isFetchingNextPage && (
-                    <div className="text-center py-12 text-muted-foreground">
-                        <p>{t('transactions.noResults')}</p>
-                    </div>
+                    <EmptyState hasFilters={hasFilters} onCreateClick={onCreateClick} onClearFilters={onClearFilters} />
                 )}
 
                 {/* Load more trigger element */}
@@ -126,14 +146,31 @@ export default function TransactionsPage() {
     const searchParams = useSearchParams();
     const isLargeScreen = useIsLargeScreen();
 
-    // Get transaction ID from URL
+    // Get transaction ID and mode from URL
     const transactionIdFromUrl = searchParams.get('id');
+    const modeFromUrl = searchParams.get('mode') as 'view' | 'create' | null;
 
     const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
-    const [searchValue, setSearchValue] = useState('');
-    const [sortBy, setSortBy] = useState<TransactionSortBy>('date');
-    const [categoryIds, setCategoryIds] = useState<string[]>([]);
-    const [showDetail, setShowDetail] = useState(!!transactionIdFromUrl && !isLargeScreen);
+    const {
+        searchValue,
+        setSearchValue,
+        sortBy,
+        setSortBy,
+        categoryIds,
+        setCategoryIds,
+        dateRange,
+        setDateRange,
+        type,
+        setType,
+    } = useUrlFilters({ defaultSort: 'date' });
+    const [showDetail, setShowDetail] = useState(
+        (!!transactionIdFromUrl || modeFromUrl === 'create') && !isLargeScreen,
+    );
+    const [detailMode, setDetailMode] = useState<'view' | 'create'>(modeFromUrl || 'view');
+
+    // Bulk actions state
+    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+    const bulkDeleteMutation = useBulkDeleteTransactions();
 
     // Build API filters based on UI state
     const apiFilters = useMemo((): Omit<TransactionApiFilters, 'page'> => {
@@ -146,12 +183,20 @@ export default function TransactionsPage() {
             amount_desc: { sort_by: 'amount', sort_direction: 'desc' },
         };
 
+        // Format dates to ISO string for API
+        const formatDateForAPI = (date: Date): string => {
+            return date.toISOString();
+        };
+
         return {
             ...sortMapping[sortBy],
             category_id: categoryIds.length > 0 ? categoryIds.join(',') : undefined,
             search: searchValue || undefined,
+            start_date: dateRange.from ? formatDateForAPI(dateRange.from) : undefined,
+            end_date: dateRange.to ? formatDateForAPI(dateRange.to) : undefined,
+            type: type !== 'all' ? type : undefined,
         };
-    }, [sortBy, categoryIds, searchValue]);
+    }, [sortBy, categoryIds, searchValue, dateRange, type]);
 
     // Fetch transactions from API with infinite scroll
     const {
@@ -196,36 +241,137 @@ export default function TransactionsPage() {
         }
     }, [transactionIdFromUrl, getInitialTransaction, isLargeScreen, allTransactions.length]);
 
+    // Sync detailMode with URL
+    useEffect(() => {
+        if (modeFromUrl) {
+            setDetailMode(modeFromUrl);
+            if (modeFromUrl === 'create') {
+                setSelectedTransaction(null);
+                if (!isLargeScreen) {
+                    setShowDetail(true);
+                }
+            }
+        }
+    }, [modeFromUrl, isLargeScreen]);
+
     // Group transactions by date
     const groupedTransactions = useMemo(() => {
         return groupTransactionsByDate(allTransactions, t);
     }, [allTransactions, t]);
 
-    // Update URL when selecting a transaction (use replace to avoid history pollution)
-    const updateUrlWithTransaction = useCallback(
-        (transactionId: string) => {
-            const params = new URLSearchParams(searchParams.toString());
-            params.set('id', transactionId);
-            router.replace(`/transactions?${params.toString()}`, { scroll: false });
-        },
-        [router, searchParams],
-    );
-
     const handleTransactionSelect = useCallback(
         (transaction: Transaction) => {
             setSelectedTransaction(transaction);
-            updateUrlWithTransaction(transaction.id);
+            setDetailMode('view');
+            // Clear mode param and set transaction id
+            const params = new URLSearchParams(searchParams.toString());
+            params.set('id', transaction.id);
+            params.delete('mode');
+            router.replace(`/transactions?${params.toString()}`, { scroll: false });
             if (!isLargeScreen) {
                 setShowDetail(true);
             }
         },
-        [isLargeScreen, updateUrlWithTransaction],
+        [isLargeScreen, router, searchParams],
     );
 
     const handleBackToList = useCallback(() => {
         setShowDetail(false);
+        setDetailMode('view');
+        // Clear all params
         router.push('/transactions', { scroll: false });
     }, [router]);
+
+    const handleCreateClick = useCallback(() => {
+        setDetailMode('create');
+        setSelectedTransaction(null);
+        // Update URL with mode=create
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete('id');
+        params.set('mode', 'create');
+        router.replace(`/transactions?${params.toString()}`, { scroll: false });
+        if (!isLargeScreen) {
+            setShowDetail(true);
+        }
+    }, [isLargeScreen, router, searchParams]);
+
+    const handleCreateSuccess = useCallback(() => {
+        // Data will be automatically refetched by React Query invalidation
+        // Close side panel or switch back to view mode
+        if (!isLargeScreen) {
+            setShowDetail(false);
+        }
+        setDetailMode('view');
+        // Clear mode from URL
+        const params = new URLSearchParams(searchParams.toString());
+        params.delete('mode');
+        router.replace(`/transactions?${params.toString()}`, { scroll: false });
+    }, [isLargeScreen, router, searchParams]);
+
+    const handleEditSuccess = useCallback(() => {
+        // Data will be automatically refetched by React Query invalidation
+    }, []);
+
+    const handleDeleteSuccess = useCallback(() => {
+        // Reset selection and go back to list
+        setSelectedTransaction(null);
+        if (!isLargeScreen) {
+            setShowDetail(false);
+        }
+        router.push('/transactions', { scroll: false });
+    }, [isLargeScreen, router]);
+
+    // Check if any filters are applied
+    const hasFilters = useMemo(() => {
+        return (
+            searchValue.trim() !== '' ||
+            categoryIds.length > 0 ||
+            dateRange.from !== undefined ||
+            dateRange.to !== undefined
+        );
+    }, [searchValue, categoryIds, dateRange]);
+
+    // Clear all filters
+    const handleClearFilters = useCallback(() => {
+        setSearchValue('');
+        setCategoryIds([]);
+        setDateRange({ from: undefined, to: undefined });
+    }, [setSearchValue, setCategoryIds, setDateRange]);
+
+    // Bulk actions handlers
+    const handleToggleSelection = useCallback((id: string) => {
+        setSelectedIds((prev) => {
+            const newSet = new Set(prev);
+            if (newSet.has(id)) {
+                newSet.delete(id);
+            } else {
+                newSet.add(id);
+            }
+            return newSet;
+        });
+    }, []);
+
+    const handleCancelBulkMode = useCallback(() => {
+        setSelectedIds(new Set());
+    }, []);
+
+    const handleBulkDelete = useCallback(async () => {
+        if (selectedIds.size === 0) return;
+
+        const count = selectedIds.size;
+        const confirmed = window.confirm(t('transactions.bulkActions.confirmDeleteMessage', { count }));
+
+        if (!confirmed) return;
+
+        try {
+            await bulkDeleteMutation.mutateAsync(Array.from(selectedIds));
+            toast.success(t('transactions.bulkActions.deleteSuccess', { count }));
+            setSelectedIds(new Set());
+        } catch (error) {
+            console.error('Bulk delete error:', error);
+            toast.error(t('transactions.bulkActions.deleteError'));
+        }
+    }, [selectedIds, bulkDeleteMutation, t]);
 
     // Mobile/Tablet view (<1280px): show list with Sheet for detail
     if (!isLargeScreen) {
@@ -238,6 +384,11 @@ export default function TransactionsPage() {
                     onSortChange={setSortBy}
                     categoryIds={categoryIds}
                     onCategoryIdsChange={setCategoryIds}
+                    dateRange={dateRange}
+                    onDateRangeChange={setDateRange}
+                    type={type}
+                    onTypeChange={setType}
+                    onCreateClick={handleCreateClick}
                 />
                 <TransactionList
                     groupedTransactions={groupedTransactions}
@@ -249,6 +400,11 @@ export default function TransactionsPage() {
                     hasNextPage={hasNextPage}
                     onLoadMore={handleLoadMore}
                     error={error as Error | null}
+                    hasFilters={hasFilters}
+                    onCreateClick={handleCreateClick}
+                    onClearFilters={handleClearFilters}
+                    selectedIds={selectedIds}
+                    onToggleSelection={handleToggleSelection}
                 />
 
                 <Sheet
@@ -260,10 +416,31 @@ export default function TransactionsPage() {
                     }}
                 >
                     <SheetContent side="right" className="w-full sm:max-w-md p-0" close={false}>
-                        <SheetTitle className="sr-only">{t('transactions.detail.title')}</SheetTitle>
-                        <TransactionDetail transaction={selectedTransaction} onBack={handleBackToList} isMobile />
+                        <SheetTitle className="sr-only">
+                            {detailMode === 'create'
+                                ? t('transactions.form.createTitle')
+                                : t('transactions.detail.title')}
+                        </SheetTitle>
+                        <TransactionDetail
+                            transaction={selectedTransaction}
+                            mode={detailMode}
+                            onBack={handleBackToList}
+                            isMobile
+                            onEditSuccess={handleEditSuccess}
+                            onDeleteSuccess={handleDeleteSuccess}
+                            onCreateSuccess={handleCreateSuccess}
+                        />
                     </SheetContent>
                 </Sheet>
+
+                {/* Floating Bulk Action Bar */}
+                <BulkActionBar
+                    selectedCount={selectedIds.size}
+                    onDelete={handleBulkDelete}
+                    onCancel={handleCancelBulkMode}
+                    isDeleting={bulkDeleteMutation.isPending}
+                    show={selectedIds.size > 0}
+                />
             </div>
         );
     }
@@ -280,6 +457,11 @@ export default function TransactionsPage() {
                     onSortChange={setSortBy}
                     categoryIds={categoryIds}
                     onCategoryIdsChange={setCategoryIds}
+                    dateRange={dateRange}
+                    onDateRangeChange={setDateRange}
+                    type={type}
+                    onTypeChange={setType}
+                    onCreateClick={handleCreateClick}
                 />
                 <TransactionList
                     groupedTransactions={groupedTransactions}
@@ -291,13 +473,33 @@ export default function TransactionsPage() {
                     hasNextPage={hasNextPage}
                     onLoadMore={handleLoadMore}
                     error={error as Error | null}
+                    hasFilters={hasFilters}
+                    onCreateClick={handleCreateClick}
+                    onClearFilters={handleClearFilters}
+                    selectedIds={selectedIds}
+                    onToggleSelection={handleToggleSelection}
                 />
             </div>
 
             {/* Right Pane - Transaction Detail */}
             <div className="overflow-hidden">
-                <TransactionDetail transaction={selectedTransaction} />
+                <TransactionDetail
+                    transaction={selectedTransaction}
+                    mode={detailMode}
+                    onEditSuccess={handleEditSuccess}
+                    onDeleteSuccess={handleDeleteSuccess}
+                    onCreateSuccess={handleCreateSuccess}
+                />
             </div>
+
+            {/* Floating Bulk Action Bar */}
+            <BulkActionBar
+                selectedCount={selectedIds.size}
+                onDelete={handleBulkDelete}
+                onCancel={handleCancelBulkMode}
+                isDeleting={bulkDeleteMutation.isPending}
+                show={selectedIds.size > 0}
+            />
         </div>
     );
 }

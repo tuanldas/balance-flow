@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { apiClient, createRawClient, extractData } from '@/lib/api/client';
 
 // Types
 interface User {
@@ -49,19 +50,6 @@ interface LoginResponse {
 // Create context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Get base URL from environment
-const getBaseUrl = () => {
-    return process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
-};
-
-// Get locale from i18n
-const getLocale = () => {
-    if (typeof window !== 'undefined') {
-        return localStorage.getItem('i18nextLng') || 'vi';
-    }
-    return 'vi';
-};
-
 export function AuthProvider({ children }: AuthProviderProps) {
     const [user, setUser] = useState<User | null>(null);
     const [accessToken, setAccessToken] = useState<string | null>(null);
@@ -73,69 +61,30 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const token = localStorage.getItem('access_token');
         if (token) {
             setAccessToken(token);
-            // Fetch user data
             fetchCurrentUser(token);
         } else {
             setIsLoading(false);
         }
     }, []);
 
-    // API call helper
-    const apiCall = async <T,>(
-        endpoint: string,
-        options: RequestInit = {},
-        requiresAuth = true,
-    ): Promise<ApiResponse<T>> => {
-        const headers: Record<string, string> = {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-            'Accept-Language': getLocale(),
-        };
-
-        if (requiresAuth && accessToken) {
-            headers.Authorization = `Bearer ${accessToken}`;
-        }
-
-        const response = await fetch(`${getBaseUrl()}${endpoint}`, {
-            ...options,
-            headers: {
-                ...headers,
-                ...(options.headers as Record<string, string>),
-            },
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || 'An error occurred');
-        }
-
-        return data;
-    };
-
-    // Fetch current user
+    // Fetch current user (SILENT - no toast on error)
     const fetchCurrentUser = async (token: string) => {
         try {
-            const response = await fetch(`${getBaseUrl()}/api/auth/me`, {
+            // Use raw client without interceptors to avoid auto-toast
+            const rawClient = createRawClient();
+            const response = await rawClient.get<ApiResponse<User>>('/api/auth/me', {
                 headers: {
-                    Accept: 'application/json',
                     Authorization: `Bearer ${token}`,
-                    'Accept-Language': getLocale(),
                 },
             });
 
-            if (response.ok) {
-                const data: ApiResponse<User> = await response.json();
-                if (data.success && data.data) {
-                    setUser(data.data);
-                }
-            } else {
-                // Token invalid, clear it
-                localStorage.removeItem('access_token');
-                setAccessToken(null);
+            const data = response.data;
+            if (data.success && data.data) {
+                setUser(data.data);
             }
         } catch (error) {
             console.error('Failed to fetch user:', error);
+            // Token invalid, clear it
             localStorage.removeItem('access_token');
             setAccessToken(null);
         } finally {
@@ -143,48 +92,40 @@ export function AuthProvider({ children }: AuthProviderProps) {
         }
     };
 
-    // Login
+    // Login - use regular apiClient (shows toast on error)
     const login = async (email: string, password: string) => {
         try {
-            const response = await apiCall<LoginResponse>(
-                '/api/auth/login',
-                {
-                    method: 'POST',
-                    body: JSON.stringify({ email, password }),
-                },
-                false,
-            );
+            const response = await apiClient.post<ApiResponse<LoginResponse>>('/api/auth/login', {
+                email,
+                password,
+            });
 
-            if (response.success && response.data) {
-                const { user: userData, access_token } = response.data;
+            const data = extractData(response);
+            if (data.success && data.data) {
+                const { user: userData, access_token } = data.data;
                 setUser(userData);
                 setAccessToken(access_token);
                 localStorage.setItem('access_token', access_token);
             }
         } catch (error) {
+            // Error toast already shown by interceptor
             throw error;
         }
     };
 
-    // Register
+    // Register - use regular apiClient
     const register = async (name: string, email: string, password: string, passwordConfirmation: string) => {
         try {
-            const response = await apiCall<LoginResponse>(
-                '/api/auth/register',
-                {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        name,
-                        email,
-                        password,
-                        password_confirmation: passwordConfirmation,
-                    }),
-                },
-                false,
-            );
+            const response = await apiClient.post<ApiResponse<LoginResponse>>('/api/auth/register', {
+                name,
+                email,
+                password,
+                password_confirmation: passwordConfirmation,
+            });
 
-            if (response.success && response.data) {
-                const { user: userData, access_token } = response.data;
+            const data = extractData(response);
+            if (data.success && data.data) {
+                const { user: userData, access_token } = data.data;
                 setUser(userData);
                 setAccessToken(access_token);
                 localStorage.setItem('access_token', access_token);
@@ -194,13 +135,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
         }
     };
 
-    // Logout
+    // Logout - use regular apiClient
     const logout = async () => {
         try {
             if (accessToken) {
-                await apiCall('/api/auth/logout', {
-                    method: 'POST',
-                });
+                await apiClient.post('/api/auth/logout');
             }
         } catch (error) {
             console.error('Logout error:', error);
@@ -208,7 +147,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             setUser(null);
             setAccessToken(null);
             localStorage.removeItem('access_token');
-            router.push('/login');
+            router.push('/signin');
         }
     };
 
@@ -216,9 +155,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const logoutAll = async () => {
         try {
             if (accessToken) {
-                await apiCall('/api/auth/logout-all', {
-                    method: 'POST',
-                });
+                await apiClient.post('/api/auth/logout-all');
             }
         } catch (error) {
             console.error('Logout all error:', error);
@@ -226,20 +163,18 @@ export function AuthProvider({ children }: AuthProviderProps) {
             setUser(null);
             setAccessToken(null);
             localStorage.removeItem('access_token');
-            router.push('/login');
+            router.push('/signin');
         }
     };
 
     // Update profile
     const updateProfile = async (data: { name?: string; email?: string }) => {
         try {
-            const response = await apiCall<User>('/api/auth/profile', {
-                method: 'PUT',
-                body: JSON.stringify(data),
-            });
+            const response = await apiClient.put<ApiResponse<User>>('/api/auth/profile', data);
+            const result = extractData(response);
 
-            if (response.success && response.data) {
-                setUser(response.data);
+            if (result.success && result.data) {
+                setUser(result.data);
             }
         } catch (error) {
             throw error;
@@ -249,20 +184,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
     // Change password
     const changePassword = async (currentPassword: string, newPassword: string, newPasswordConfirmation: string) => {
         try {
-            await apiCall('/api/auth/password', {
-                method: 'PUT',
-                body: JSON.stringify({
-                    current_password: currentPassword,
-                    new_password: newPassword,
-                    new_password_confirmation: newPasswordConfirmation,
-                }),
+            await apiClient.put('/api/auth/password', {
+                current_password: currentPassword,
+                new_password: newPassword,
+                new_password_confirmation: newPasswordConfirmation,
             });
 
             // After password change, user must login again
             setUser(null);
             setAccessToken(null);
             localStorage.removeItem('access_token');
-            router.push('/login');
+            router.push('/signin');
         } catch (error) {
             throw error;
         }
@@ -271,14 +203,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     // Request password reset
     const requestPasswordReset = async (email: string) => {
         try {
-            await apiCall(
-                '/api/auth/forgot-password',
-                {
-                    method: 'POST',
-                    body: JSON.stringify({ email }),
-                },
-                false,
-            );
+            await apiClient.post('/api/auth/forgot-password', { email });
         } catch (error) {
             throw error;
         }
@@ -287,19 +212,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
     // Reset password with token
     const resetPassword = async (token: string, email: string, password: string, passwordConfirmation: string) => {
         try {
-            await apiCall(
-                '/api/auth/reset-password',
-                {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        token,
-                        email,
-                        password,
-                        password_confirmation: passwordConfirmation,
-                    }),
-                },
-                false,
-            );
+            await apiClient.post('/api/auth/reset-password', {
+                token,
+                email,
+                password,
+                password_confirmation: passwordConfirmation,
+            });
         } catch (error) {
             throw error;
         }
@@ -308,14 +226,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     // Verify email
     const verifyEmail = async (id: string, hash: string) => {
         try {
-            await apiCall(
-                '/api/auth/verify-email',
-                {
-                    method: 'POST',
-                    body: JSON.stringify({ id, hash }),
-                },
-                false,
-            );
+            await apiClient.post('/api/auth/verify-email', { id, hash });
         } catch (error) {
             throw error;
         }
@@ -324,9 +235,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     // Resend verification email
     const resendVerificationEmail = async () => {
         try {
-            await apiCall('/api/auth/resend-verification-email', {
-                method: 'POST',
-            });
+            await apiClient.post('/api/auth/resend-verification-email');
         } catch (error) {
             throw error;
         }

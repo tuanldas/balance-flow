@@ -274,6 +274,12 @@
             "cancelled": "Đã hủy",
             "toReview": "Cần xem xét"
         },
+        "type": {
+            "label": "Loại",
+            "all": "Tất cả",
+            "income": "Thu nhập",
+            "expense": "Chi tiêu"
+        },
         "actions": {
             "split": "Chia nhỏ",
             "recurring": "Định kỳ",
@@ -292,6 +298,70 @@
             "tags": "Nhãn",
             "tagsPlaceholder": "Thêm nhãn (phân cách bằng dấu phẩy)",
             "similarTransactions": "Giao dịch tương tự"
+        },
+        "form": {
+            "createTitle": "Thêm giao dịch mới",
+            "createDescription": "Điền thông tin giao dịch của bạn bên dưới",
+            "editTitle": "Chỉnh sửa giao dịch",
+            "type": "Loại giao dịch",
+            "category": "Danh mục",
+            "categoryPlaceholder": "Chọn danh mục",
+            "amount": "Số tiền",
+            "amountPlaceholder": "Nhập số tiền",
+            "date": "Ngày giao dịch",
+            "datePlaceholder": "Chọn ngày",
+            "merchant": "Tên giao dịch",
+            "merchantPlaceholder": "Nhập tên giao dịch",
+            "notes": "Ghi chú",
+            "notesPlaceholder": "Nhập ghi chú (tùy chọn)",
+            "status": "Trạng thái",
+            "statusPlaceholder": "Chọn trạng thái",
+            "createButton": "Tạo giao dịch",
+            "updateButton": "Cập nhật",
+            "cancelButton": "Hủy",
+            "deleteButton": "Xóa"
+        },
+        "validation": {
+            "merchantRequired": "Tên giao dịch là bắt buộc.",
+            "categoryRequired": "Danh mục là bắt buộc.",
+            "amountInvalid": "Số tiền phải là một số.",
+            "amountPositive": "Số tiền phải lớn hơn 0.",
+            "dateRequired": "Ngày giao dịch là bắt buộc."
+        },
+        "empty": {
+            "title": "Chưa có giao dịch nào",
+            "description": "Bắt đầu theo dõi thu chi của bạn bằng cách tạo giao dịch đầu tiên",
+            "createFirst": "Tạo giao dịch đầu tiên",
+            "noResults": {
+                "title": "Không tìm thấy giao dịch nào",
+                "description": "Không có giao dịch nào khớp với bộ lọc hiện tại. Thử điều chỉnh bộ lọc của bạn.",
+                "clearFilters": "Xóa bộ lọc"
+            }
+        },
+        "messages": {
+            "createSuccess": "Tạo giao dịch thành công!",
+            "updateSuccess": "Cập nhật giao dịch thành công!",
+            "deleteSuccess": "Xóa giao dịch thành công!",
+            "createError": "Không thể tạo giao dịch. Vui lòng thử lại.",
+            "updateError": "Không thể cập nhật giao dịch. Vui lòng thử lại.",
+            "deleteError": "Không thể xóa giao dịch. Vui lòng thử lại.",
+            "confirmDelete": "Bạn có chắc chắn muốn xóa giao dịch này?",
+            "deleteWarning": "Hành động này không thể hoàn tác."
+        },
+        "bulkActions": {
+            "selected": "đã chọn",
+            "delete": "Xóa",
+            "confirmDelete": "Xác nhận xóa hàng loạt",
+            "confirmDeleteMessage": "Bạn có chắc chắn muốn xóa {{count}} giao dịch đã chọn? Hành động này không thể hoàn tác.",
+            "deleteSuccess": "Đã xóa {{count}} giao dịch thành công!",
+            "deleteError": "Không thể xóa giao dịch. Vui lòng thử lại."
+        },
+        "dateRange": {
+            "selectRange": "Chọn khoảng thời gian",
+            "today": "Hôm nay",
+            "thisWeek": "Tuần này",
+            "thisMonth": "Tháng này",
+            "custom": "Tùy chỉnh"
         }
     }
 }

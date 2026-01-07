@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowDownAZ, ArrowDownWideNarrow, ArrowUpNarrowWide, Plus, Search, Tag, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import type { TransactionSortBy } from '@/lib/types/transaction';
+import type { TransactionSortBy, TransactionType } from '@/lib/types/transaction';
 import { cn } from '@/lib/utils';
 import { useCategories } from '@/hooks/use-categories';
 import { Button } from '@/components/ui/button';
@@ -21,6 +21,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { DateRangeFilter, DateRangeValue } from './date-range-filter';
 import { FilterSubmenu } from './filter-submenu';
 
 interface FilterBarProps {
@@ -30,6 +32,11 @@ interface FilterBarProps {
     onSortChange: (sort: TransactionSortBy) => void;
     categoryIds: string[];
     onCategoryIdsChange: (categoryIds: string[]) => void;
+    dateRange: DateRangeValue;
+    onDateRangeChange: (dateRange: DateRangeValue) => void;
+    type: TransactionType | 'all';
+    onTypeChange: (type: TransactionType | 'all') => void;
+    onCreateClick?: () => void;
 }
 
 export function FilterBar({
@@ -39,6 +46,11 @@ export function FilterBar({
     onSortChange,
     categoryIds,
     onCategoryIdsChange,
+    dateRange,
+    onDateRangeChange,
+    type,
+    onTypeChange,
+    onCreateClick,
 }: FilterBarProps) {
     const { t } = useTranslation();
     const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -89,11 +101,12 @@ export function FilterBar({
         }
     };
 
-    const hasActiveFilters = searchValue.trim().length > 0 || categoryIds.length > 0;
+    const hasActiveFilters = searchValue.trim().length > 0 || categoryIds.length > 0 || dateRange.from !== undefined;
 
     const clearAllFilters = () => {
         onSearchChange('');
         onCategoryIdsChange([]);
+        onDateRangeChange({ from: undefined, to: undefined });
     };
 
     const getFilterBadges = () => {
@@ -104,6 +117,26 @@ export function FilterBar({
                 key: 'search',
                 label: searchValue,
                 onRemove: () => onSearchChange(''),
+            });
+        }
+
+        if (dateRange.from) {
+            const formatDate = (date: Date) => {
+                return new Intl.DateTimeFormat('vi-VN', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                }).format(date);
+            };
+
+            const label = dateRange.to
+                ? `${formatDate(dateRange.from)} - ${formatDate(dateRange.to)}`
+                : formatDate(dateRange.from);
+
+            badges.push({
+                key: 'dateRange',
+                label,
+                onRemove: () => onDateRangeChange({ from: undefined, to: undefined }),
             });
         }
 
@@ -124,93 +157,133 @@ export function FilterBar({
 
     const filterBadges = getFilterBadges();
 
+    const typeOptions: { value: TransactionType | 'all'; label: string }[] = [
+        { value: 'all', label: t('transactions.type.all') },
+        { value: 'income', label: t('transactions.type.income') },
+        { value: 'expense', label: t('transactions.type.expense') },
+    ];
+
     return (
         <div className="border-b border-border">
-            <div className="flex items-center justify-end gap-2 p-4">
-                <Popover open={isSearchOpen} onOpenChange={setIsSearchOpen}>
-                    <PopoverTrigger asChild>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className={cn('px-2.5', searchValue && 'border-primary text-primary')}
-                        >
-                            <Search className="h-4 w-4" />
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent align="end" className="w-64 p-2">
-                        <Input
-                            ref={searchInputRef}
-                            type="text"
-                            placeholder={t('transactions.searchPlaceholder')}
-                            value={searchValue}
-                            onChange={(e) => onSearchChange(e.target.value)}
-                            className="h-9"
-                        />
-                    </PopoverContent>
-                </Popover>
-
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm" className="gap-1.5">
-                            <Plus className="h-4 w-4" />
-                            <span className="hidden sm:inline">{t('transactions.filterButton')}</span>
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-52">
-                        <DropdownMenuSub>
-                            <DropdownMenuSubTrigger>
-                                <Tag className="h-4 w-4 mr-2" />
-                                {t('transactions.filter.category')}
-                                {categoryIds.length > 0 && (
-                                    <span className="ml-auto text-xs text-muted-foreground">{categoryIds.length}</span>
-                                )}
-                            </DropdownMenuSubTrigger>
-                            <DropdownMenuPortal>
-                                <DropdownMenuSubContent>
-                                    <FilterSubmenu
-                                        items={categoryItems}
-                                        selectedIds={categoryIds}
-                                        onToggle={toggleCategory}
-                                        searchPlaceholder={t('transactions.filter.searchPlaceholder')}
-                                    />
-                                </DropdownMenuSubContent>
-                            </DropdownMenuPortal>
-                        </DropdownMenuSub>
-
-                        {categoryIds.length > 0 && (
-                            <>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={clearAllFilters} className="text-destructive">
-                                    <X className="h-4 w-4 mr-2" />
-                                    {t('transactions.filter.clearAll')}
-                                </DropdownMenuItem>
-                            </>
-                        )}
-                    </DropdownMenuContent>
-                </DropdownMenu>
-
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm" className="gap-1.5">
-                            {currentSort?.icon}
-                            <span className="hidden sm:inline">{t('transactions.sortButton')}</span>
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                        <DropdownMenuLabel>{t('transactions.sortBy')}</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        {sortOptions.map((option) => (
-                            <DropdownMenuItem
-                                key={option.value}
-                                onClick={() => onSortChange(option.value)}
-                                className="gap-2"
-                            >
-                                {option.icon}
+            {/* Type Filter - Sticky top row */}
+            <div className="flex items-center gap-2 px-4 pt-4 pb-2">
+                <span className="text-sm font-medium text-muted-foreground">{t('transactions.type.label')}:</span>
+                <Select value={type} onValueChange={onTypeChange}>
+                    <SelectTrigger className="w-[180px] h-9">
+                        <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {typeOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
                                 {option.label}
-                            </DropdownMenuItem>
+                            </SelectItem>
                         ))}
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                    </SelectContent>
+                </Select>
+            </div>
+
+            <div className="flex items-center justify-between gap-2 p-4 pt-2">
+                {/* Left side - Create button */}
+                <div className="flex items-center gap-2">
+                    {onCreateClick && (
+                        <Button onClick={onCreateClick} size="sm" className="gap-1.5">
+                            <Plus className="h-4 w-4" />
+                            <span className="hidden sm:inline">{t('common.buttons.add')}</span>
+                        </Button>
+                    )}
+                </div>
+
+                {/* Right side - Filter buttons */}
+                <div className="flex items-center gap-2">
+                    <Popover open={isSearchOpen} onOpenChange={setIsSearchOpen}>
+                        <PopoverTrigger asChild>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                className={cn('px-2.5', searchValue && 'border-primary text-primary')}
+                            >
+                                <Search className="h-4 w-4" />
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent align="end" className="w-64 p-2">
+                            <Input
+                                ref={searchInputRef}
+                                type="text"
+                                placeholder={t('transactions.searchPlaceholder')}
+                                value={searchValue}
+                                onChange={(e) => onSearchChange(e.target.value)}
+                                className="h-9"
+                            />
+                        </PopoverContent>
+                    </Popover>
+
+                    <DateRangeFilter value={dateRange} onChange={onDateRangeChange} />
+
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="sm" className="gap-1.5">
+                                <Plus className="h-4 w-4" />
+                                <span className="hidden sm:inline">{t('transactions.filterButton')}</span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-52">
+                            <DropdownMenuSub>
+                                <DropdownMenuSubTrigger>
+                                    <Tag className="h-4 w-4 mr-2" />
+                                    {t('transactions.filter.category')}
+                                    {categoryIds.length > 0 && (
+                                        <span className="ml-auto text-xs text-muted-foreground">
+                                            {categoryIds.length}
+                                        </span>
+                                    )}
+                                </DropdownMenuSubTrigger>
+                                <DropdownMenuPortal>
+                                    <DropdownMenuSubContent>
+                                        <FilterSubmenu
+                                            items={categoryItems}
+                                            selectedIds={categoryIds}
+                                            onToggle={toggleCategory}
+                                            searchPlaceholder={t('transactions.filter.searchPlaceholder')}
+                                        />
+                                    </DropdownMenuSubContent>
+                                </DropdownMenuPortal>
+                            </DropdownMenuSub>
+
+                            {categoryIds.length > 0 && (
+                                <>
+                                    <DropdownMenuSeparator />
+                                    <DropdownMenuItem onClick={clearAllFilters} className="text-destructive">
+                                        <X className="h-4 w-4 mr-2" />
+                                        {t('transactions.filter.clearAll')}
+                                    </DropdownMenuItem>
+                                </>
+                            )}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="sm" className="gap-1.5">
+                                {currentSort?.icon}
+                                <span className="hidden sm:inline">{t('transactions.sortButton')}</span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuLabel>{t('transactions.sortBy')}</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            {sortOptions.map((option) => (
+                                <DropdownMenuItem
+                                    key={option.value}
+                                    onClick={() => onSortChange(option.value)}
+                                    className="gap-2"
+                                >
+                                    {option.icon}
+                                    {option.label}
+                                </DropdownMenuItem>
+                            ))}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             </div>
 
             {hasActiveFilters && (

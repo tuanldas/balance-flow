@@ -45,3 +45,6 @@ postman_collection.json
 
 # Docker
 compose.override.yml
+
+# Session notes (local documentation only)
+docs/session-notes/
