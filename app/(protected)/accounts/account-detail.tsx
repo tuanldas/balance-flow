@@ -134,7 +134,9 @@ export function AccountDetail({ account, onBack, isMobile = false, onEditClick, 
                                 className="h-16 w-16 rounded-full flex items-center justify-center shrink-0"
                                 style={{ backgroundColor: account.color || '#6b7280' }}
                             >
-                                <span className="text-white text-3xl">{account.icon || '💰'}</span>
+                                <span className="text-white text-3xl font-bold uppercase">
+                                    {account.name.charAt(0)}
+                                </span>
                             </div>
                             <div>
                                 <h3 className="text-xl font-bold">{account.name}</h3>

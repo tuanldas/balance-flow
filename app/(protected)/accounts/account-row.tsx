@@ -57,7 +57,7 @@ function AccountRowComponent({ account, onClick, isChecked, onCheckChange }: Acc
                     className="h-10 w-10 rounded-full flex items-center justify-center shrink-0"
                     style={{ backgroundColor: account.color || '#6b7280' }}
                 >
-                    <span className="text-white text-lg">{account.icon || '💰'}</span>
+                    <span className="text-white text-lg font-semibold uppercase">{account.name.charAt(0)}</span>
                 </div>
                 <div className="min-w-0 flex-1">
                     <p className="font-medium text-foreground truncate">{account.name}</p>
