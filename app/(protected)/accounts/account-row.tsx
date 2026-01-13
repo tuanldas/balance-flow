@@ -11,12 +11,12 @@ import { Checkbox } from '@/components/ui/checkbox';
 interface AccountRowProps {
     account: Account;
     onClick: () => void;
-    isInBulkMode?: boolean;
+    isSelected?: boolean;
     isChecked?: boolean;
     onCheckChange?: (checked: boolean) => void;
 }
 
-function AccountRowComponent({ account, onClick, isChecked, onCheckChange }: AccountRowProps) {
+function AccountRowComponent({ account, onClick, isSelected, isChecked, onCheckChange }: AccountRowProps) {
     const { t, i18n } = useTranslation();
     const locale = getIntlLocale(i18n.language);
 
@@ -32,7 +32,8 @@ function AccountRowComponent({ account, onClick, isChecked, onCheckChange }: Acc
             className={cn(
                 'flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors',
                 'hover:bg-accent/50',
-                isChecked ? 'bg-accent' : 'bg-transparent',
+                isSelected && 'bg-accent',
+                isChecked && 'bg-accent',
             )}
         >
             {/* Checkbox for bulk selection */}

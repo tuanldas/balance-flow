@@ -373,7 +373,8 @@
         "noResults": "No accounts found",
         "filters": {
             "accountType": "Account Type",
-            "status": "Status"
+            "status": "Status",
+            "clearAll": "Clear all filters"
         },
         "status": {
             "all": "All",
@@ -417,6 +418,7 @@
         },
         "form": {
             "createTitle": "Create New Account",
+            "createDescription": "Fill in your account information below",
             "editTitle": "Edit Account",
             "accountType": "Account Type",
             "accountTypePlaceholder": "Select account type",

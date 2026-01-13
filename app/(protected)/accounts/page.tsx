@@ -10,7 +10,6 @@ import { useIsLargeScreen } from '@/hooks/use-large-screen';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet';
 import { AccountDetail } from './account-detail';
-import { AccountFormDialog } from './account-form-dialog';
 import { AccountListSkeleton } from './account-list-skeleton';
 import { AccountRow } from './account-row';
 import { BulkActionBar } from './bulk-action-bar';
@@ -20,11 +19,11 @@ import { FilterBar } from './filter-bar';
 // Extracted AccountList component
 interface AccountListProps {
     accounts: Account[];
+    selectedAccountId?: string;
     onAccountSelect: (account: Account) => void;
     isLoading?: boolean;
     error?: Error | null;
     hasFilters?: boolean;
-    onCreateClick?: () => void;
     onClearFilters?: () => void;
     selectedIds?: Set<string>;
     onToggleSelection?: (id: string) => void;
@@ -32,11 +31,11 @@ interface AccountListProps {
 
 const AccountList = memo(function AccountList({
     accounts,
+    selectedAccountId,
     onAccountSelect,
     isLoading,
     error,
     hasFilters,
-    onCreateClick,
     onClearFilters,
     selectedIds,
     onToggleSelection,
@@ -61,13 +60,14 @@ const AccountList = memo(function AccountList({
         <div className="flex-1 overflow-y-auto">
             <div className="p-4 space-y-6">
                 {accounts.length === 0 ? (
-                    <EmptyState hasFilters={hasFilters} onCreateClick={onCreateClick} onClearFilters={onClearFilters} />
+                    <EmptyState hasFilters={hasFilters} onClearFilters={onClearFilters} />
                 ) : (
                     <div className="space-y-1">
                         {accounts.map((account) => (
                             <AccountRow
                                 key={account.id}
                                 account={account}
+                                isSelected={selectedAccountId === account.id}
                                 onClick={() => {
                                     // If has selections, clicking toggles selection
                                     // Otherwise, opens detail view
@@ -98,12 +98,10 @@ export default function AccountsPage() {
 
     const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
     const [showDetail, setShowDetail] = useState(false);
-    const [showFormDialog, setShowFormDialog] = useState(false);
-    const [editingAccount, setEditingAccount] = useState<Account | null>(null);
+    const [detailMode, setDetailMode] = useState<'view' | 'create'>('view');
 
     // Filter state
     const [searchValue, setSearchValue] = useState('');
-    const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
     const [accountTypeFilter, setAccountTypeFilter] = useState<string>('all');
 
     // Bulk actions state
@@ -118,21 +116,14 @@ export default function AccountsPage() {
     const queryParams = useMemo(() => {
         const params: {
             account_type_id?: string;
-            is_active?: 0 | 1;
         } = {};
 
         if (accountTypeFilter !== 'all') {
             params.account_type_id = accountTypeFilter;
         }
 
-        if (statusFilter === 'active') {
-            params.is_active = 1;
-        } else if (statusFilter === 'inactive') {
-            params.is_active = 0;
-        }
-
         return params;
-    }, [accountTypeFilter, statusFilter]);
+    }, [accountTypeFilter]);
 
     // Fetch accounts
     const { data: accountsData, isLoading, error } = useAccounts(queryParams);
@@ -151,16 +142,35 @@ export default function AccountsPage() {
         );
     }, [allAccounts, searchValue]);
 
-    // Select first account by default when data loads
+    // Select first account by default when data loads, or show create form if no accounts
     useEffect(() => {
+        // Don't auto-select if user is in create mode
+        if (detailMode === 'create') return;
+
         if (filteredAccounts.length > 0 && !selectedAccount) {
             setSelectedAccount(filteredAccounts[0]);
+            setDetailMode('view');
+        } else if (filteredAccounts.length === 0 && !isLoading && allAccounts.length === 0) {
+            // Auto show create form when no accounts exist
+            setDetailMode('create');
+            setSelectedAccount(null);
+        }
+    }, [filteredAccounts, selectedAccount, isLoading, allAccounts.length, detailMode]);
+
+    // Update selected account when data changes (to reflect updates)
+    useEffect(() => {
+        if (selectedAccount && filteredAccounts.length > 0) {
+            const updatedAccount = filteredAccounts.find((acc) => acc.id === selectedAccount.id);
+            if (updatedAccount) {
+                setSelectedAccount(updatedAccount);
+            }
         }
     }, [filteredAccounts, selectedAccount]);
 
     const handleAccountSelect = useCallback(
         (account: Account) => {
             setSelectedAccount(account);
+            setDetailMode('view');
             if (!isLargeScreen) {
                 setShowDetail(true);
             }
@@ -170,22 +180,28 @@ export default function AccountsPage() {
 
     const handleBackToList = useCallback(() => {
         setShowDetail(false);
+        setDetailMode('view');
     }, []);
 
     const handleCreateClick = useCallback(() => {
-        setEditingAccount(null);
-        setShowFormDialog(true);
-    }, []);
+        setDetailMode('create');
+        setSelectedAccount(null);
+        if (!isLargeScreen) {
+            setShowDetail(true);
+        }
+    }, [isLargeScreen]);
 
-    const handleEditClick = useCallback(() => {
-        setEditingAccount(selectedAccount);
-        setShowFormDialog(true);
-    }, [selectedAccount]);
-
-    const handleFormSuccess = useCallback(() => {
+    const handleCreateSuccess = useCallback(() => {
         // Data will be automatically refetched by React Query
-        setShowFormDialog(false);
-        setEditingAccount(null);
+        // Close side panel or switch back to view mode
+        if (!isLargeScreen) {
+            setShowDetail(false);
+        }
+        setDetailMode('view');
+    }, [isLargeScreen]);
+
+    const handleEditSuccess = useCallback(() => {
+        // Data will be automatically refetched by React Query
     }, []);
 
     const handleDeleteSuccess = useCallback(() => {
@@ -197,13 +213,12 @@ export default function AccountsPage() {
 
     // Check if any filters are applied
     const hasFilters = useMemo(() => {
-        return searchValue.trim() !== '' || statusFilter !== 'all' || accountTypeFilter !== 'all';
-    }, [searchValue, statusFilter, accountTypeFilter]);
+        return searchValue.trim() !== '' || accountTypeFilter !== 'all';
+    }, [searchValue, accountTypeFilter]);
 
     // Clear all filters
     const handleClearFilters = useCallback(() => {
         setSearchValue('');
-        setStatusFilter('all');
         setAccountTypeFilter('all');
     }, []);
 
@@ -249,8 +264,6 @@ export default function AccountsPage() {
                 <FilterBar
                     searchValue={searchValue}
                     onSearchChange={setSearchValue}
-                    statusFilter={statusFilter}
-                    onStatusFilterChange={setStatusFilter}
                     accountTypeFilter={accountTypeFilter}
                     onAccountTypeFilterChange={setAccountTypeFilter}
                     accountTypes={accountTypes}
@@ -258,37 +271,40 @@ export default function AccountsPage() {
                 />
                 <AccountList
                     accounts={filteredAccounts}
+                    selectedAccountId={selectedAccount?.id}
                     onAccountSelect={handleAccountSelect}
                     isLoading={isLoading}
                     error={error as Error | null}
                     hasFilters={hasFilters}
-                    onCreateClick={handleCreateClick}
                     onClearFilters={handleClearFilters}
                     selectedIds={selectedIds}
                     onToggleSelection={handleToggleSelection}
                 />
 
-                <Sheet open={showDetail} onOpenChange={setShowDetail}>
+                <Sheet
+                    open={showDetail}
+                    onOpenChange={(open) => {
+                        if (!open) {
+                            handleBackToList();
+                        }
+                    }}
+                >
                     <SheetContent side="right" className="w-full sm:max-w-md p-0" close={false}>
-                        <SheetTitle className="sr-only">{t('accounts.detail.title')}</SheetTitle>
+                        <SheetTitle className="sr-only">
+                            {detailMode === 'create' ? t('accounts.form.createTitle') : t('accounts.detail.title')}
+                        </SheetTitle>
                         <AccountDetail
                             account={selectedAccount}
+                            mode={detailMode}
+                            accountTypes={accountTypes}
                             onBack={handleBackToList}
                             isMobile
-                            onEditClick={handleEditClick}
                             onDeleteSuccess={handleDeleteSuccess}
+                            onCreateSuccess={handleCreateSuccess}
+                            onEditSuccess={handleEditSuccess}
                         />
                     </SheetContent>
                 </Sheet>
-
-                {/* Account Form Dialog */}
-                <AccountFormDialog
-                    open={showFormDialog}
-                    onOpenChange={setShowFormDialog}
-                    account={editingAccount}
-                    accountTypes={accountTypes}
-                    onSuccess={handleFormSuccess}
-                />
 
                 {/* Floating Bulk Action Bar */}
                 <BulkActionBar
@@ -310,8 +326,6 @@ export default function AccountsPage() {
                 <FilterBar
                     searchValue={searchValue}
                     onSearchChange={setSearchValue}
-                    statusFilter={statusFilter}
-                    onStatusFilterChange={setStatusFilter}
                     accountTypeFilter={accountTypeFilter}
                     onAccountTypeFilterChange={setAccountTypeFilter}
                     accountTypes={accountTypes}
@@ -319,11 +333,11 @@ export default function AccountsPage() {
                 />
                 <AccountList
                     accounts={filteredAccounts}
+                    selectedAccountId={selectedAccount?.id}
                     onAccountSelect={handleAccountSelect}
                     isLoading={isLoading}
                     error={error as Error | null}
                     hasFilters={hasFilters}
-                    onCreateClick={handleCreateClick}
                     onClearFilters={handleClearFilters}
                     selectedIds={selectedIds}
                     onToggleSelection={handleToggleSelection}
@@ -334,19 +348,13 @@ export default function AccountsPage() {
             <div className="overflow-hidden">
                 <AccountDetail
                     account={selectedAccount}
-                    onEditClick={handleEditClick}
+                    mode={detailMode}
+                    accountTypes={accountTypes}
                     onDeleteSuccess={handleDeleteSuccess}
+                    onCreateSuccess={handleCreateSuccess}
+                    onEditSuccess={handleEditSuccess}
                 />
             </div>
-
-            {/* Account Form Dialog */}
-            <AccountFormDialog
-                open={showFormDialog}
-                onOpenChange={setShowFormDialog}
-                account={editingAccount}
-                accountTypes={accountTypes}
-                onSuccess={handleFormSuccess}
-            />
 
             {/* Floating Bulk Action Bar */}
             <BulkActionBar

@@ -373,7 +373,8 @@
         "noResults": "Không tìm thấy tài khoản nào",
         "filters": {
             "accountType": "Loại tài khoản",
-            "status": "Trạng thái"
+            "status": "Trạng thái",
+            "clearAll": "Xóa tất cả bộ lọc"
         },
         "status": {
             "all": "Tất cả",
@@ -417,6 +418,7 @@
         },
         "form": {
             "createTitle": "Tạo tài khoản mới",
+            "createDescription": "Điền thông tin tài khoản của bạn bên dưới",
             "editTitle": "Chỉnh sửa tài khoản",
             "accountType": "Loại tài khoản",
             "accountTypePlaceholder": "Chọn loại tài khoản",
