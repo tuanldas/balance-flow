@@ -364,7 +364,11 @@ export function AccountDetail({
                                     <FormLabel>{t('accounts.form.color')}</FormLabel>
                                     <FormControl>
                                         <div className="flex gap-2">
-                                            <Input type="color" className="w-16 h-10 p-1 cursor-pointer" {...field} />
+                                            <Input
+                                                type="color"
+                                                className="w-16 h-10 p-1 cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-0 [&::-webkit-color-swatch]:rounded [&::-moz-color-swatch]:border-0 [&::-moz-color-swatch]:rounded"
+                                                {...field}
+                                            />
                                             <Input type="text" placeholder="#000000" {...field} className="flex-1" />
                                         </div>
                                     </FormControl>
