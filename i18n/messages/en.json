@@ -56,6 +56,7 @@
             "dashboards": "Dashboards",
             "categories": "Categories",
             "transactions": "Transactions",
+            "accounts": "Accounts",
             "publicProfile": "Public Profile",
             "accountSettings": "Account Settings",
             "network": "Network",
@@ -362,6 +363,127 @@
             "thisWeek": "This Week",
             "thisMonth": "This Month",
             "custom": "Custom"
+        }
+    },
+    "accounts": {
+        "title": "Accounts",
+        "searchPlaceholder": "Search accounts...",
+        "filterButton": "Filter",
+        "sortButton": "Sort",
+        "noResults": "No accounts found",
+        "filters": {
+            "accountType": "Account Type",
+            "status": "Status",
+            "clearAll": "Clear all filters"
+        },
+        "status": {
+            "all": "All",
+            "active": "Active",
+            "inactive": "Inactive"
+        },
+        "types": {
+            "cash": "Cash",
+            "bank": "Bank",
+            "ewallet": "E-Wallet",
+            "credit": "Credit Card",
+            "savings": "Savings",
+            "investment": "Investment"
+        },
+        "fields": {
+            "name": "Account Name",
+            "balance": "Balance",
+            "currency": "Currency",
+            "icon": "Icon",
+            "color": "Color",
+            "description": "Description",
+            "isActive": "Status"
+        },
+        "empty": {
+            "title": "No accounts yet",
+            "description": "Start managing your finances by creating your first account",
+            "createFirst": "Create first account",
+            "noResults": {
+                "title": "No accounts found",
+                "description": "No accounts match your current filters. Try adjusting your filters.",
+                "clearFilters": "Clear filters"
+            }
+        },
+        "bulkActions": {
+            "selected": "selected",
+            "delete": "Delete",
+            "confirmDelete": "Confirm Bulk Delete",
+            "confirmDeleteMessage": "Are you sure you want to delete {{count}} selected accounts? This action cannot be undone.",
+            "deleteSuccess": "Successfully deleted {{count}} accounts!",
+            "deleteError": "Cannot delete accounts. Please try again."
+        },
+        "form": {
+            "createTitle": "Create New Account",
+            "createDescription": "Fill in your account information below",
+            "editTitle": "Edit Account",
+            "accountType": "Account Type",
+            "accountTypePlaceholder": "Select account type",
+            "name": "Account Name",
+            "namePlaceholder": "Enter account name",
+            "balance": "Initial Balance",
+            "balancePlaceholder": "Enter balance",
+            "currency": "Currency",
+            "currencyPlaceholder": "Select currency",
+            "icon": "Icon",
+            "iconPlaceholder": "Enter icon",
+            "color": "Color",
+            "colorPlaceholder": "Select color",
+            "description": "Description",
+            "descriptionPlaceholder": "Enter description (optional)",
+            "isActive": "Active",
+            "createButton": "Create Account",
+            "updateButton": "Update",
+            "cancelButton": "Cancel",
+            "deleteButton": "Delete"
+        },
+        "validation": {
+            "accountTypeRequired": "Account type is required.",
+            "nameRequired": "Account name is required.",
+            "nameMinLength": "Account name must be at least 2 characters long.",
+            "balanceInvalid": "Balance must be a number.",
+            "balancePositive": "Balance must be greater than or equal to 0.",
+            "currencyRequired": "Currency is required."
+        },
+        "messages": {
+            "createSuccess": "Account created successfully!",
+            "updateSuccess": "Account updated successfully!",
+            "deleteSuccess": "Account deleted successfully!",
+            "toggleSuccess": "Status updated successfully!",
+            "createError": "Cannot create account. Please try again.",
+            "updateError": "Cannot update account. Please try again.",
+            "deleteError": "Cannot delete account. Please try again.",
+            "toggleError": "Cannot update status. Please try again.",
+            "confirmDelete": "Are you sure you want to delete this account?",
+            "deleteWarning": "This action cannot be undone."
+        },
+        "detail": {
+            "title": "Account Details",
+            "noSelection": "No account selected",
+            "selectPrompt": "Select an account to view details",
+            "tabs": {
+                "details": "Details",
+                "transactions": "Transactions"
+            },
+            "info": {
+                "accountType": "Account Type",
+                "balance": "Current Balance",
+                "currency": "Currency",
+                "description": "Description",
+                "status": "Status",
+                "createdAt": "Created At",
+                "updatedAt": "Last Updated"
+            },
+            "actions": {
+                "edit": "Edit",
+                "delete": "Delete",
+                "toggleActive": "Toggle Status",
+                "activate": "Activate",
+                "deactivate": "Deactivate"
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowDownAZ, ArrowDownWideNarrow, ArrowUpNarrowWide, Plus, Search, Tag, X } from 'lucide-react';
+import { ArrowDownAZ, ArrowDownWideNarrow, ArrowUpNarrowWide, Filter, Plus, Search, Tag, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import type { TransactionSortBy, TransactionType } from '@/lib/types/transaction';
 import { cn } from '@/lib/utils';
@@ -21,7 +21,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DateRangeFilter, DateRangeValue } from './date-range-filter';
 import { FilterSubmenu } from './filter-submenu';
 
@@ -101,16 +100,34 @@ export function FilterBar({
         }
     };
 
-    const hasActiveFilters = searchValue.trim().length > 0 || categoryIds.length > 0 || dateRange.from !== undefined;
+    const typeOptions: { value: TransactionType | 'all'; label: string }[] = [
+        { value: 'all', label: t('transactions.type.all') },
+        { value: 'income', label: t('transactions.type.income') },
+        { value: 'expense', label: t('transactions.type.expense') },
+    ];
+
+    const hasActiveFilters =
+        searchValue.trim().length > 0 || categoryIds.length > 0 || dateRange.from !== undefined || type !== 'all';
 
     const clearAllFilters = () => {
         onSearchChange('');
         onCategoryIdsChange([]);
         onDateRangeChange({ from: undefined, to: undefined });
+        onTypeChange('all');
     };
 
     const getFilterBadges = () => {
         const badges: { key: string; label: string; color?: string; onRemove: () => void }[] = [];
+
+        if (type !== 'all') {
+            const typeOption = typeOptions.find((opt) => opt.value === type);
+            badges.push({
+                key: 'type',
+                label: typeOption?.label || type,
+                color: type === 'income' ? '#22c55e' : '#ef4444',
+                onRemove: () => onTypeChange('all'),
+            });
+        }
 
         if (searchValue.trim()) {
             badges.push({
@@ -157,32 +174,9 @@ export function FilterBar({
 
     const filterBadges = getFilterBadges();
 
-    const typeOptions: { value: TransactionType | 'all'; label: string }[] = [
-        { value: 'all', label: t('transactions.type.all') },
-        { value: 'income', label: t('transactions.type.income') },
-        { value: 'expense', label: t('transactions.type.expense') },
-    ];
-
     return (
         <div className="border-b border-border">
-            {/* Type Filter - Sticky top row */}
-            <div className="flex items-center gap-2 px-4 pt-4 pb-2">
-                <span className="text-sm font-medium text-muted-foreground">{t('transactions.type.label')}:</span>
-                <Select value={type} onValueChange={onTypeChange}>
-                    <SelectTrigger className="w-[180px] h-9">
-                        <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {typeOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                                {option.label}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </div>
-
-            <div className="flex items-center justify-between gap-2 p-4 pt-2">
+            <div className="flex items-center justify-between gap-2 p-4">
                 {/* Left side - Create button */}
                 <div className="flex items-center gap-2">
                     {onCreateClick && (
@@ -222,11 +216,33 @@ export function FilterBar({
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="outline" size="sm" className="gap-1.5">
-                                <Plus className="h-4 w-4" />
+                                <Filter className="h-4 w-4" />
                                 <span className="hidden sm:inline">{t('transactions.filterButton')}</span>
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-52">
+                            <DropdownMenuLabel>{t('transactions.type.label')}</DropdownMenuLabel>
+                            {typeOptions.map((option) => (
+                                <DropdownMenuItem
+                                    key={option.value}
+                                    onClick={() => onTypeChange(option.value)}
+                                    className="gap-2"
+                                >
+                                    <span
+                                        className={cn(
+                                            'h-2 w-2 rounded-full',
+                                            option.value === 'all' && 'bg-muted-foreground',
+                                            option.value === 'income' && 'bg-green-500',
+                                            option.value === 'expense' && 'bg-red-500',
+                                        )}
+                                    />
+                                    {option.label}
+                                    {type === option.value && <span className="ml-auto text-xs text-primary">✓</span>}
+                                </DropdownMenuItem>
+                            ))}
+
+                            <DropdownMenuSeparator />
+
                             <DropdownMenuSub>
                                 <DropdownMenuSubTrigger>
                                     <Tag className="h-4 w-4 mr-2" />
@@ -249,7 +265,7 @@ export function FilterBar({
                                 </DropdownMenuPortal>
                             </DropdownMenuSub>
 
-                            {categoryIds.length > 0 && (
+                            {(categoryIds.length > 0 || type !== 'all') && (
                                 <>
                                     <DropdownMenuSeparator />
                                     <DropdownMenuItem onClick={clearAllFilters} className="text-destructive">

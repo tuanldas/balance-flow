@@ -56,6 +56,7 @@
             "dashboards": "Bảng điều khiển",
             "categories": "Danh mục",
             "transactions": "Giao dịch",
+            "accounts": "Tài khoản",
             "publicProfile": "Hồ sơ công khai",
             "accountSettings": "Cài đặt tài khoản",
             "network": "Mạng",
@@ -362,6 +363,127 @@
             "thisWeek": "Tuần này",
             "thisMonth": "Tháng này",
             "custom": "Tùy chỉnh"
+        }
+    },
+    "accounts": {
+        "title": "Tài khoản",
+        "searchPlaceholder": "Tìm kiếm tài khoản...",
+        "filterButton": "Lọc",
+        "sortButton": "Sắp xếp",
+        "noResults": "Không tìm thấy tài khoản nào",
+        "filters": {
+            "accountType": "Loại tài khoản",
+            "status": "Trạng thái",
+            "clearAll": "Xóa tất cả bộ lọc"
+        },
+        "status": {
+            "all": "Tất cả",
+            "active": "Hoạt động",
+            "inactive": "Không hoạt động"
+        },
+        "types": {
+            "cash": "Tiền mặt",
+            "bank": "Ngân hàng",
+            "ewallet": "Ví điện tử",
+            "credit": "Thẻ tín dụng",
+            "savings": "Tiết kiệm",
+            "investment": "Đầu tư"
+        },
+        "fields": {
+            "name": "Tên tài khoản",
+            "balance": "Số dư",
+            "currency": "Loại tiền",
+            "icon": "Biểu tượng",
+            "color": "Màu sắc",
+            "description": "Mô tả",
+            "isActive": "Trạng thái"
+        },
+        "empty": {
+            "title": "Chưa có tài khoản nào",
+            "description": "Bắt đầu quản lý tài chính của bạn bằng cách tạo tài khoản đầu tiên",
+            "createFirst": "Tạo tài khoản đầu tiên",
+            "noResults": {
+                "title": "Không tìm thấy tài khoản nào",
+                "description": "Không có tài khoản nào khớp với bộ lọc hiện tại. Thử điều chỉnh bộ lọc của bạn.",
+                "clearFilters": "Xóa bộ lọc"
+            }
+        },
+        "bulkActions": {
+            "selected": "đã chọn",
+            "delete": "Xóa",
+            "confirmDelete": "Xác nhận xóa hàng loạt",
+            "confirmDeleteMessage": "Bạn có chắc chắn muốn xóa {{count}} tài khoản đã chọn? Hành động này không thể hoàn tác.",
+            "deleteSuccess": "Đã xóa {{count}} tài khoản thành công!",
+            "deleteError": "Không thể xóa tài khoản. Vui lòng thử lại."
+        },
+        "form": {
+            "createTitle": "Tạo tài khoản mới",
+            "createDescription": "Điền thông tin tài khoản của bạn bên dưới",
+            "editTitle": "Chỉnh sửa tài khoản",
+            "accountType": "Loại tài khoản",
+            "accountTypePlaceholder": "Chọn loại tài khoản",
+            "name": "Tên tài khoản",
+            "namePlaceholder": "Nhập tên tài khoản",
+            "balance": "Số dư ban đầu",
+            "balancePlaceholder": "Nhập số dư",
+            "currency": "Loại tiền",
+            "currencyPlaceholder": "Chọn loại tiền",
+            "icon": "Biểu tượng",
+            "iconPlaceholder": "Nhập biểu tượng",
+            "color": "Màu sắc",
+            "colorPlaceholder": "Chọn màu sắc",
+            "description": "Mô tả",
+            "descriptionPlaceholder": "Nhập mô tả (tùy chọn)",
+            "isActive": "Hoạt động",
+            "createButton": "Tạo tài khoản",
+            "updateButton": "Cập nhật",
+            "cancelButton": "Hủy",
+            "deleteButton": "Xóa"
+        },
+        "validation": {
+            "accountTypeRequired": "Loại tài khoản là bắt buộc.",
+            "nameRequired": "Tên tài khoản là bắt buộc.",
+            "nameMinLength": "Tên tài khoản phải có ít nhất 2 ký tự.",
+            "balanceInvalid": "Số dư phải là một số.",
+            "balancePositive": "Số dư phải lớn hơn hoặc bằng 0.",
+            "currencyRequired": "Loại tiền là bắt buộc."
+        },
+        "messages": {
+            "createSuccess": "Tạo tài khoản thành công!",
+            "updateSuccess": "Cập nhật tài khoản thành công!",
+            "deleteSuccess": "Xóa tài khoản thành công!",
+            "toggleSuccess": "Cập nhật trạng thái thành công!",
+            "createError": "Không thể tạo tài khoản. Vui lòng thử lại.",
+            "updateError": "Không thể cập nhật tài khoản. Vui lòng thử lại.",
+            "deleteError": "Không thể xóa tài khoản. Vui lòng thử lại.",
+            "toggleError": "Không thể cập nhật trạng thái. Vui lòng thử lại.",
+            "confirmDelete": "Bạn có chắc chắn muốn xóa tài khoản này?",
+            "deleteWarning": "Hành động này không thể hoàn tác."
+        },
+        "detail": {
+            "title": "Chi tiết tài khoản",
+            "noSelection": "Chưa chọn tài khoản",
+            "selectPrompt": "Chọn một tài khoản để xem chi tiết",
+            "tabs": {
+                "details": "Chi tiết",
+                "transactions": "Giao dịch"
+            },
+            "info": {
+                "accountType": "Loại tài khoản",
+                "balance": "Số dư hiện tại",
+                "currency": "Loại tiền",
+                "description": "Mô tả",
+                "status": "Trạng thái",
+                "createdAt": "Ngày tạo",
+                "updatedAt": "Cập nhật lần cuối"
+            },
+            "actions": {
+                "edit": "Chỉnh sửa",
+                "delete": "Xóa",
+                "toggleActive": "Chuyển trạng thái",
+                "activate": "Kích hoạt",
+                "deactivate": "Vô hiệu hóa"
+            }
         }
     }
 }
