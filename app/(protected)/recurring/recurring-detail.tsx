@@ -64,15 +64,6 @@ function RecurringDetailComponent({ recurring, onBack, isMobile = false }: Recur
         );
     }
 
-    const frequencyLabel =
-        recurring.frequency === 'yearly'
-            ? t('recurring.frequencyLabel.yearly')
-            : recurring.frequency === 'monthly'
-              ? t('recurring.frequencyLabel.monthly')
-              : recurring.frequency === 'weekly'
-                ? t('recurring.frequencyLabel.weekly')
-                : t('recurring.frequencyLabel.daily');
-
     return (
         <div className="h-full flex flex-col">
             {/* Header with back button (mobile) and menu */}
@@ -83,7 +74,6 @@ function RecurringDetailComponent({ recurring, onBack, isMobile = false }: Recur
                             <ArrowLeft className="h-4 w-4" />
                         </Button>
                     )}
-                    <span className="text-sm text-muted-foreground font-medium">{frequencyLabel}</span>
                 </div>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
