@@ -4,38 +4,71 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## ⚠️ CRITICAL RULE: Session Notes Management
 
-**IMPORTANT:** Claude Code sessions have context limits. To maintain continuity across sessions:
+### Session Notes Policy
 
-1. **ALWAYS create or update session notes** in `/workspace/docs/session-notes/` after completing significant work
-2. **Session note naming:** Use format `YYYY-MM-DD-HHMMSS-brief-description.md` (e.g., `2025-12-25-143052-transactions-crud-inline-editing.md`) - Include timestamp because multiple sessions can occur in one day
-3. **When to create/update:**
-    - After implementing a major feature
-    - After making significant architectural changes
-    - When user explicitly requests "take note" or "cập nhật session note"
-    - Before reaching context limits (proactive documentation)
-    - After user says "continue" from a previous session (update existing note)
+**📝 ALWAYS write session notes after completing a feature/module**
 
-4. **What to include in session notes:**
-    - Overview: What was requested and why
-    - Technical details: Key decisions, patterns used, code examples
-    - Files changed: List of created/modified files with explanations
-    - Issues encountered and solutions
-    - Next steps: Pending tasks or future work
-    - User feedback: Important quotes or clarifications
-    - Git commits: Commit hashes and messages
+- ✅ After completing a feature/module: Create session note in `docs/session-notes/`
+- ✅ File naming format: `YYYY-MM-DD-feature-name.md`
+- ✅ Include: Date, branch, status, overview, files created/modified, issues & solutions, test results, summary
+- ✅ Reference existing session notes for format: `docs/session-notes/`
 
-5. **Format:** Use clear Markdown with sections, code blocks, and examples for easy reference in future sessions
+**Session note template:**
 
-**Example workflow:**
+```markdown
+# Session Note: [Feature Name]
 
-```bash
-# After completing work
-1. Create/update session note in docs/session-notes/
-2. Git add and commit the session note
-3. Provide summary to user
+**Date:** YYYY-MM-DD
+**Branch:** `feature/xxx` or `dev`
+**Status:** ✅ Completed / 🚧 In Progress
+
+---
+
+## Overview
+
+[Brief description of what was implemented]
+
+### User Request
+
+> [Original user request quote]
+
+---
+
+## Technical Implementation
+
+[Architecture, database schema, business rules]
+
+---
+
+## Files Created/Modified
+
+[List of files with descriptions]
+
+---
+
+## Issues Encountered & Solutions
+
+[Any problems faced and how they were solved]
+
+---
+
+## Test Results
+
+[Test count and status]
+
+---
+
+## Summary
+
+[Quick summary of what was delivered]
 ```
 
-This ensures that future sessions (or other developers) can quickly understand what was done and continue work seamlessly.
+**Why this matters:**
+
+- Documents implementation decisions for future reference
+- Helps onboard new developers
+- Creates audit trail of changes
+- Preserves context that may be lost between sessions
 
 ## Project Overview
 

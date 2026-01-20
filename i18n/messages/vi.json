@@ -57,6 +57,7 @@
             "categories": "Danh mục",
             "transactions": "Giao dịch",
             "accounts": "Tài khoản",
+            "recurring": "Định kỳ",
             "publicProfile": "Hồ sơ công khai",
             "accountSettings": "Cài đặt tài khoản",
             "network": "Mạng",
@@ -484,6 +485,64 @@
                 "activate": "Kích hoạt",
                 "deactivate": "Vô hiệu hóa"
             }
+        }
+    },
+    "recurring": {
+        "title": "Định kỳ",
+        "overdue": "Quá hạn",
+        "groups": {
+            "thisMonth": "Tháng này",
+            "overdue": "Quá hạn"
+        },
+        "summary": {
+            "leftToPay": "còn phải trả",
+            "paidSoFar": "đã thanh toán"
+        },
+        "frequency": {
+            "daily": "Hàng ngày",
+            "weekly": "Hàng tuần",
+            "monthly": "Hàng tháng",
+            "yearly": "Hàng năm"
+        },
+        "frequencyLabel": {
+            "daily": "Định kỳ hàng ngày",
+            "weekly": "Định kỳ hàng tuần",
+            "monthly": "Định kỳ hàng tháng",
+            "yearly": "Định kỳ hàng năm"
+        },
+        "detail": {
+            "title": "Chi tiết định kỳ",
+            "noSelection": "Chưa chọn khoản định kỳ",
+            "selectPrompt": "Chọn một khoản định kỳ để xem chi tiết",
+            "nextPayment": "THANH TOÁN TIẾP THEO",
+            "around": "khoảng",
+            "rules": "QUY TẮC",
+            "keyMetrics": "Số liệu chính",
+            "lastAccountUsed": "Tài khoản sử dụng gần nhất",
+            "transactions": "Giao dịch",
+            "noTransactions": "Chưa có giao dịch nào"
+        },
+        "rules": {
+            "named": "Tên",
+            "from": "từ",
+            "to": "đến",
+            "on": "vào",
+            "anyDayOfMonth": "bất kỳ ngày nào trong tháng",
+            "dayNumber": "ngày {{day}}",
+            "every": "mỗi",
+            "daily": "ngày",
+            "weekly": "tuần",
+            "monthly": "tháng",
+            "yearly": "năm"
+        },
+        "metrics": {
+            "spentPerYear": "Chi tiêu/năm",
+            "avgTransaction": "TB giao dịch"
+        },
+        "empty": {
+            "title": "Chưa có khoản định kỳ nào",
+            "description": "Theo dõi các khoản thanh toán định kỳ như tiền thuê nhà, đăng ký dịch vụ, và hóa đơn hàng tháng",
+            "createFirst": "Tạo khoản định kỳ đầu tiên"
         }
     }
 }
