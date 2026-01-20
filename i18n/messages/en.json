@@ -57,6 +57,7 @@
             "categories": "Categories",
             "transactions": "Transactions",
             "accounts": "Accounts",
+            "recurring": "Recurrings",
             "publicProfile": "Public Profile",
             "accountSettings": "Account Settings",
             "network": "Network",
@@ -484,6 +485,64 @@
                 "activate": "Activate",
                 "deactivate": "Deactivate"
             }
+        }
+    },
+    "recurring": {
+        "title": "Recurrings",
+        "overdue": "Overdue",
+        "groups": {
+            "thisMonth": "This month",
+            "overdue": "Overdue"
+        },
+        "summary": {
+            "leftToPay": "left to pay",
+            "paidSoFar": "paid so far"
+        },
+        "frequency": {
+            "daily": "Daily",
+            "weekly": "Weekly",
+            "monthly": "Monthly",
+            "yearly": "Annually"
+        },
+        "frequencyLabel": {
+            "daily": "Daily recurring",
+            "weekly": "Weekly recurring",
+            "monthly": "Monthly recurring",
+            "yearly": "Annually recurring"
+        },
+        "detail": {
+            "title": "Recurring Details",
+            "noSelection": "No recurring selected",
+            "selectPrompt": "Select a recurring to view details",
+            "nextPayment": "NEXT PAYMENT",
+            "around": "around",
+            "rules": "RULES",
+            "keyMetrics": "Key metrics",
+            "lastAccountUsed": "Last account used",
+            "transactions": "Transactions",
+            "noTransactions": "No transactions yet"
+        },
+        "rules": {
+            "named": "Named",
+            "from": "from",
+            "to": "to",
+            "on": "on",
+            "anyDayOfMonth": "any day of the month",
+            "dayNumber": "day {{day}}",
+            "every": "every",
+            "daily": "day",
+            "weekly": "week",
+            "monthly": "month",
+            "yearly": "year"
+        },
+        "metrics": {
+            "spentPerYear": "Spent per year",
+            "avgTransaction": "Avg transaction"
+        },
+        "empty": {
+            "title": "No recurrings yet",
+            "description": "Track recurring payments like rent, subscriptions, and monthly bills",
+            "createFirst": "Create first recurring"
         }
     }
 }
