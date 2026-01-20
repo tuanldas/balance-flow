@@ -16,7 +16,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import { PaymentTimeline } from './payment-timeline';
 
 interface RecurringDetailProps {
     recurring: Recurring | null;
@@ -172,13 +171,6 @@ function RecurringDetailComponent({ recurring, onBack, isMobile = false }: Recur
                             </Badge>
                         </div>
                     </div>
-
-                    {/* Payment Timeline Chart */}
-                    {recurring.paymentHistory.length > 0 && (
-                        <div className="mb-6">
-                            <PaymentTimeline payments={recurring.paymentHistory} currency={recurring.currency} />
-                        </div>
-                    )}
 
                     {/* Key Metrics Section */}
                     {recurring.metrics.length > 0 && (
